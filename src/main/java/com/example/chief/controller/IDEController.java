@@ -105,13 +105,16 @@ public class IDEController {
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line;
-			    int i = 0;
-			    boolean flag = true;
-			    String foutput = "";
 			    while ((line = reader.readLine()) != null) {
 			    	output.append(line);
 			    	output.append("\n");
 	            }
+			    
+			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+			    while ((line = reader.readLine()) != null) {
+			    	output.append(line);
+			    	output.append("\n");
+		        }
 			    return output;
 			} else {
 			    output.append("Compilation Error ");
@@ -263,6 +266,11 @@ public class IDEController {
                 int i = 0;
 			    boolean flag = true;
 			    String foutput = "";
+			    while ((line = reader.readLine()) != null) {
+			    	output.append(line);
+			    	output.append("\n");
+	            }
+			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			    while ((line = reader.readLine()) != null) {
 			    	output.append(line);
 			    	output.append("\n");
