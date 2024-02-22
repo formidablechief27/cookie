@@ -1,141 +1,357 @@
-<html>
-    <head>
-        <style>
-            body {
-                background-color: black;
-                color: white;
-            }
-            input[type="submit"] {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlgoChief</title>
+    <style>
+        /* Global styles */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2e2e2e;
+            color: #fff;
+            overflow-x: hidden; /* Prevent horizontal scrollbar */
+        }
+
+        /* Taskbar */
+        .taskbar {
+            background-color: #292929;
+            height: 40px;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding-left: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .start-button {
+            width: 36px;
+            height: 36px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 50%;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        input[type="submit"] {
                 background: none;
-                color : aqua;/* Set the color you want for the text */
-                padding: 5px;
+                border: none;
+                color : white;/* Set the color you want for the text */
                 text-decoration: underline; /* Underline the text to make it look like a hyperlink */
                 cursor: pointer; /* Change cursor to pointer on hover */
                 margin-top: 5px;
                 font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .start-button:hover {
+            background-color: #0056b3;
+        }
+
+        .start-menu {
+            position: fixed;
+            bottom: 40px;
+            left: 10px;
+            width: 200px;
+            background-color: #292929;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .start-menu ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .start-menu li {
+            padding: 5px 0;
+        }
+
+        .start-menu li a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 5px 10px;
+            transition: background-color 0.3s;
+        }
+
+        .start-menu li a:hover {
+            background-color: #444;
+        }
+
+        /* Loading screen */
+        .boot-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            color: #fff;
+            z-index: 1000;
+        }
+
+        .loading-text {
+            text-align: center;
+            font-size: 24px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 20px;
+            background-color: #444;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            width: 0;
+            height: 100%;
+            background-color: #007bff;
+            animation: progressAnimation 5s linear forwards;
+        }
+
+        @keyframes progressAnimation {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
-            input[type="submit"]:hover {
-                transform: scale(1.1); /* Increase the size on hover */
-                 /* Change border color on hover if desired */
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Main content */
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Header */
+        header {
+            background-color: #212121;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        header h2 {
+            margin: 5px 0 0;
+            font-size: 24px;
+            color: #bbb;
+        }
+
+        /* Navigation bar */
+        nav {
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #444;
+        }
+
+        @media screen and (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav a {
+                display: block;
+                margin: 5px 0;
+                padding: 10px; /* Increase padding for better touch experience */
+            }
+
+            .taskbar {
+                justify-content: space-between; /* Adjust taskbar layout for small screens */
+                padding: 0 10px; /* Add padding to taskbar for better spacing */
+            }
+
+            .start-menu {
+                left: 50%;
+                transform: translateX(-50%); /* Center start menu horizontally */
+            }
+
+            .start-button {
+                margin-right: 0;
+            }
+        }
+        /* Table styles */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #444;
+            color: #fff;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #666;
+        }
+
+        th {
+            background-color: #333;
+        }
+
+        /* Scroll to top button */
+        #scrollTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        #scrollTopBtn:hover {
+            opacity: 0.8;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/clike/clike.min.js"></script>
+        <style>
+            .CodeMirror {
+                height: 400px;
+                width: 750px;
             }
         </style>
-    </head>
-    <body>
+</head>
+<body>
 
     <script th:inline="javascript">
         var c = /*[[${id}]]*/ '';
     </script>
 
-        <div style = "display: flex;">
-            <div>
-                <img src = "log.jpg" style = "width: 250px; height: 60px; margin-bottom: 20px;">
-            </div>
-            <div style = "display: flex; margin-left: auto; text-align: center; height: 40px; margin-top: 10px;">
-                <form action = "/profile" method = "post" style = "margin-right: 20px; margin-left: 20px;">
-                    <input type = "submit"  value = "My Profile">
-                </form>
-
-                <form action = "/logout" method = "post" style = "margin-right: 20px;">
-                    <input type = "submit"  value = "Logout">
-                </form>
+    <!-- Loading screen -->
+    <div class="boot-screen">
+        <div class="loading-text">
+            <p>Loading AlgoChief...</p>
+            <div class="loading-bar">
+                <div class="progress"></div>
             </div>
         </div>
+    </div>
 
-        <div style = "display: flex; margin-top: 10px; align-items: center; margin-bottom: 30px;">
-            <div style = "display: flex; height: 40px; font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
-                <form action = "/home" method = "post" style = "margin-right: 20px;">
-                    <input type = "submit"  value = "Home">
-                </form>
-    
-                <form action = "/contest-list" method = "get" style = "margin-right: 20px;">
-                    <input type = "submit"  value = "Contests">
-                </form>
-    
-                <form action = "/practice-course" method = "post" style = "margin-right: 20px;">
-                    <input type = "submit"  value = "DSA Course">
-                </form>
-    
-                <form action = "/problemset" method = "post" style = "margin-right: 20px;">
-                    <input type = "submit"  value = "Problemset">
-                </form>
+    <!-- Main content -->
+    <div class="content">
+        <header>
+            <h1>Algo Chief</h1>
+            <h2>Master Data Structures and Algorithms</h2>
+        </header>
 
-                <form action = "/rating" method = "post" style = "margin-right: 20px;">
-                    <input type = "submit"  value = "Rating">
-                </form>
-
-                <form action = "help" method = "post" style = "margin-right: 20px;">
-                    <input type = "submit"  value = "Help">
-                </form>
-            </div>
-
-            <div style = "margin-left: auto;">
-                <form action = "/search" method = "post" style = "margin-left: auto; height: 40px; margin-top: 10px;">
-                    <input type = "text" style = "width: 400px; height: 30px;" name = "search-value" placeholder = "Search">
-                    <input type = "submit" value = "Go" style = " margin-left: 20px;">
-                </form>
-            </div>
-        </div>
-
-        <div style = "display: flex; margin-bottom: 20px;">
-            <form action = "/contest-load" method = "get">
-                <input type = "submit" style = " margin-right: 20px;" value = "Problems">
-                <input type = "hidden" name = "id" th:value = "${id}">
-            </form>
-
-            <form action="/subs" method = "get">
-                <input type = "submit" style = " margin-right: 20px;" value = "My Submissions">
-                <input type = "hidden" name = "id" th:value = "${id}">
-                <input type = "hidden" name = "user" value  = "0">
-            </form>
-
-            <form>
-                <input type = "submit" style = " margin-right: 20px;" value = "Status">
-                <input type = "hidden" name = "id" th:value = "${id}">
-            </form>
-
-            <form action = "/board" method = "get">
-                <input type = "submit" style = " margin-right: 20px;" value = "Standings">
-                <input type = "hidden" name = "id" th:value = "${id}">
-            </form>
-        </div>
-
-        <div style = "text-align: center; justify-content: center;">
-            <form id="yourFormId" onsubmit="sendFormData(event);">
-                <div style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px;">
-                    <label style = "margin-right: 20px;">
-                        <input type="radio" name="lang" value="1"> Java
-                    </label>
-                    <label style = "margin-right: 20px;">
-                        <input type="radio" name="lang" value="2"> C++
-                    </label>
-                    <label style = "margin-right: 20px;">
-                        <input type="radio" name="lang" value="3"> Python
-                    </label>
+        <nav>
+            <a href="/home">Home</a>
+            <a href="/contest-list">Contests</a>
+            <a href="/practice-course">DSA Course</a>
+            <a href="/problemset">Problemset</a>
+            <a href="/ide" target = "_blank">Code Editor</a>
+            <a href="/profile">My Profile</a>
+        </nav>
+        <main>
+            <h2> Submit Code ?</h2>
+            <div><span th:text = "${num}"></span> <span> : </span> <span th:text = "${name}"></span></div>
+                <div style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;">
+                    <textarea id="view" style="white-space: pre-wrap;"></textarea>
                 </div>
-                <textarea style = "margin-top: 20px;" id="javaCode" name="javaCode" rows="10" cols="50" placeholder="Enter your code here"></textarea>
-                <input type="hidden" id="encodedJavaCode" name="encodedJavaCode">
-                <input type="hidden" name="run" value = "0">
-                <input type="hidden" name = "ques-id" th:value = "${num}">
-                <input type="submit" style = "display: block; margin-left: 600px; margin-top: 20px;" value="Submit">
-            </form>
-            <div id = "wait" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px;">
+
+                <form id="yourFormId" onsubmit="sendFormData(event);">
+                    <div style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px;">
+                        <label style = "margin-right: 20px;">
+                            <input type="radio" name="lang" value="1"> Java
+                        </label>
+                        <label style = "margin-right: 20px;">
+                            <input type="radio" name="lang" value="2"> C++
+                        </label>
+                        <label style = "margin-right: 20px;">
+                            <input type="radio" name="lang" value="3"> Python
+                        </label>
+                    </div>
+                    <input type="hidden" name="run" value = "0">
+                    <input type="hidden" name = "ques-id" th:value = "${num}">
+                    <input type="submit" style = "margin-left:80px; margin-top: 20px; margin-bottom: 20px;" value="Submit ?">
+                </form>
+
+                <div id = "wait" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-bottom: 50px;">
                 
-            </div>
-        </div>
+                </div>
+            <script>
+                var codeTextArea = document.getElementById("view");
+                var editor = CodeMirror.fromTextArea(codeTextArea, {
+                    lineNumbers: true,
+                    mode: "text/x-java",
+                    theme: "default",
+                    indentUnit: 4,
+                    onChange: function () {
+                        handle();
+                    }
+                });
+            </script>
             <script>
                 function sendFormData(event) {
                     event.preventDefault();
+                    var code = editor.getValue();
+                    code = encodeURIComponent(code);
+                    console.log(code);
                     var selectedLanguages = document.querySelectorAll('input[name="lang"]:checked');
                         
                         if (selectedLanguages.length !== 1) {
                             alert('Please select exactly one programming language.');
                             return false;
                         }
-                    var javaCode = document.getElementById("javaCode").value;
-                    var encodedJavaCode = encodeURIComponent(javaCode);
-
+                    
                     var formData = new FormData();
-                    formData.append("encodedJavaCode", encodedJavaCode);
+                    formData.append("code", code);
                     formData.append("ques-id", document.getElementsByName("ques-id")[0].value);
                     formData.append("lang", selectedLanguages[0].value);
                     formData.append("id", c);
@@ -157,8 +373,42 @@
                     var ele = document.getElementById("wait");
                     ele.innerHTML = "Processing Your Request ...";
                     var link = "/subs-self?id=" + c;
-                    setTimeout(function () {window.location.href = link;}, 1000);
+                    setTimeout(function () {window.location.href = link;}, 2500);
                 }
         </script>
-    </body>
+        </main>
+
+        <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">Top</button>
+    </div>
+
+    <script>
+
+        // Function to scroll to the top of the page
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Show or hide the scroll-to-top button based on scroll position
+        window.onscroll = function() {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("scrollTopBtn").style.display = "block";
+            } else {
+                document.getElementById("scrollTopBtn").style.display = "none";
+            }
+        }
+
+        // Simulate loading delay
+        setTimeout(function() {
+            document.querySelector('.boot-screen').style.display = 'none';
+            document.querySelector('.content').style.display = 'block';
+        }, 0); // Delay to simulate loading
+    </script>
+</body>
 </html>

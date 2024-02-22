@@ -65,7 +65,12 @@ public class ContestController {
 		if(c.isPresent()) model.addAttribute("title", c.get().getTitle());
 		model.addAttribute("id", id);
 		model.addAttribute("questions", list);
+		model.addAttribute("name", c.get().getTitle());
 		return "contesthome.html";
 	}
 	
+	@GetMapping("/error")
+	public String error() {
+		return "error.html";
+	}
 }

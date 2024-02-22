@@ -190,11 +190,13 @@ public class CodeController {
     public String handleFormSubmission(@RequestParam("ques-id") String quesId, @RequestParam("id") int contestid, Model model) {
 		model.addAttribute("num", quesId);
 		model.addAttribute("id", contestid);
+		Questions q = DataCache.ques_map.get(Integer.parseInt(quesId));
+		model.addAttribute("name", q.getQuestionName());
         return "submit.html";
     }
 	
 	@PostMapping("/submit-code")
-	public ResponseEntity<String> execute(HttpSession session, @RequestParam("encodedJavaCode") String code, @RequestParam("ques-id") String quesId, @RequestParam("lang") String lang, Model model, @RequestParam("id") int contest_id) {
+	public ResponseEntity<String> execute(HttpSession session, @RequestParam("code") String code, @RequestParam("ques-id") String quesId, @RequestParam("lang") String lang, Model model, @RequestParam("id") int contest_id) {
 		System.out.println(lang);
 		int sub = (int)subs_repo.count() + 1;
 		session.setAttribute("sub-id", sub);

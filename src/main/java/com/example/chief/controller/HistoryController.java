@@ -55,7 +55,6 @@ public class HistoryController {
 			Subs obj = new Subs(s.getId(), getContestById2(s.getUserId()).get().getUsername(), getContestById1(s.getQuestionId()).get().getQuestionName(), s.getVerdict(), s.getContestId(), s.getTimeExecution(), formattedDateTime);
 			list.add(obj);
 			String code = s.getCode();
-			System.out.println(code);
 			model.addAttribute("code", code);
 			model.addAttribute("submissions", list);
 			model.addAttribute("id", contestid);

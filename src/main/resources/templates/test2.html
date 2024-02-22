@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiler</title>
+    <style>
+        /* Global styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #fff;
+            overflow-x: hidden; /* Prevent horizontal scrollbar */
+            position: relative; /* Ensure positioning relative to body */
+        }
+
+        /* Header styles */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+            position: relative; /* Ensure stacking context */
+            z-index: 1; /* Ensure header stays above background animation */
+        }
+
+        /* Compiler container */
+        .compiler-container {
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            background-color: #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: slideIn 1s ease-in-out;
+            border-radius: 10px;
+        }
+
+        /* Input and output area */
+        .input-output {
+            margin-top: 20px;
+            background-color: #444;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* Button styles */
+        .compile-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .compile-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        /* Result area */
+        .result {
+            margin-top: 20px;
+            background-color: #444;
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Compiler</h1>
+        <p>Enter your code below:</p>
+    </header>
+
+    <div class="compiler-container">
+        <textarea id="code" rows="10" cols="50" placeholder="Enter your code here"></textarea>
+        <div class="input-output">
+            <button class="compile-button" onclick="compileCode()">Compile</button>
+            <div class="result" id="result">Output will appear here</div>
+        </div>
+    </div>
+
+    <script>
+        function compileCode() {
+            // Code compilation logic here
+            // This function is just a placeholder
+            document.getElementById("result").innerHTML = "Compiled successfully!";
+        }
+    </script>
+</body>
+</html>
+"

@@ -373,6 +373,7 @@ public class Board_Controller {
 		 }
 		 model.addAttribute("arr", arr);
 		 model.addAttribute("id", contestid);
+		 model.addAttribute("name", contest.get().getTitle());
 		 return "board.html";
 	 }
 }

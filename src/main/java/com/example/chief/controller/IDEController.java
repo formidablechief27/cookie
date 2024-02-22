@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.chief.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -49,7 +48,6 @@ public class IDEController {
 		try {code = URLDecoder.decode(code, "UTF-8");}
 		catch (UnsupportedEncodingException e) {e.printStackTrace();}
 		System.out.println("Language Selected => " + language);
-		System.out.println("Code => " + code);
 		StringBuilder f_output = new StringBuilder();
 		if(language.equals("Java")) f_output = run(code, input);
 		else if(language.equals("C++")) f_output = run_cpp(code, input); 
