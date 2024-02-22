@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Code Testing</title>
+        <link rel="stylesheet" href="codetesting.css">
+        <link rel="stylesheet" href="style.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <style>
+            /* Custom CSS for input field */
+            .custom-input {
+                border: 1px solid #ced4da;
+                border-radius: 0.25rem;
+                padding: 1rem;
+                /* Adjusted padding */
+                width: 100%;
+                /* Making the input field take full width */
+                height: 2.5rem;
+                /* Adjusted height */
+                font-size: 1rem;
+                /* Adjusted font size */
+            }
+
+
+            .custom-textarea {
+                width: 300px;
+                resize: none;
+                margin-left: -10px;
+            }
+        </style>
+    </head>
+
+    <body style="overflow-x:hidden">
+        <nav class="navbar navbar-expand-lg" style="background-color: #ced1d2;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="images/logo.png" alt="Logo" width="30" height="24"
+                        class="d-inline-block align-text-top">
+                    APIcode Probe
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item me-5">
+                            <a class="nav-link" href="/"
+                                style="color: #000; font-family: 'Roboto', sans-serif;"><strong>Home</strong></a>
+                        </li>
+                        <li class="nav-item me-5">
+                            <a class="nav-link" href="#"
+                                style="color: #000; font-family: 'Roboto', sans-serif;"><strong>Features</strong></a>
+                        </li>
+                        <li class="nav-item me-5">
+                            <a class="nav-link" href="#"
+                                style="color: #000 ; font-family: 'Roboto', sans-serif;"><strong>About Us</strong></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="text" style="margin-left:-120px;">
+                Code testing is a crucial aspect of software development where various techniques and practices are
+                employed to evaluate the correctness, functionality, and reliability of a piece of code or software
+                application.
+            </div>
+            <div class="code-img-div">
+                <img class="code-img" src="images/codetesting.png" alt="Code Testing">
+            </div>
+        </div>
+        <br><br><br>
+        <h1 style="text-align: center; font-size: 50px; font-family: 'Kalnia', serif;" id="1"><strong>Start
+                Testing</strong></h1>
+        <br><br><br>
+        <div class="container mt-4" style="margin-left: -100px;">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <h3 class="heading">Language</h3>
+                    <div class="input-group mb-3">
+                        <select id="myDropdown" name="lang">
+                            <option value="C++">C++</option>
+                            <option value="Java">Java</option>
+                            <option value="Python">Python</option>
+                        </select>
+                    </div>
+                    <h3 class="heading">Enter your code</h3>
+                    <textarea name="code" id="" rows="26" style="width: 920px;"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <div class="row" style="margin: 5px 240px 5px 160px">
+                <div class="col-md-4">
+                    <h3 class="heading">Input</h3>
+                    <textarea name="input1" class="form-control custom-textarea" rows="6"
+                        placeholder="Enter input..."></textarea>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="heading">Expected Output</h3>
+                    <textarea name="output" class="form-control custom-textarea" rows="6"
+                        placeholder="Expected output..."></textarea>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="heading">Received Output</h3>
+                    <textarea class="form-control custom-textarea" id="test1" rows="6"></textarea>
+                    <h1 style="margin-left: 350px;margin-top:-138px; " id="verdict1"></h1>
+                </div>
+
+            </div>
+        </div>
+        <div id="input-fields" >
+
+        </div>
+        <div class="addnew" style="margin-top:50px;margin-left:150px">
+            <div style="display: flex;">
+                <button id="add-btn"
+                    style="background-color: #1397b1; border:none; font-family: 'Nunito', sans-serif;color:white;font-size:20px;">Add
+                    testcase</button>
+                <button id="run-btn" onclick="sendData()"
+                    style="background-color: #1397b1;  border-radius:20px ;border: none; font-family: 'Nunito', sans-serif;color:white;font-size:20px;margin-left: 10px;padding: 20px;">
+                    Run all testcases
+                </button>
+            </div>
+        </div>
+        <br><br>
+
+        <script>
+            function sendData() {
+                // Create an empty form data object
+                var formData = new FormData();
+                var code = document.querySelector('textarea[name="code"]').value;
+                code = encodeURIComponent(code);
+
+                formData.append("code", code);
+
+                var inputs = document.querySelectorAll('textarea[name="input1"]');
+                var inputValues = Array.from(inputs).map(input => input.value);
+                console.log(inputValues)
+                formData.append("inputs", inputValues);
+
+                var outputs = document.querySelectorAll('textarea[name="output"]');
+                var outputValues = Array.from(outputs).map(output => output.value);
+                console.log(outputValues);
+                formData.append("outputs", outputValues);
+                var method = document.querySelector('select[name="lang"]').value;
+
+                formData.append("language", method);
+                console.log(formData);
+                console.log("inside");
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/submit-code", true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            console.log(xhr.responseText);
+                            var response = JSON.parse(xhr.responseText);
+                            for (let i = 1; i >= 0; i++) {
+                                var element = document.getElementById(`test${i}`);
+                                var element2 = document.getElementById(`verdict${i}`);
+                                if (element) {
+                                    element.innerHTML = response.foutputs[i - 1];
+                                }
+                                else break;
+                                if (element2) {
+                                    element2.innerHTML = response.verdicts[i - 1];
+                                    if (response.verdicts[i - 1] === "Passed") {
+                                        element2.style.color = "rgb(5, 247, 70)";
+                                    }
+                                    else {
+                                        element2.style.color = "rgb(247, 13, 5)";
+                                    }
+                                }
+                            }
+                        } else {
+                            console.error("Error:", xhr.status, xhr.statusText);
+                        }
+                    }
+                };
+                xhr.send(formData);
+            }
+
+        </script>
+
+        <script>
+            var addButton = document.getElementById('add-btn');
+            var count = 2;
+            addButton.addEventListener('click', function () {
+                var dynamicTextAreas = document.getElementById('input-fields');
+                var row = document.createElement('div');
+                row.className = 'row';
+                row.innerHTML = `
+            <div class="mt-4" >
+               <div class="row" style="margin: 5px 240px 5px 160px;" >
+                   <div class="col-md-4">
+                       <h3 class="heading">Input</h3>
+                       <textarea name="input1" class="form-control custom-textarea" rows="6" placeholder="Enter input..."></textarea>
+                   </div>
+                   <div class="col-md-4">
+                       <h3 class="heading">Expected Output</h3>
+                       <textarea name="output" class="form-control custom-textarea" rows="6" placeholder="Expected output..."></textarea>
+                   </div>
+                   <div class="col-md-4">
+                       <h3 class="heading">Received Output</h3>
+                       <textarea class="form-control custom-textarea" rows="6" id="test${count}"></textarea>
+                       <h1 style="margin-left: 350px;margin-top:-138px"id="verdict${count}"></h1>
+                   </div>
+            `;
+                dynamicTextAreas.appendChild(row);
+                count++;
+            });
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    </body>
+
+</html>

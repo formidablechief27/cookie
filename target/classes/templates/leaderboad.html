@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <style>
+            input[type="submit"] {
+                background: none;
+                border: none;
+                color : blue;/* Set the color you want for the text */
+                text-decoration: underline; /* Underline the text to make it look like a hyperlink */
+                cursor: pointer; /* Change cursor to pointer on hover */
+                margin-top: 5px;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <div style = "display: flex;">
+            <div>
+                <img src = "log.png" style = "width: 250px; height: 60px; margin-bottom: 20px;">
+            </div>
+            <div style = "display: flex; margin-left: auto; text-align: center; height: 40px; margin-top: 10px;">
+                <form action = "/profile" method = "post" style = "margin-right: 20px; margin-left: 20px;">
+                    <input type = "submit" style = "color: black" value = "My Profile">
+                </form>
+
+                <form action = "/logout" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit" style = "color: black" value = "Logout">
+                </form>
+            </div>
+        </div>
+
+        <div style = "display: flex; background-color: aliceblue; margin-top: 10px; align-items: center; margin-bottom: 20px;">
+            <div style = "display: flex; height: 40px; font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                <form action = "/home" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit" style = "color: black" value = "Home">
+                </form>
+    
+                <form action = "/contest-list" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit" style = "color: black" value = "Contests">
+                </form>
+    
+                <form action = "/practice-course" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit" style = "color: black" value = "DSA Course">
+                </form>
+    
+                <form action = "/problemset" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit" style = "color: black" value = "Problemset">
+                </form>
+
+                <form action = "/rating" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit" style = "color: black" value = "Rating">
+                </form>
+
+                <form action = "help" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit" style = "color: black" value = "Help">
+                </form>
+            </div>
+
+            <div style = "margin-left: auto;">
+                <form action = "/search" method = "post" style = "margin-left: auto; height: 40px; margin-top: 10px;">
+                    <input type = "text" style = "width: 400px; height: 30px;" name = "search-value" placeholder = "Search">
+                    <input type = "submit" value = "Go" style = "color: black; margin-left: 20px;">
+                </form>
+            </div>
+        </div>
+        <table border = "1" style = "text-align: center; font-size: 13px; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 700;">
+            <thead>
+                <th style = "height: 30px;">
+                    <td style = "width: 60px;">#</td>
+                    <td style = "width: 300px;">Who</td>
+                    <td style = "width: 75px;">=</td>
+                    <td style = "width: 75px;">A<br><span style = "font-size: 9px;">500</span></td>
+                    <td style = "width: 75px;">B<br><span style = "font-size: 9px;">1000</span></td>
+                    <td style = "width: 75px;">C<br><span style = "font-size: 9px;">1500</span></td>
+                    <td style = "width: 75px;">D<br><span style = "font-size: 9px;">2000</span></td>
+                    <td style = "width: 75px;">E<br><span style = "font-size: 9px;">2500</span></td>
+                    <td style = "width: 75px;">F<br><span style = "font-size: 9px;">3000</span></td>
+                </th>
+            </thead>
+            <tbody th:each="score : ${scores}">
+                <tr style = "height: 30px;">
+                    <td></td>
+                    <td style = "width: 60px;" th:text="${score.rank}"></td>
+                    <td style = "width: 300px;" th:text="${score.name}"></td>
+                    <td style = "width: 75px;" th:text="${score.total}"></td>
+                    <td style="width: 75px;" class="num">
+                        <span th:text="${score.A}"></span><br>
+                        <span style="font-size: 8px; color: grey;" th:text="${score.timeA}"></span>
+                    </td>
+                    <td style="width: 75px;" class="num">
+                        <span th:text="${score.B}"></span><br>
+                        <span style="font-size: 8px; color: grey;" th:text="${score.timeB}"></span>
+                    </td>
+                    <td style="width: 75px;" class="num">
+                        <span th:text="${score.C}"></span><br>
+                        <span style="font-size: 8px; color: grey;" th:text="${score.timeC}"></span>
+                    </td>
+                    <td style="width: 75px;" class="num">
+                        <span th:text="${score.D}"></span><br>
+                        <span style="font-size: 8px; color: grey;" th:text="${score.timeD}"></span>
+                    </td>
+                    <td style="width: 75px;" class="num">
+                        <span th:text="${score.E}"></span><br>
+                        <span style="font-size: 8px; color: grey;" th:text="${score.timeE}"></span>
+                    </td>
+                    <td style="width: 75px;" class="num">
+                        <span th:text="${score.F}"></span><br>
+                        <span style="font-size: 8px; color: grey;" th:text="${score.timeF}"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+        <script>
+            $(document).ready(function () {
+                // Iterate over each .verdict-cell element
+                $(".num").each(function() {
+                    // Get the text content of the current td element
+                    var verdictText = $(this).text().trim();
+        
+                    // Check the starting text and apply the appropriate class
+                    if (verdictText.startsWith("-")) {
+                        $(this).css("color", "rgb(247, 13, 5)"); // Red
+                    } else {
+                        $(this).css("color", "rgb(5, 247, 70)"); // Yellow
+                    }
+                });
+            });
+        </script>
+
+    </body>
+</html>

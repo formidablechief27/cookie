@@ -1,0 +1,239 @@
+<html>
+    <head>
+        <style>
+            body {
+                background-color: black;
+                color: white;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+            input[type="submit"] {
+                background: none;
+                color : aqua;/* Set the color you want for the text */
+                padding: 5px;
+                text-decoration: underline; /* Underline the text to make it look like a hyperlink */
+                cursor: pointer; /* Change cursor to pointer on hover */
+                margin-top: 5px;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+            input[type="submit"]:hover {
+                transform: scale(1.1); /* Increase the size on hover */
+                 /* Change border color on hover if desired */
+            }
+            input[type="submit"].clicked {
+                transform: scale(1.2); /* Increase the size by 10% after clicking */
+            }
+        </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/clike/clike.min.js"></script>
+        <style>
+            .CodeMirror {
+                height: 400px;
+                width: 750px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div style = "display: flex;">
+            <div>
+                <img src = "log.jpeg" style = "width: 250px; height: 100px;">
+            </div>
+            <div style = "display: flex; margin-left: auto; text-align: center; height: 40px; margin-top: 10px;">
+                <form action = "" method = "post" style = "margin-right: 20px; margin-left: 20px;">
+                    <input type = "submit"  value = "My Profile">
+                </form>
+
+                <form action = "" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Logout">
+                </form>
+            </div>
+        </div>
+
+        <div style = "display: flex; margin-top: 10px; align-items: center; margin-bottom: 30px;">
+            <div style = "display: flex; height: 40px; font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                <form action = "" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Home">
+                </form>
+    
+                <form action = "" method = "get" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Contests">
+                </form>
+    
+                <form action = "" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "DSA Course">
+                </form>
+    
+                <form action = "" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Problemset">
+                </form>
+
+                <form action = "" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Rating">
+                </form>
+
+                <form action = "" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Help">
+                </form>
+            </div>
+
+            <div style = "margin-left: auto;">
+                <form action = "" method = "post" style = "margin-left: auto; height: 40px; margin-top: 10px;">
+                    <input type = "text" style = "width: 400px; height: 30px;" name = "search-value" placeholder = "Search">
+                    <input type = "submit" value = "Go" style = " margin-left: 20px;">
+                </form>
+            </div>
+        </div>
+        <script>
+            var lang = "Java";
+        </script>
+        <div style = "margin-left: 20%;">
+            <div style="display: flex; margin-left: 200px;">
+            <form id="javaForm">
+                <input type="submit" id="java" value="Java" style="margin-right: 50px;">
+            </form>
+            <form id="cppForm">
+                <input type="submit" value="C++" style="margin-right: 50px;">
+            </form>
+            <form id="pythonForm">
+                <input type="submit" value="Python" style="margin-right: 50px;">
+            </form>
+        </div>
+
+    <div id="texter" style = "margin-left: 210px;"> Language Selected => Java</div>
+
+        <div id="editor" style="display: flex;">
+            <div style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;">
+                <textarea id="view" style="white-space: pre-wrap;"></textarea>
+            </div>
+        </div>
+
+        <div id="inp-out" style="display: flex; margin-left:60px;">
+            <textarea id="input-text" style="height: 180px; width: 300px; margin-right: 30px;" placeholder="Enter input"></textarea>
+            <textarea id="output1" style="height: 180px; width: 300px; margin-bottom: 20px;" placeholder="Your output will be shown here"></textarea>
+        </div>
+        <div id="fields">
+
+        </div>
+
+        <form>
+            <input type = "submit" id = "add-btn" style = "margin-left: 320px;" value = "Add Test">
+        </form>
+
+        <form id="submit-code-form">
+            <input type="submit" style="margin-left: 300px;" value="Execute All Tests">
+        </form>
+        </div>
+
+        <script>
+            var codeTextArea = document.getElementById("view");
+            var editor = CodeMirror.fromTextArea(codeTextArea, {
+                lineNumbers: true,
+                mode: "text/x-java",
+                theme: "default",
+                onChange: function () {
+                    handle();
+                }
+            });
+        </script>
+
+        <script>
+            document.getElementById("javaForm").addEventListener("submit", function(event) {
+                handleLanguageSelection(event, "Java");
+            });
+
+            document.getElementById("cppForm").addEventListener("submit", function(event) {
+                handleLanguageSelection(event, "C++");
+            });
+
+            document.getElementById("pythonForm").addEventListener("submit", function(event) {
+                handleLanguageSelection(event, "Python");
+            });
+
+            function handleLanguageSelection(event, language) {
+                event.preventDefault();
+                var element = document.getElementById("texter");
+                element.innerHTML = "Language Selected => " + language;
+                console.log("Aaya - " + language);
+                lang = language;
+                return false;
+            }
+        </script>
+
+        <script>
+            var addButton = document.getElementById('add-btn');
+            var count = 2;
+            addButton.addEventListener('click', function (event) {
+                event.preventDefault();
+                var dynamicTextAreas = document.getElementById('fields');
+                var row = document.createElement('div');
+                row.className = 'row';
+                row.innerHTML = `
+                <div id="inp-out" style="display: flex; margin-left:60px;">
+                    <textarea id="input-text" style="height: 180px; width: 300px; margin-right: 30px;" placeholder="Enter input"></textarea>
+                    <textarea id="output${count}" style="height: 180px; width: 300px; margin-bottom : 20px" placeholder="Your output will be shown here"></textarea>
+                </div>
+                `;
+                dynamicTextAreas.appendChild(row);
+                count++;
+            });
+        </script>
+
+        <script>
+            function sendData(event) {
+                event.preventDefault();
+                var code = editor.getValue();
+                code = encodeURIComponent(code);
+                console.log(code);
+                var num = 1;
+                var inputs = document.querySelectorAll('textarea[id="input-text"]');
+                var inputValues = Array.from(inputs).map(input => input.value);
+                for (var i = 0; i < inputValues.length; i++) {
+                    (function (index) {
+                        console.log(inputValues[index]);
+                        var inp = inputValues[index];
+                        var formData = new FormData();
+                        formData.append("code", code);
+                        formData.append("input", inp);
+                        formData.append("language", lang);
+                        console.log(lang);
+                        var area = "output" + (index + 1); // Adjust the index as needed
+                        console.log(area);
+                        var outputElement = document.getElementById(area); // Use the actual ID here
+                        if (outputElement) {
+                            outputElement.value = "Running ... ";
+                            console.log("there");
+                        }
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "/run-code", true);
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === 4) {
+                                if (xhr.status === 200) {
+                                    console.log(xhr.responseText);
+                                    var response = JSON.parse(xhr.responseText);
+                                    var foutput = response.output;
+                                    console.log(foutput);
+                                    var area = "output" + (index + 1); // Adjust the index as needed
+                                    console.log(area);
+                                    var outputElement = document.getElementById(area); // Use the actual ID here
+                                    if (outputElement) {
+                                        outputElement.value = foutput;
+                                    } else {
+                                        console.error('Textarea element not found.');
+                                    }
+                                } else {
+                                    console.error("Error:", xhr.status, xhr.statusText);
+                                }
+                            }
+                        };
+                        xhr.send(formData);
+                    })(i);
+                }
+
+            }
+            document.getElementById('submit-code-form').addEventListener('submit', function (event) {
+                sendData(event); // Pass the event parameter when calling sendData
+            });
+        </script>
+    </body>
+</html>

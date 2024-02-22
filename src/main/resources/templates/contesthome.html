@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <style>
+            body {
+                background-color: black;
+                color: white;
+            }
+            input[type="submit"] {
+                background: none;
+                color : aqua;/* Set the color you want for the text */
+                padding: 5px;
+                text-decoration: underline; /* Underline the text to make it look like a hyperlink */
+                cursor: pointer; /* Change cursor to pointer on hover */
+                margin-top: 5px;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+            input[type="submit"]:hover {
+                transform: scale(1.1); /* Increase the size on hover */
+                 /* Change border color on hover if desired */
+            }
+        </style>
+    </head>
+    <body>
+
+        <div style = "display: flex;">
+            <div>
+                <img src = "log.jpeg" style = "width: 250px; height: 100px;">
+            </div>
+            <div style = "display: flex; margin-left: auto; text-align: center; height: 40px; margin-top: 10px;">
+                <form action = "/profile" method = "post" style = "margin-right: 20px; margin-left: 20px;">
+                    <input type = "submit"  value = "My Profile">
+                </form>
+
+                <form action = "/logout" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Logout">
+                </form>
+            </div>
+        </div>
+
+        <div style = "display: flex; margin-top: 10px; align-items: center; margin-bottom: 30px;">
+            <div style = "display: flex; height: 40px; font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                <form action = "/home" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Home">
+                </form>
+    
+                <form action = "/contest-list" method = "get" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Contests">
+                </form>
+    
+                <form action = "/practice-course" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "DSA Course">
+                </form>
+    
+                <form action = "/problemset" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Problemset">
+                </form>
+
+                <form action = "/rating" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Rating">
+                </form>
+
+                <form action = "help" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Help">
+                </form>
+            </div>
+
+            <div style = "margin-left: auto;">
+                <form action = "/search" method = "post" style = "margin-left: auto; height: 40px; margin-top: 10px;">
+                    <input type = "text" style = "width: 400px; height: 30px;" name = "search-value" placeholder = "Search">
+                    <input type = "submit" value = "Go" style = " margin-left: 20px;">
+                </form>
+            </div>
+        </div>
+
+        <div style = "display: flex; margin-bottom: 5px;">
+            <form action = "/contest-load" method = "get">
+                <input type = "submit" style = " margin-right: 20px;" value = "Problems">
+                <input type = "hidden" name = "id" th:value = "${id}">
+            </form>
+
+            <form action="/subs" method = "get">
+                <input type = "submit" style = " margin-right: 20px;" value = "My Submissions">
+                <input type = "hidden" name = "id" th:value = "${id}">
+                <input type = "hidden" name = "user" value  = "0">
+            </form>
+
+            <form>
+                <input type = "submit" style = " margin-right: 20px;" value = "Status">
+                <input type = "hidden" name = "id" th:value = "${id}">
+            </form>
+
+            <form action = "/board" method = "get">
+                <input type = "submit" style = " margin-right: 20px;" value = "Standings">
+                <input type = "hidden" name = "id" th:value = "${id}">
+            </form>
+
+            <form action = "/ide" target = "_blank" method = "get">
+                <input type = "submit" style = "margin-right: 20px;" value = "Code Editor">
+            </form>
+        </div>
+        <div style = "display: flex;">
+            <div>
+                <div style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; height: 20px; width: 900px; background-color: rgb(225, 227, 230);">
+                    <p style = "margin-left: 10px; color: black;"> Problems </p>
+                </div>
+                <table style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; width: 900px;">
+                    <tr th:each = "question, status : ${questions}">
+                        <td style = "width: 50px; text-align: center;" th:text = "${status.index + 1}"> </td>
+                        <td> 
+                            <div style = "display: flex; justify-content: space-between;">
+                                <form action="/start" target = "_blank" method="get">
+                                    <input type="hidden" name = "ques-id" th:value = "${question.id}">
+                                    <input type = "hidden" name = "id" th:value = "${id}">
+                                    <input type="submit" th:value="${question.questionName}">
+                                </form>
+                                <form action="/submit-button" method="get">
+                                    <input type="hidden" name = "ques-id" th:value = "${question.id}">
+                                    <input type = "hidden" name = "id" th:value = "${id}">
+                                    <input type="submit" value="Submit Code">
+                                </form>
+                            </div>
+                        </td>
+                        <td style = "text-align: center;"> x0 </td>
+                    </tr>
+                </table>
+            </div>
+            <div style = "margin-left: auto; height: 250px; width: 300px; margin-right: 25px; margin-top: 12px;">
+                <div style = "border: 1px solid #333; text-align: center;">
+                    <form action = "/contest-load" method = "get">
+                        <input type = "submit" style = " margin-top: 10px;" th:value = "${title}">
+                        <input type = "hidden" name = "id" th:value = "${id}">
+                    </form>
+                </div>
+                <p style = "text-align: center; font-family: Verdana, Geneva, Tahoma, sans-serif;"> Finished </p>
+                <div style = "border: 1px solid #333; margin-top: 60px;">
+                    <p style = "text-align: center; font-family: Verdana, Geneva, Tahoma, sans-serif;"> Contest Materials </p>
+                    <div style = "text-align: center;">
+                        <form>
+                            <input type = "submit" style = " margin-top: 10px;" value = "Tutorial">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

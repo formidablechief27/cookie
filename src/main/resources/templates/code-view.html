@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
+        input[type="submit"] {
+            background: none;
+            color : aqua;/* Set the color you want for the text */
+            padding: 5px;
+            text-decoration: underline; /* Underline the text to make it look like a hyperlink */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            margin-top: 5px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+        input[type="submit"]:hover {
+            transform: scale(1.1); /* Increase the size on hover */
+                /* Change border color on hover if desired */
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/clike/clike.min.js"></script>
+    <style>
+        .CodeMirror {
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+        <div style = "display: flex;">
+            <div>
+                <img src = "log.jpg" style = "width: 250px; height: 60px; margin-bottom: 20px;">
+            </div>
+            <div style = "display: flex; margin-left: auto; text-align: center; height: 40px; margin-top: 10px;">
+                <form action = "/profile" method = "post" style = "margin-right: 20px; margin-left: 20px;">
+                    <input type = "submit"  value = "My Profile">
+                </form>
+
+                <form action = "/logout" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Logout">
+                </form>
+            </div>
+        </div>
+
+        <div style = "display: flex; margin-top: 10px; align-items: center; margin-bottom: 30px;">
+            <div style = "display: flex; height: 40px; font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                <form action = "/home" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Home">
+                </form>
+    
+                <form action = "/contest-list" method = "get" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Contests">
+                </form>
+    
+                <form action = "/practice-course" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "DSA Course">
+                </form>
+    
+                <form action = "/problemset" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Problemset">
+                </form>
+
+                <form action = "/rating" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Rating">
+                </form>
+
+                <form action = "help" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Help">
+                </form>
+            </div>
+
+            <div style = "margin-left: auto;">
+                <form action = "/search" method = "post" style = "margin-left: auto; height: 40px; margin-top: 10px;">
+                    <input type = "text" style = "width: 400px; height: 30px;" name = "search-value" placeholder = "Search">
+                    <input type = "submit" value = "Go" style = " margin-left: 20px;">
+                </form>
+            </div>
+        </div>
+
+        <div style = "display: flex; margin-bottom: 20px;">
+            <form action = "/contest-load" method = "get">
+                <input type = "submit" style = " margin-right: 20px;" value = "Problems">
+                <input type = "hidden" name = "id" th:value = "${id}">
+            </form>
+
+            <form action="/subs" method = "get">
+                <input type = "submit" style = " margin-right: 20px;" value = "My Submissions">
+                <input type = "hidden" name = "id" th:value = "${id}">
+                <input type = "hidden" name = "user" value  = "0">
+            </form>
+
+            <form>
+                <input type = "submit" style = " margin-right: 20px;" value = "Status">
+                <input type = "hidden" name = "id" th:value = "${id}">
+            </form>
+
+            <form action = "/board" method = "get">
+                <input type = "submit" style = " margin-right: 20px;" value = "Standings">
+                <input type = "hidden" name = "id" th:value = "${id}">
+            </form>
+        </div>
+
+    <table border="1" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 700;">
+        <thead>
+            <tr style="font-size: 15px;">
+                <th style="width: 80px;">Sub ID</th>
+                <th style="width: 200px;">When</th>
+                <th style="width: 200px;">User</th>
+                <th style="width: 300px;">Question</th>
+                <th style="width: 350px;">Verdict</th>
+                <th style="width: 100px;">Time</th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 10px; text-align: center;">
+            <tr th:each="submission : ${submissions}">
+                <td th:text="${submission.id}" style="width: 80px;"></td>
+                <td th:text="${submission.timeSubmitted}" style="width: 200px;"></td>
+                <td th:text="${submission.user}" style="width: 200px;"></td>
+                <td th:text="${submission.question}" style="width: 300px;"></td>
+                <td th:text="${submission.verdict}" style="width: 350px;" class="verdict-cell"></td>
+                <td th:text="${submission.timeExecution}" style="width: 100px;"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;">
+        <textarea id="view" style="display: none; white-space: pre-wrap;" th:text="${code}"></textarea>
+        <div id="code-container" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;"> </div>
+    </div>
+
+    <script>
+        var codeTextArea = document.getElementById("view");
+        var editor = CodeMirror(document.getElementById("code-container"), {
+            value: codeTextArea.value,
+            lineNumbers: true,
+            mode: "text/x-java",
+            theme: "default"
+        });
+    </script>
+
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Iterate over each .verdict-cell element
+        $(".verdict-cell").each(function() {
+            // Get the text content of the current td element
+            var verdictText = $(this).text().trim();
+
+            // Check the starting text and apply the appropriate class
+            if (verdictText.startsWith("Pretests")) {
+                $(this).css("color", "rgb(5, 247, 70)"); // Green
+            } else if (verdictText.startsWith("Wrong")) {
+                $(this).css("color", "rgb(247, 13, 5)"); // Red
+            } else if (verdictText.startsWith("Time")) {
+                $(this).css("color", "rgb(8, 112, 163"); // Yellow
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>

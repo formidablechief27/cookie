@@ -1,0 +1,362 @@
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+        <style>
+            body {
+                background-color: black;
+                color: white;
+            }
+            input[type="submit"] {
+                background: none;
+                color : aqua;/* Set the color you want for the text */
+                padding: 5px;
+                text-decoration: underline; /* Underline the text to make it look like a hyperlink */
+                cursor: pointer; /* Change cursor to pointer on hover */
+                margin-top: 5px;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+            input[type="submit"]:hover {
+                transform: scale(1.1); /* Increase the size on hover */
+                 /* Change border color on hover if desired */
+            }
+            .container {
+                white-space: nowrap; /* Prevents extra spacing between inline-block elements */
+            }
+  
+            .question-container, .material-container {
+                display: inline-block;
+                width: 60%; /* Adjust the width as needed */
+                vertical-align: top;
+            }
+
+            .question-container { 
+                margin-left: 25px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            .material-container {
+                border: 1px solid black;
+                margin-left: 125px;
+                font-family: Arial, Helvetica, sans-serif;
+                margin-top: 10px;
+                width: 300px;
+                text-align: center;
+                text-decoration: none solid rgb(34, 34, 34);
+            }
+
+            .question-details {
+                font-size: 15px;
+                line-height: 20px;
+                text-decoration: none solid rgb(34, 34, 34);
+                font-family: Arial, Helvetica, sans-serif;
+                display: block;
+            }
+
+            .submit-button {
+                width: 150px;
+                height: 30px;
+                font-family: Arial, Helvetica, sans-serif;
+                margin-top: 20px;
+                background-color:#faf7f7;
+            }
+
+            .tutorial-button {
+                border: none;
+                background-color: #faf7f7;
+                text-align: center;
+                height: 30px;
+                width: 150px;
+            }
+
+            .input-output {
+                font-family: 'Courier New', Courier, monospace;
+                font-weight: 525;
+            }
+
+            .input-text {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+                text-decoration: none solid rgb(34, 34, 34);
+            }
+
+            table tr:nth-child(odd) {
+                background-color: #f2f2f2; /* Background color for odd rows */
+            }
+
+            table tr:nth-child(even) {
+                background-color: #ffffff; /* Background color for even rows */
+            }
+
+            table {
+                width: 500px;
+                color: black;
+                font-family: 'Nunito', sans-serif;
+            }
+
+            table th, table td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+            .example-details {
+                display: inline-block;
+                width: 50%; /* Adjust the width as needed to control the table placement */
+                margin-right: 40px;
+            }
+
+            .example-details table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            .example-details th, .example-details td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div style = "display: flex;">
+            <div>
+                <img src = "log.jpeg" style = "width: 250px; height: 100px;">
+            </div>
+            <div style = "display: flex; margin-left: auto; text-align: center; height: 40px; margin-top: 10px;">
+                <form action = "/profile" method = "post" style = "margin-right: 20px; margin-left: 20px;">
+                    <input type = "submit"  value = "My Profile">
+                </form>
+
+                <form action = "/logout" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Logout">
+                </form>
+            </div>
+        </div>
+
+        <div style = "display: flex; align-items: center; margin-bottom: 20px;">
+            <div style = "display: flex; height: 40px; font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+                <form action = "/home" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Home">
+                </form>
+    
+                <form action = "/contest-list" method = "get" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Contests">
+                </form>
+    
+                <form action = "/practice-course" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "DSA Course">
+                </form>
+    
+                <form action = "/problemset" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Problemset">
+                </form>
+
+                <form action = "/rating" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Rating">
+                </form>
+
+                <form action = "help" method = "post" style = "margin-right: 20px;">
+                    <input type = "submit"  value = "Help">
+                </form>
+            </div>
+
+            <div style = "margin-left: auto;">
+                <form action = "/search" method = "post" style = "margin-left: auto; height: 40px; margin-top: 10px;">
+                    <input type = "text" style = "width: 400px; height: 30px;" name = "search-value" placeholder = "Search">
+                    <input type = "submit" value = "Go" style = "margin-left: 20px;">
+                </form>
+            </div>
+        </div>
+
+        <div style = "display: flex; margin-bottom: 20px;">
+            <form action = "/contest-load" method = "get">
+                <input type = "submit" style = " margin-right: 20px;" value = "Problems">
+                <input type = "hidden" name = "id" th:value = "${id}">
+            </form>
+
+            <form action="/subs" method = "get">
+                <input type = "submit" style = " margin-right: 20px;" value = "My Submissions">
+                <input type = "hidden" name = "id" th:value = "${id}">
+                <input type = "hidden" name = "user" value  = "0">
+            </form>
+
+            <form>
+                <input type = "submit" style = " margin-right: 20px;" value = "Status">
+                <input type = "hidden" name = "id" th:value = "${id}">
+            </form>
+
+            <form action = "/board" method = "get">
+                <input type = "submit" style = " margin-right: 20px;" value = "Standings">
+                <input type = "hidden" name = "id" th:value = "${id}">
+            </form>
+        </div>
+
+        <div class = "container">
+            <div class = "question-container">
+                <h1 style = "text-align: center; font-size: 20px; line-height: 20px; text-decoration: none solid rgb(34, 34, 34); font-family: Verdana, Geneva, Tahoma, sans-serif;"> 
+                    <span th:text="${question_name}"></span>
+                </h1>
+                <div class = "question-details" style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500;;">
+                    <p style = "word-spacing: 2px;" id = "para1">
+                        <span th:text="${question}"></span>
+                    </p>
+                    <p style = "word-spacing: 2px;" id = "para2">
+                        <span th:text="${input}"></span>
+                    </p>
+                    <p style = "word-spacing: 2px;" id = "para3">
+                        <span th:text="${output}"></span>
+                    </p>
+                </div>
+                <p style = "margin-top: 50px; font-family: Verdana, Geneva, Tahoma, sans-serif;"> Examples </p>
+                <div class = "example-details">
+                    <table class = "input-table">
+                        <tr>
+                            <td class = "input-output"> Input </td>
+                        </tr>
+                        <tr>
+                            <td> 
+                                <p class = "input-text" id = "inp1"> 
+                                    <span th:text="${input1}"></span>
+                                </p>
+                                <!-- Input 1 -->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class = "input-output"> Output </td>
+                        </tr>
+                        <tr>
+                            <td class = "input-text"> 
+                                <span th:text="${output1}"></span>
+                                <!-- Output 1  -->
+                            </td>
+                        </tr>
+                    </table>
+                    <p class = "question-details" style = "max-width: 500px; word-wrap: break-word; font-size: 12px; font-family: Verdana, Geneva, Tahoma, sans-serif;" id = "para4">
+                        <span th:text="${explain1}"></span>
+                        <!-- Explanation -->
+                    </p>
+                </div>
+                <div class = "example-details">
+                    <table class = "input-table">
+                        <tr>
+                            <td class = "input-output"> Input </td>
+                        </tr>
+                        <tr>
+                            <td> 
+                                <p class = "input-text" id = "inp2"> 
+                                    <span th:text="${input2}"></span>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class = "input-output"> Output </td>
+                        </tr>
+                        <tr>
+                            <td class = "input-text"> 
+                                <span th:text="${output2}"></span>
+                                <!-- Output 2  -->
+                            </td>
+                        </tr>
+                    </table>
+                    <p class = "question-details" style = "max-width: 500px; word-wrap: break-word; font-size: 12px; font-family: Verdana, Geneva, Tahoma, sans-serif;" id = "para5">
+                        <span th:text="${explain2}"></span>
+                        <!-- Explanation -->
+                    </p>
+                </div>
+                <div class = "example-details">
+                    <table class = "input-table">
+                        <tr>
+                            <td class = "input-output"> Input </td>
+                        </tr>
+                        <tr>
+                            <td> 
+                                <p class = "input-text" id = "inp3"> 
+                                    <span th:text="${input3}"></span>
+                                </p>
+                                <!-- Input 3 -->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class = "input-output"> Output </td>
+                        </tr>
+                        <tr>
+                            <td class = "input-text"> 
+                                <span th:text="${output3}"></span>
+                                <!-- Output 3 -->
+                            </td>
+                        </tr>
+                    </table>
+                    <p class = "question-details" style = "max-width: 500px; word-wrap: break-word; font-size: 12px; font-family: Verdana, Geneva, Tahoma, sans-serif;" id = "para6">
+                        <span th:text="${explain3}"></span>
+                        <!-- Explanation -->
+                    </p>
+                </div>
+            </div>
+            <div class = "material-container">
+                <p> Contest Materials </p>
+                <form action = "/submit-button" method = "get">
+                    <input type="hidden" name = "ques-id" th:value = "${num}">
+                    <input type = "hidden" name = "id" th:value = "${id}">
+                    <input type="submit" class = "submit-button" value="Submit Code ?"/>
+                </form>
+                <form action = "/tutorial" method = "get" style = "margin-top: 20px;">
+                    <input type="hidden" name = "ques-id" th:value = "${num}">
+                    <input type = "hidden" name = "id" th:value = "${id}">
+                    <input type="submit" class = "tutorial-button" value = "Tutorial"/> 
+                </form>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var paragraph = document.getElementById("para1");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("para1");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("para2");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("para2");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("para3");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("para3");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("para4");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("para4");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("para5");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("para5");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("para6");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("para6");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("inp1");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("inp1");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("inp2");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("inp2");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("inp3");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("inp3");
+                resultElement.innerHTML = text;
+            });
+        </script>
+    </body>
+</html>
