@@ -13,7 +13,7 @@ public class Contests {
     @Column(name = "start", nullable = false)
     private LocalDateTime start;
 
-    @Column(name = "end", nullable = false)
+    @Column(name = "ed", nullable = false)
     private LocalDateTime end;
     
     @Column(name = "title")
@@ -65,11 +65,11 @@ public class Contests {
         this.start = start;
     }
 
-    public LocalDateTime getEnd() {
+    public LocalDateTime getEd() {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    public void setEd(LocalDateTime end) {
         this.end = end;
     }
     
