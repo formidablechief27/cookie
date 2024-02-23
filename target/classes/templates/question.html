@@ -159,8 +159,9 @@
         }
 
         header h1 {
-            margin: 0;
-            font-size: 36px;
+            margin: 5px 0 0;
+            font-size: 28px;
+            color:#bbb;
         }
 
         header h2 {
@@ -335,6 +336,10 @@
             justify-content: center;
             align-items: center;
         }
+
+        .some {
+            justify-content: center;
+        }
         
     </style>
 </head>
@@ -401,22 +406,30 @@
                 </form>
             </div>
 
+            <h1 style = "text-align: center; font-size: 20px; line-height: 20px; text-decoration: none solid rgb(34, 34, 34); font-family: Verdana, Geneva, Tahoma, sans-serif;"> 
+                <span th:text="${question_name}"></span>
+            </h1>
+            <div style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500; display: flex; justify-content: center;">
+                <p style = "word-spacing: 2px;" id = "para1">
+                    <span th:text="${question}"></span>
+                </p>
+            </div>
+
+            <div style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500; display: flex; justify-content: center;">
+                <p style = "word-spacing: 2px;" id = "para2">
+                    <span th:text="${input}"></span>
+                </p>
+            </div>
+
+            <div style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500; display: flex; justify-content: center; text-align: left;">
+                <p style = "word-spacing: 2px;" id = "para3">
+                    <span th:text="${output}"> </span>
+                </p>
+            </div>
+                
             <div class = "container">
             <div class = "question-container">
-                <h1 style = "text-align: center; font-size: 20px; line-height: 20px; text-decoration: none solid rgb(34, 34, 34); font-family: Verdana, Geneva, Tahoma, sans-serif;"> 
-                    <span th:text="${question_name}"></span>
-                </h1>
-                <div class = "question-details" style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500;;">
-                    <p style = "word-spacing: 2px;" id = "para1">
-                        <span th:text="${question}"></span>
-                    </p>
-                    <p style = "word-spacing: 2px;" id = "para2">
-                        <span th:text="${input}"></span>
-                    </p>
-                    <p style = "word-spacing: 2px;" id = "para3">
-                        <span th:text="${output}"></span>
-                    </p>
-                </div>
+                
                 <p style = "margin-top: 50px; font-family: Verdana, Geneva, Tahoma, sans-serif;"> Examples </p>
                 <div class = "example-details">
                     <table class = "input-table">
