@@ -188,8 +188,8 @@ public class CodeController {
 	
 	@GetMapping("/submit-button")
     public String handleFormSubmission(HttpSession session, @RequestParam("ques-id") String quesId, @RequestParam("id") int contestid, Model model) {
-		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
-		else model.addAttribute("status", "My Profile");
+		if(session.getAttribute("P") == null) return "test2.html"; 
+		model.addAttribute("status", "My Profile");
 		model.addAttribute("num", quesId);
 		model.addAttribute("id", contestid);
 		Questions q = DataCache.ques_map.get(Integer.parseInt(quesId));
