@@ -39,15 +39,26 @@ public class LoginController {
     }
 	
 	@GetMapping("/")
-	public String login(HttpSession session, Model model) {
-		if(session.getAttribute("P") == null) {
-			return "login.html";
-		}
-		List<Contests> list = getAllContests();
-		List<Contests> ls = new ArrayList<>();
-		for(Contests c : list) if(c.getId() > 15) ls.add(c);
-		model.addAttribute("contests", ls);
-		return "home.html";
+	public String start(HttpSession session, Model model) {
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
+		return "start.html";
+	}
+	
+	@GetMapping("/home")
+	public String h(Model model) {
+		model.addAttribute("val", 1);
+		return "test2.html";
+	}
+	
+	@GetMapping("/reg")
+	public String reg() {
+		return "test.html";
+	}
+	
+	@GetMapping("/log")
+	public String log() {
+		return "test2.html";
 	}
 	
 	@PostMapping("/register")
@@ -60,7 +71,7 @@ public class LoginController {
 		Users user = new Users(username, email, pass, 0, 0);
 		Optional<Users> existingUser = user_repo.findByUsername(username);
 		if(existingUser.isPresent()) {
-			return "login.html";
+			return "test2.html";
 		}
 		else {
 			user_repo.save(user);
@@ -68,10 +79,8 @@ public class LoginController {
 			Optional<Users> existing = user_repo.findByUsername(username);
 			session.setAttribute("P", existing.get().getId());
 			session.setAttribute("user", username);
-			List<Contests> list = getAllContests();
-			model.addAttribute("contests", list);
 			model.addAttribute("val", 1);
-			return "login.html";
+			return "test2.html";
 		}
     }
 	
@@ -89,15 +98,13 @@ public class LoginController {
 			if(pass == pass2) {
 				session.setAttribute("P", existingUser.get().getId());
 				session.setAttribute("user", existingUser.get().getUsername());
-				List<Contests> list = getAllContests();
-				model.addAttribute("contests", list);
 				model.addAttribute("val", 1);
-				return "login.html";
+				return "test.html";
 			}
-			else return "login.html";
+			else return "test.html";
 		}
 		else {
-			return "login.html";
+			return "test.html";
 		}
     }
 	
@@ -107,5 +114,13 @@ public class LoginController {
     long inv(long x) {return pow(x, mod - 2);}
     long div(long x, long y) {return mul(x, inv(y));}
     long pow(long a, long b) {a %= mod;long res = 1;while (b > 0) {if ((b & 1) != 0)res = mul(res, a);a = mul(a, a);b /= 2;}return res;}
+    
+    @GetMapping("/profile")
+    public String profile(HttpSession session, Model model) {
+    	if(session.getAttribute("P") == null) return "test2.html";
+    	if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
+		return "profile.html";
+    }
     
 }

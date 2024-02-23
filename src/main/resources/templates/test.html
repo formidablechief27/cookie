@@ -3,505 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlgoChief</title>
+    <title>AlgoChief Sign Up</title>
     <style>
-        /* Global styles */
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #2e2e2e;
+            background-color: #1f1f1f;
             color: #fff;
-            overflow-x: hidden; /* Prevent horizontal scrollbar */
-        }
-
-        /* Taskbar */
-        .taskbar {
-            background-color: #292929;
-            height: 40px;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding-left: 10px;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .start-button {
-            width: 36px;
-            height: 36px;
-            background-color: #007bff;
-            border: none;
-            border-radius: 50%;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        input[type="submit"] {
-                background: none;
-                border: none;
-                color : white;/* Set the color you want for the text */
-                text-decoration: underline; /* Underline the text to make it look like a hyperlink */
-                cursor: pointer; /* Change cursor to pointer on hover */
-                margin-top: 5px;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-        }
-
-        .start-button:hover {
-            background-color: #0056b3;
-        }
-
-        .start-menu {
-            position: fixed;
-            bottom: 40px;
-            left: 10px;
-            width: 200px;
-            background-color: #292929;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-
-        .start-menu ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .start-menu li {
-            padding: 5px 0;
-        }
-
-        .start-menu li a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            padding: 5px 10px;
-            transition: background-color 0.3s;
-        }
-
-        .start-menu li a:hover {
-            background-color: #444;
-        }
-
-        /* Loading screen */
-        .boot-screen {
             display: flex;
             justify-content: center;
             align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            color: #fff;
-            z-index: 1000;
-        }
-
-        .loading-text {
-            text-align: center;
-            font-size: 24px;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        .loading-bar {
-            width: 300px;
-            height: 20px;
-            background-color: #444;
-            border-radius: 10px;
-            margin-top: 20px;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .progress {
-            width: 0;
-            height: 100%;
-            background-color: #007bff;
-            animation: progressAnimation 5s linear forwards;
-        }
-
-        @keyframes progressAnimation {
-            0% { width: 0; }
-            100% { width: 100%; }
+        .container {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* Main content */
-
-        @keyframes fadeInContent {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Header */
-        header {
-            background-color: #212121;
-            padding: 20px;
-            text-align: center;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 36px;
-        }
-
-        header h2 {
-            margin: 5px 0 0;
-            font-size: 24px;
-            color: #bbb;
-        }
-
-        header h3 {
-            margin: 5px 0 0;
-            font-size: 20px;
-            color: #bbb;
-        }
-
-        /* Navigation bar */
-        nav {
-            background-color: #333;
-            padding: 10px 0;
-            text-align: center;
-        }
-
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 20px;
-            margin: 0 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        nav a:hover {
-            background-color: #444;
-        }
-
-        @media screen and (max-width: 600px) {
-            nav {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            nav a {
-                display: block;
-                margin: 5px 0;
-                padding: 10px; /* Increase padding for better touch experience */
-            }
-
-            .taskbar {
-                justify-content: space-between; /* Adjust taskbar layout for small screens */
-                padding: 0 10px; /* Add padding to taskbar for better spacing */
-            }
-
-            .start-menu {
-                left: 50%;
-                transform: translateX(-50%); /* Center start menu horizontally */
-            }
-
-            .start-button {
-                margin-right: 0;
-            }
-        }
-        /* Table styles */
-        .container {
-                white-space: nowrap; /* Prevents extra spacing between inline-block elements */
-            }
-  
-            .question-container, .material-container {
-                display: inline-block;
-                width: 60%; /* Adjust the width as needed */
-                vertical-align: top;
-            }
-
-            .question-container { 
-                margin-left: 25px;
-                font-family: Arial, Helvetica, sans-serif;
-            }
-
-            .material-container {
-                border: 1px solid black;
-                margin-left: 125px;
-                font-family: Arial, Helvetica, sans-serif;
-                margin-top: 10px;
-                width: 300px;
-                text-align: center;
-                text-decoration: none solid rgb(34, 34, 34);
-            }
-
-            .question-details {
-                font-size: 15px;
-                line-height: 20px;
-                text-decoration: none solid rgb(34, 34, 34);
-                font-family: Arial, Helvetica, sans-serif;
-                display: block;
-            }
-
-            .submit-button {
-                width: 150px;
-                height: 30px;
-                font-family: Arial, Helvetica, sans-serif;
-                margin-top: 20px;
-                background-color:#faf7f7;
-            }
-
-            .tutorial-button {
-                border: none;
-                background-color: #faf7f7;
-                text-align: center;
-                height: 30px;
-                width: 150px;
-            }
-
-            .input-output {
-                font-family: 'Courier New', Courier, monospace;
-                font-weight: 525;
-            }
-
-            .input-text {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 15px;
-                text-decoration: none solid rgb(34, 34, 34);
-            }
-
-            table tr:nth-child(odd) {
-                background-color: #f2f2f2; /* Background color for odd rows */
-            }
-
-            table tr:nth-child(even) {
-                background-color: #ffffff; /* Background color for even rows */
-            }
-
-            table {
-                width: 500px;
-                color: black;
-                font-family: 'Nunito', sans-serif;
-            }
-
-            table th, table td {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;
-            }
-
-            .example-details {
-                display: inline-block;
-                width: 50%; /* Adjust the width as needed to control the table placement */
-                margin-right: 40px;
-            }
-
-            .example-details table {
-                border-collapse: collapse;
-                width: 100%;
-            }
-
-            .example-details th, .example-details td {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;
-            }
-
-        /* Scroll to top button */
-        #scrollTopBtn {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-
-        #scrollTopBtn:hover {
-            opacity: 0.8;
-        }
-        main {
+        .form {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
-        .centered-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+
+        .form h2 {
+            margin-bottom: 20px;
+            color: #007bff;
         }
-        
+
+        .form-group {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .form-group input {
+            width: calc(100% - 40px);
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        input[type="submit"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .signup-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .signup-link a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .signup-link a:hover {
+            color: #0056b3;
+        }
     </style>
 </head>
 <body>
-
 <script th:inline="javascript">
-        var contest_id = /*[[${id}]]*/ '';
-        var question_id = /*[[${qid}]]*/ '';
-        console.log(id);
-    </script>
+    var val1 = /*[[${val}]]*/ 'defaultVal1';
+</script>
 
-    <!-- Loading screen -->
-    <div class="boot-screen">
-        <div class="loading-text">
-            <p>Loading AlgoChief...</p>
-            <div class="loading-bar">
-                <div class="progress"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main content -->
-    <div class="content">
-        <header>
-            <h1>Algo Chief</h1>
-            <h2>Master Data Structures and Algorithms</h2>
-        </header>
-
-        <nav>
-            <a href="/home">Home</a>
-            <a href="/contest-list">DSA Course</a>
-            <a href="/practice-course">Contests</a>
-            <a href="/problemset">Problemset</a>
-            <a href="/ide" target = "_blank">Code Editor</a>
-            <a href="/profile">My Profile</a>
-        </nav>
-        <main style = "margin-top: 20px;">
-            <div style = "margin-bottom: 5px;" class = "centered-container">
-                <form action = "/contest-load" method = "get">
-                    <input type = "submit" style = " margin-right: 20px;" value = "Problems">
-                    <input type = "hidden" name = "id" th:value = "${id}">
-                </form>
-
-                <form action="/subs" method = "get">
-                    <input type = "submit" style = " margin-right: 20px;" value = "My Submissions">
-                    <input type = "hidden" name = "id" th:value = "${id}">
-                    <input type = "hidden" name = "user" value  = "0">
-                </form>
-
-                <form>
-                    <input type = "submit" style = " margin-right: 20px;" value = "Status">
-                    <input type = "hidden" name = "id" th:value = "${id}">
-                </form>
-
-                <form action = "/board" method = "get">
-                    <input type = "submit" style = " margin-right: 20px;" value = "Standings">
-                    <input type = "hidden" name = "id" th:value = "${id}">
-                </form>
-            </div>
-            <div class = "tutorial-text" style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500;;">
-            <h1 style = "text-align: center; font-size: 20px; line-height: 20px; text-decoration: none solid rgb(34, 34, 34); font-family: Verdana, Geneva, Tahoma, sans-serif;"> 
-                <span th:text="${question_name}"></span>
-            </h1>
-            <p style = "word-spacing: 2px;" id = "para1">
-                <span th:text="${question}"></span>
-            </p>
-        </div>
-        <div>
-            <img id = "tut-img" style = "width: 30%;">
-        </div>
-        <script>
-            var link = "sol" + question_id + ".png";
-            document.getElementById("tut-img").src = link;
-        </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var paragraph = document.getElementById("para1");
-                var text = paragraph.innerHTML;
-                text = text.replace(/\$/g, '<br>');
-                var resultElement = document.getElementById("para1");
-                resultElement.innerHTML = text;
-                var paragraph = document.getElementById("para2");
-                var text = paragraph.innerHTML;
-                text = text.replace(/\$/g, '<br>');
-                var resultElement = document.getElementById("para2");
-                resultElement.innerHTML = text;
-                var paragraph = document.getElementById("para3");
-                var text = paragraph.innerHTML;
-                text = text.replace(/\$/g, '<br>');
-                var resultElement = document.getElementById("para3");
-                resultElement.innerHTML = text;
-                var paragraph = document.getElementById("para4");
-                var text = paragraph.innerHTML;
-                text = text.replace(/\$/g, '<br>');
-                var resultElement = document.getElementById("para4");
-                resultElement.innerHTML = text;
-                var paragraph = document.getElementById("para5");
-                var text = paragraph.innerHTML;
-                text = text.replace(/\$/g, '<br>');
-                var resultElement = document.getElementById("para5");
-                resultElement.innerHTML = text;
-                var paragraph = document.getElementById("para6");
-                var text = paragraph.innerHTML;
-                text = text.replace(/\$/g, '<br>');
-                var resultElement = document.getElementById("para6");
-                resultElement.innerHTML = text;
-                var paragraph = document.getElementById("inp1");
-                var text = paragraph.innerHTML;
-                text = text.replace(/\$/g, '<br>');
-                var resultElement = document.getElementById("inp1");
-                resultElement.innerHTML = text;
-                var paragraph = document.getElementById("inp2");
-                var text = paragraph.innerHTML;
-                text = text.replace(/\$/g, '<br>');
-                var resultElement = document.getElementById("inp2");
-                resultElement.innerHTML = text;
-                var paragraph = document.getElementById("inp3");
-                var text = paragraph.innerHTML;
-                text = text.replace(/\$/g, '<br>');
-                var resultElement = document.getElementById("inp3");
-                resultElement.innerHTML = text;
-            });
-        </script>
-        </main>
-
-        <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">Top</button>
-    </div>
+    <form action = "/" method = "get" id = "enter">
+    </form>
 
     <script>
-
-        // Function to scroll to the top of the page
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+        if(val1 == 1) {
+            var f = document.getElementById("enter");
+            f.submit();
         }
-
-        // Show or hide the scroll-to-top button based on scroll position
-        window.onscroll = function() {
-            scrollFunction();
-        };
-
-        function scrollFunction() {
-            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                document.getElementById("scrollTopBtn").style.display = "block";
-            } else {
-                document.getElementById("scrollTopBtn").style.display = "none";
-            }
-        }
-
-        // Simulate loading delay
-        setTimeout(function() {
-            document.querySelector('.boot-screen').style.display = 'none';
-            document.querySelector('.content').style.display = 'block';
-        }, 0); // Delay to simulate loading
     </script>
+    <div class="container">
+        <!-- Sign-up Form -->
+        <form action = "/register" method = "post" class="form" id="signupForm">
+            <h2>Sign Up</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <input type = "submit" value = "Sign Up">
+        </form>
+        <div class="signup-link">
+            <p>Already have an account? <a href="/log">Login</a></p>
+        </div>
+    </div>
 </body>
 </html>

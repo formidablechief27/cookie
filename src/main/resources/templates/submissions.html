@@ -254,7 +254,11 @@
             align-items: center;
             justify-content: center;
         }
-        
+        .centered-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
@@ -291,10 +295,33 @@
             <a href="/practice-course">DSA Course</a>
             <a href="/problemset">Problemset</a>
             <a href="/ide" target = "_blank">Code Editor</a>
-            <a href="/profile">My Profile</a>
+            <a href="/profile" th:text="${status}"></a>
         </nav>
         <main>
+        <div style = "margin-bottom: 5px; margin-top: 20px;" class = "centered-container">
+                    <form action = "/contest-load" method = "get">
+                        <input type = "submit" style = " margin-right: 20px;" value = "Problems">
+                        <input type = "hidden" name = "id" th:value = "${id}">
+                    </form>
+
+                    <form action="/subs" method = "get">
+                        <input type = "submit" style = " margin-right: 20px;" value = "My Submissions">
+                        <input type = "hidden" name = "id" th:value = "${id}">
+                        <input type = "hidden" name = "user" value  = "0">
+                    </form>
+
+                    <form>
+                        <input type = "submit" style = " margin-right: 20px;" value = "Status">
+                        <input type = "hidden" name = "id" th:value = "${id}">
+                    </form>
+
+                    <form action = "/board" method = "get">
+                        <input type = "submit" style = " margin-right: 20px;" value = "Standings">
+                        <input type = "hidden" name = "id" th:value = "${id}">
+                    </form>
+                </div>
             <h2>Your Submissions</h2>
+            
             <table border="1" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 700;">
                 <thead>
                     <tr style="font-size: 15px;">

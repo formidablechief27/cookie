@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,20 +39,24 @@ public class ContestController {
 	}
 	
 	@GetMapping("/contest-list")
-	public String main(Model model) {
+	public String main(HttpSession session, Model model) {
 		List<Contests> list = getAllContests();
 		List<Contests> ls = new ArrayList<>();
 		for(Contests c : list) if(c.getId() > 15) ls.add(c);
 		model.addAttribute("contests", ls);
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		return "home.html";
 	}
 	
 	@GetMapping("/practice-course")
-	public String main2(Model model) {
+	public String main2(HttpSession session, Model model) {
 		List<Contests> list = getAllContests();
 		List<Contests> ls = new ArrayList<>();
 		for(Contests c : list) if(c.getId() <= 15) ls.add(c);
 		model.addAttribute("contests", ls);
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		return "home.html";
 	}
 	
@@ -59,7 +65,9 @@ public class ContestController {
     }
 	
 	@GetMapping("/contest-load")
-	public String load_contest(@RequestParam("id") Integer id, Model model) {
+	public String load_contest(HttpSession session, @RequestParam("id") Integer id, Model model) {
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		List<Questions> list = getQuestionsByContestId(id);
 		Optional<Contests> c = getContest((long)id);
 		if(c.isPresent()) model.addAttribute("title", c.get().getTitle());
@@ -70,7 +78,9 @@ public class ContestController {
 	}
 	
 	@GetMapping("/error")
-	public String error() {
+	public String error(HttpSession session, Model model) {
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		return "error.html";
 	}
 }

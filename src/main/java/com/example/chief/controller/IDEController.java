@@ -22,12 +22,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpSession;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +41,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class IDEController {
 	
 	@GetMapping("/ide")
-	public String start() {
+	public String start(HttpSession session, Model model) {
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		return "ide.html";
 	}
 	

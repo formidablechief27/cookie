@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -331,7 +333,9 @@ public class Board_Controller {
 		}
 	 
 	 @GetMapping("/board")
-	 public String go(@RequestParam("id") int contestid, Model model) {
+	 public String go(HttpSession session, @RequestParam("id") int contestid, Model model) {
+		 if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		 else model.addAttribute("status", "My Profile");
 		 int probs = 0;
 		 Long key = (long) contestid;
 		 Optional<Contests> contest = getContestById(key);

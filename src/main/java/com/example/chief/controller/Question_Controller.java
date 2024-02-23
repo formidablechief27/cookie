@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +42,9 @@ public class Question_Controller {
 	}
 	
 	@GetMapping("/start")
-    public String handleFormSubmission(@RequestParam("ques-id") int buttonId,@RequestParam("id") int contestid, Model model) {
+    public String handleFormSubmission(@RequestParam("ques-id") int buttonId,@RequestParam("id") int contestid, Model model, HttpSession session) {
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		int ques = buttonId;
         if(DataCache.ques_map.containsKey(ques)) {
         	Questions question = DataCache.ques_map.get(ques);
@@ -102,7 +106,9 @@ public class Question_Controller {
     }
 	
 	@GetMapping("/tutorial")
-	public String tutorial(Model model, @RequestParam("ques-id") int ques_id, @RequestParam("id") int cid) {
+	public String tutorial(Model model, @RequestParam("ques-id") int ques_id, @RequestParam("id") int cid, HttpSession session) {
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		model.addAttribute("id", cid);
 		model.addAttribute("qid", ques_id);
 		return "tutorial.html";

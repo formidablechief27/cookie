@@ -187,7 +187,9 @@ public class CodeController {
 	}
 	
 	@GetMapping("/submit-button")
-    public String handleFormSubmission(@RequestParam("ques-id") String quesId, @RequestParam("id") int contestid, Model model) {
+    public String handleFormSubmission(HttpSession session, @RequestParam("ques-id") String quesId, @RequestParam("id") int contestid, Model model) {
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		model.addAttribute("num", quesId);
 		model.addAttribute("id", contestid);
 		Questions q = DataCache.ques_map.get(Integer.parseInt(quesId));
@@ -459,6 +461,8 @@ public class CodeController {
 	public String ex(@RequestParam("id") int id,  HttpSession session, Model model) {
 		model.addAttribute("submissions", subs(id, session, 0));
 		model.addAttribute("id", id);
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		return "submissions.html";
 	}
 	
@@ -466,6 +470,8 @@ public class CodeController {
 	public String exe(@RequestParam("id") int id, @RequestParam("user") int userid, HttpSession session, Model model) {
 		model.addAttribute("submissions", subs(id, session, userid));
 		model.addAttribute("id", id);
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
 		return "submissions.html";
 	}
 	
