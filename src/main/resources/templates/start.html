@@ -123,7 +123,7 @@
             width: 0;
             height: 100%;
             background-color: #007bff;
-            animation: progressAnimation 5s linear forwards;
+            animation: progressAnimation 1s linear forwards;
         }
 
         @keyframes progressAnimation {
@@ -197,17 +197,22 @@
             background-color: #444;
         }
 
-        @media screen and (max-width: 600px) {
+        @media screen and (max-width: 500px) {
             nav {
-                flex-direction: column;
-                align-items: center;
+                background-color: #333;
+                padding: 10px 0;
+                text-align: center;
+                display: flex; /* Add this line to make it a flex container */
+                flex-wrap: wrap; /* Allow items to wrap to the next line */
+                justify-content: center; /* Center the items horizontally */
             }
 
             nav a {
-                display: block;
-                margin: 5px 0;
-                padding: 10px; /* Increase padding for better touch experience */
-            }
+                    display: inline-block;
+                    width: 48%; /* Two links per row with a small gap */
+                    box-sizing: border-box;
+                    margin: 5px 1%; /* Adjust margin for spacing between links */
+                }
 
             .taskbar {
                 justify-content: space-between; /* Adjust taskbar layout for small screens */

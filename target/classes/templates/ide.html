@@ -189,17 +189,22 @@
             background-color: #444;
         }
 
-        @media screen and (max-width: 600px) {
+        @media screen and (max-width: 500px) {
             nav {
-                flex-direction: column;
-                align-items: center;
+                background-color: #333;
+                padding: 10px 0;
+                text-align: center;
+                display: flex; /* Add this line to make it a flex container */
+                flex-wrap: wrap; /* Allow items to wrap to the next line */
+                justify-content: center; /* Center the items horizontally */
             }
 
             nav a {
-                display: block;
-                margin: 5px 0;
-                padding: 10px; /* Increase padding for better touch experience */
-            }
+                    display: inline-block;
+                    width: 48%; /* Two links per row with a small gap */
+                    box-sizing: border-box;
+                    margin: 5px 1%; /* Adjust margin for spacing between links */
+                }
 
             .taskbar {
                 justify-content: space-between; /* Adjust taskbar layout for small screens */
@@ -263,6 +268,9 @@
         .out-area {
             height: 180px; width: 300px; margin-bottom: 20px;
         }
+        #inp-out {
+            display: flex;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
@@ -272,10 +280,10 @@
                 height: 400px;
                 width: 750px;
             }
-            @media screen and (max-width: 600px) {
+            @media screen and (max-width: 500px) {
                 .CodeMirror {
-                    width:500px;
-                    height:250px;
+                    width:400px;
+                    height:200px;
                 }
                 .inp-area {
                     width: 175px;
@@ -286,6 +294,9 @@
                     width: 175px;
                     height: 100px;
                     margin-bottom: 10px;
+                }
+                #inp-out {
+                    display: flex;
                 }
             }
         </style>
@@ -311,7 +322,7 @@
 
         <nav>
             <a href="/home">Home</a>
-            <a href="/contest-list">Contest</a>
+            <a href="/contest-list">Contests</a>
             <a href="/practice-course">DSA Course</a>
             <a href="/problemset">Problemset</a>
             <a href="/ide" target = "_blank">Code Editor</a>
@@ -333,7 +344,7 @@
                 <div style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;">
                     <textarea id="view" style="white-space: pre-wrap;"></textarea>
                 </div>
-                <div id="inp-out" style="display: flex; margin-left:60px;">
+                <div id="inp-out">
                     <textarea id="input-text" class = "inp-area" placeholder="Enter input"></textarea>
                     <textarea id="output1" class = "out-area" placeholder="Your output will be shown here"></textarea>
                 </div>
@@ -368,7 +379,7 @@
                     var row = document.createElement('div');
                     row.className = 'row';
                     row.innerHTML = `
-                    <div id="inp-out" style="display: flex; margin-left:60px;">
+                    <div id="inp-out">
                         <textarea id="input-text" class = "inp-area" placeholder="Enter input"></textarea>
                         <textarea id="output${count}" class = "out-area" placeholder="Your output will be shown here"></textarea>
                     </div>
