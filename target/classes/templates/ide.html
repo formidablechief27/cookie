@@ -257,7 +257,12 @@
             align-items: center;
             justify-content: center;
         }
-        
+        .inp-area {
+            height: 180px; width: 300px; margin-right: 30px;
+        }
+        .out-area {
+            height: 180px; width: 300px; margin-bottom: 20px;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
@@ -269,8 +274,18 @@
             }
             @media screen and (max-width: 600px) {
                 .CodeMirror {
-                    width:600px;
-                    height:320px;
+                    width:500px;
+                    height:250px;
+                }
+                .inp-area {
+                    width: 175px;
+                    height: 100px;
+                    margin-right: 10px;
+                }
+                .out-area {
+                    width: 175px;
+                    height: 100px;
+                    margin-bottom: 10px;
                 }
             }
         </style>
@@ -319,8 +334,8 @@
                     <textarea id="view" style="white-space: pre-wrap;"></textarea>
                 </div>
                 <div id="inp-out" style="display: flex; margin-left:60px;">
-                    <textarea id="input-text" style="height: 180px; width: 300px; margin-right: 30px;" placeholder="Enter input"></textarea>
-                    <textarea id="output1" style="height: 180px; width: 300px; margin-bottom: 20px;" placeholder="Your output will be shown here"></textarea>
+                    <textarea id="input-text" class = "inp-area" placeholder="Enter input"></textarea>
+                    <textarea id="output1" class = "out-area" placeholder="Your output will be shown here"></textarea>
                 </div>
                 <div id="fields">
 
@@ -354,8 +369,8 @@
                     row.className = 'row';
                     row.innerHTML = `
                     <div id="inp-out" style="display: flex; margin-left:60px;">
-                        <textarea id="input-text" style="height: 180px; width: 300px; margin-right: 30px;" placeholder="Enter input"></textarea>
-                        <textarea id="output${count}" style="height: 180px; width: 300px; margin-bottom : 20px" placeholder="Your output will be shown here"></textarea>
+                        <textarea id="input-text" class = "inp-area" placeholder="Enter input"></textarea>
+                        <textarea id="output${count}" class = "out-area" placeholder="Your output will be shown here"></textarea>
                     </div>
                     `;
                     dynamicTextAreas.appendChild(row);
