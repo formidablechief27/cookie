@@ -359,16 +359,40 @@
                     <input type="submit" value="Execute All Tests">
                 </form>
             <script>
-                var codeTextArea = document.getElementById("view");
-                var editor = CodeMirror.fromTextArea(codeTextArea, {
-                    lineNumbers: true,
-                    mode: "text/x-java",
-                    theme: "default",
-                    indentUnit: 4,
-                    onChange: function () {
-                        handle();
+            var codeTextArea = document.getElementById("view");
+            var editor = CodeMirror.fromTextArea(codeTextArea, {
+                lineNumbers: true,
+                mode: "text/x-java",
+                theme: "default",
+                indentUnit: 4,
+                onChange: function () {
+                    handle();
+                },
+                extraKeys: {
+                    "Enter": function (cm) {
+                        var cursor = cm.getCursor();
+                        var line = cm.getLine(cursor.line);
+                        // Check if the line ends with an open brace '{'
+                        if(line.trim().endsWith("}")) {
+                            CodeMirror.commands.newlineAndDedent(cm);
+                        }
+                        else if (line.trim().endsWith('{') || (line.trim().endsWith(":"))) {
+                            CodeMirror.commands.newlineAndIndent(cm);
+                        } else {
+                            CodeMirror.commands.newline(cm);
+                        }
+                    },
+                    "Backspace": function (cm) {
+                        var cursor = cm.getCursor();
+                        if (cursor.ch === 0 && cursor.line > 0) {
+                            cm.setCursor(cursor.line - 1, cm.getLine(cursor.line - 1).length);
+                        } else {
+                            CodeMirror.commands.delCharBefore(cm);
+                        }
                     }
-                });
+                }
+            });
+
             </script>
             <script>
                 var addButton = document.getElementById('add-btn');
