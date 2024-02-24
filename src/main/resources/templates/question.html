@@ -196,7 +196,7 @@
             background-color: #444;
         }
 
-        @media screen and (max-width: 500px) {
+        @media screen and (max-width: 900px) {
             nav {
                 background-color: #333;
                 padding: 10px 0;
@@ -281,7 +281,7 @@
             }
 
             table {
-                width: 300px;
+                width: 400px;
                 color: black;
                 font-family: 'Nunito', sans-serif;
             }
@@ -298,14 +298,15 @@
                 margin-right: 40px;
             }
 
-@media screen and (max-width: 600px) {
-    .example-details {
-        display: block; /* Change display to block for vertical stacking */
-        width: 100%; /* Set the width to 100% for mobile view */
-        margin-right: 0; /* Remove margin for better spacing */
-        box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    }
-}
+            @media screen and (max-width: 900px) {
+                .example-details {
+                    width: 100%; /* Set the width to 100% for mobile view */
+                    margin-right: 0; /* Remove margin for better spacing */
+                    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+                    display: flex;
+                    justify-content: center;
+                }
+            }
             .example-details table {
                 border-collapse: collapse;
                 width: 100%;
