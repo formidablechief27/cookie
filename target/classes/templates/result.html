@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        input[type="submit"] {
+            background: none;
+            border: none;
+            color : blue;/* Set the color you want for the text */
+            text-decoration: underline; /* Underline the text to make it look like a hyperlink */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            margin-top: 5px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <div style = "display: flex;">
+        <div>
+            <img src = "log.jpeg" style = "width: 250px; height: 100px;">
+        </div>
+        <div style = "display: flex; margin-left: auto; text-align: center; height: 40px; margin-top: 10px;">
+            <form action = "/profile" method = "post" style = "margin-right: 20px; margin-left: 20px;">
+                <input type = "submit" style = "color: black" value = "My Profile">
+            </form>
+
+            <form action = "/logout" method = "post" style = "margin-right: 20px;">
+                <input type = "submit" style = "color: black" value = "Logout">
+            </form>
+        </div>
+    </div>
+
+    <div style = "display: flex; background-color: aliceblue; margin-top: 10px; align-items: center; margin-bottom: 20px;">
+        <div style = "display: flex; height: 40px; font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">
+            <form action = "/home" method = "post" style = "margin-right: 20px;">
+                <input type = "submit" style = "color: black" value = "Home">
+            </form>
+
+            <form action = "/contest-list" method = "post" style = "margin-right: 20px;">
+                <input type = "submit" style = "color: black" value = "Contests">
+            </form>
+
+            <form action = "/practice-course" method = "post" style = "margin-right: 20px;">
+                <input type = "submit" style = "color: black" value = "DSA Course">
+            </form>
+
+            <form action = "/problemset" method = "post" style = "margin-right: 20px;">
+                <input type = "submit" style = "color: black" value = "Problemset">
+            </form>
+
+            <form action = "/rating" method = "post" style = "margin-right: 20px;">
+                <input type = "submit" style = "color: black" value = "Rating">
+            </form>
+
+            <form action = "/help" method = "post" style = "margin-right: 20px;">
+                <input type = "submit" style = "color: black" value = "Help">
+            </form>
+            <form action = "/ide" target = "_blank" method = "get">
+                    <input type = "submit" style = "margin-right: 20px;" value = "Code Editor">
+                </form>
+        </div>
+
+        <div style = "margin-left: auto;">
+            <form action = "/search" method = "post" style = "margin-left: auto; height: 40px; margin-top: 10px;">
+                <input type = "text" style = "width: 400px; height: 30px;" name = "search-value" placeholder = "Search">
+                <input type = "submit" value = "Go" style = "color: black; margin-left: 20px;">
+            </form>
+        </div>
+    </div>
+
+    <div style = "display: flex; margin-bottom: 20px;">
+        <form>
+            <input type = "submit" style = "color: black; margin-right: 20px;" value = "Problems">
+        </form>
+
+        <form>
+            <input type = "submit" style = "color: black; margin-right: 20px;" value = "Submit Code">
+        </form>
+
+        <form>
+            <input type = "submit" style = "color: black; margin-right: 20px;" value = "My Submissions">
+        </form>
+
+        <form>
+            <input type = "submit" style = "color: black; margin-right: 20px;" value = "Status">
+        </form>
+
+        <form>
+            <input type = "submit" style = "color: black; margin-right: 20px;" value = "Standings">
+        </form>
+    </div>
+
+    <table border="1" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 700;">
+        <thead>
+            <tr style="font-size: 15px;">
+                <th style="width: 80px;">Sub ID</th>
+                <th style="width: 200px;">When</th>
+                <th style="width: 200px;">User</th>
+                <th style="width: 300px;">Question</th>
+                <th style="width: 350px;">Verdict</th>
+                <th style="width: 100px;">Time</th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 10px; text-align: center;">
+            <tr th:each="submission : ${submissions}">
+                <td th:text="${submission.id}" style="width: 80px;"></td>
+                <td th:text="${submission.timeSubmitted}" style="width: 200px;"></td>
+                <td th:text="${submission.user}" style="width: 200px;"></td>
+                <td th:text="${submission.question}" style="width: 300px;"></td>
+                <td th:text="${submission.verdict}" style="width: 350px;" class="verdict-cell"></td>
+                <td th:text="${submission.timeExecution}" style="width: 100px;"></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+    <script>
+        $(document).ready(function () {
+            // Iterate over each .verdict-cell element
+            $(".verdict-cell").each(function() {
+                // Get the text content of the current td element
+                var verdictText = $(this).text().trim();
+    
+                // Check the starting text and apply the appropriate class
+                if (verdictText.startsWith("Pretests")) {
+                    $(this).css("color", "rgb(5, 247, 70)"); // Green
+                } else if (verdictText.startsWith("Wrong")) {
+                    $(this).css("color", "rgb(247, 13, 5)"); // Red
+                } else if (verdictText.startsWith("Time")) {
+                    $(this).css("color", "rgb(8, 112, 163"); // Yellow
+                }
+            });
+        });
+    </script>
+
+    <script>
+        // Function to reload the page
+        function reloadPage() {
+            location.reload();
+        }
+
+        // Reload the page every 3 seconds
+        setTimeout(reloadPage, 500);
+    </script>
+</html>
