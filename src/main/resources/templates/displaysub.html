@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2857343152539721"
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2857343152539721"
      crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -169,12 +169,6 @@
             color: #bbb;
         }
 
-        header h3 {
-            margin: 5px 0 0;
-            font-size: 20px;
-            color: #bbb;
-        }
-
         /* Navigation bar */
         nav {
             background-color: #333;
@@ -272,7 +266,6 @@
             justify-content: center;
             align-items: center;
         }
-        
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
@@ -312,51 +305,52 @@
             <a href="/profile" th:text="${status}"></a>
         </nav>
         <main>
-            <h2 th:text="${name}"></h2>
-            <div style = "margin-bottom: 5px;" class = "centered-container">
-                    <form action = "/contest-load" method = "get">
-                        <input type = "submit" style = " margin-right: 20px;" value = "Problems">
-                        <input type = "hidden" name = "id" th:value = "${id}">
-                    </form>
-
-                    <form action="/subs" method = "get">
-                        <input type = "submit" style = " margin-right: 20px;" value = "My Submissions">
-                        <input type = "hidden" name = "id" th:value = "${id}">
-                        <input type = "hidden" name = "user" value  = "0">
-                    </form>
-
-                    <form>
-                        <input type = "submit" style = " margin-right: 20px;" value = "Status">
-                        <input type = "hidden" name = "id" th:value = "${id}">
-                    </form>
-
-                    <form action = "/board" method = "get">
-                        <input type = "submit" style = " margin-right: 20px;" value = "Standings">
-                        <input type = "hidden" name = "id" th:value = "${id}">
-                    </form>
-                </div>
-            <h3>Standings</h2>
-            <table border="1" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 40px;">
-                <tr>
-                    <th style = "width: 250px;">Who</th>
-                    <th style = "width: 75px;"> = </th>
-                    <th th:each="column : ${#numbers.sequence(1, numberOfColumns)}" style = "width: 60px;" >
-                        <span th:text="${column}"></span>
-                    </th>
-                    <th style = "width: 100px;"> </th>
-                </tr>
-                <tr th:each="row : ${arr}" style="text-align: center;">
-                    <td>
-                        <form action = "/user" method = "get">
-                            <input type = "hidden" name = "username" th:value="${row[0]}">
-                            <input type = "submit" style = "text-decoration: none;" th:value="${row[0]}">
+            <h2>User Submissions</h2>
+            
+            <table border="1" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 700;">
+                <thead>
+                    <tr style="font-size: 15px;">
+                        <th style="width: 80px;"></th>
+                        <th style="width: 200px;">When</th>
+                        <th style="width: 200px;">User</th>
+                        <th style="width: 300px;">Question</th>
+                        <th style="width: 350px;">Verdict</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 11px; text-align: center;">
+                    <tr th:each="submission : ${submissions}">
+                        <form action = "/sub-view" method = "get">
+                            <input type = "hidden" name = "sub-id" th:value = "${submission.id}">
+                            <input type = "hidden" name = "id" th:value = "${submission.contestId}">
+                            <td><input type = "submit" style = "padding: 0px; border: none; color: white; text-decoration: none;" value = "View"></td>
                         </form>
-                    </td>
-                    <td th:each="value : ${row}" th:if="${!#strings.startsWith(value, row[0])}" th:text="${value}"></td>
-                    <td></td>
-                </tr>
+                        <td th:text="${submission.timeSubmitted}" style="width: 200px;"></td>
+                        <td th:text="${submission.user}" style="width: 200px;"></td>
+                        <td th:text="${submission.question}" style="width: 300px;"></td>
+                        <td th:text="${submission.verdict}" style="width: 350px;" class="verdict-cell"></td>
+                    </tr>
+                </tbody>
             </table>
             <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+            <script>
+                $(document).ready(function () {
+                    // Iterate over each .verdict-cell element
+                    $(".verdict-cell").each(function() {
+                        // Get the text content of the current td element
+                        var verdictText = $(this).text().trim();
+
+                        // Check the starting text and apply the appropriate class
+                        if (verdictText.startsWith("Pretests")) {
+                            $(this).css("color", "rgb(5, 247, 70)"); // Green
+                        } else if (verdictText.startsWith("Wrong")) {
+                            $(this).css("color", "rgb(247, 13, 5)"); // Red
+                        } else if (verdictText.startsWith("Time")) {
+                            $(this).css("color", "rgb(8, 112, 163"); // Yellow
+                        }
+                    });
+                });
+            </script>
         </main>
 
         <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">Top</button>

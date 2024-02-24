@@ -19,6 +19,7 @@ public class Users {
     private long password;
     private int points;
     private int rating;
+    private String questions;
 
     // Constructors, getters, and setters
 
@@ -26,12 +27,13 @@ public class Users {
         // Default constructor
     }
 
-    public Users(String username, String email, long password, int points, int rating) {
+    public Users(String username, String email, long password, int points, int rating, String questions) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.points = points;
         this.rating = rating;
+        this.questions = questions;
     }
 
     // Getters and Setters
@@ -82,6 +84,14 @@ public class Users {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+    
+    public String getQuestions() {
+    	return questions;
+    }
+    
+    public void setQuestions(String questions) {
+    	this.questions = questions;
     }
 	
 }

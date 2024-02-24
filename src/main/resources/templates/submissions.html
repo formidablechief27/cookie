@@ -347,7 +347,12 @@
                             <td><input type = "submit" style = "padding: 0px; border: none; color: white; text-decoration: none;" value = "View"></td>
                         </form>
                         <td th:text="${submission.timeSubmitted}" style="width: 200px;"></td>
-                        <td th:text="${submission.user}" style="width: 200px;"></td>
+                        <td style = "width: 200px;">
+                            <form action = "/user" method = "get">
+                                <input type = "hidden" name = "username" th:value="${submission.user}">
+                                <input type = "submit" style = "text-decoration: none;" th:value="${submission.user}">
+                            </form>
+                        </td>
                         <td th:text="${submission.question}" style="width: 300px;"></td>
                         <td th:text="${submission.verdict}" style="width: 350px;" class="verdict-cell"></td>
                     </tr>

@@ -59,12 +59,14 @@ public class CodeController {
 	private TestsRepository tests_repository;
 	private QuestionsRepository ques_repo;
 	private SubmissionsRepository subs_repo;
+	private UserRepository user_repo;
 	
 	@Autowired
-    public CodeController(TestsRepository tests_Repository, QuestionsRepository ques_repo, SubmissionsRepository subsrepo) {
+    public CodeController(TestsRepository tests_Repository, QuestionsRepository ques_repo, SubmissionsRepository subsrepo, UserRepository user) {
         this.tests_repository = tests_Repository;
         this.ques_repo = ques_repo;
         this.subs_repo = subsrepo;
+        this.user_repo = user;
     }
 	
 	public String getQuestionNameById(int questionId) {
@@ -72,6 +74,10 @@ public class CodeController {
                 .map(Questions::getQuestionName)
                 .orElse(null);
     }
+	
+	public Optional<Users> getUser(int id) {
+		return user_repo.findById(id);
+	}
 	
 	public Optional<Questions> getQuestion(int id) {
 		return ques_repo.findById(id);
@@ -259,6 +265,21 @@ public class CodeController {
 				fverd = "Running on Pretest " + (te + 1);
 				if(i == end) fverd = "Pretests Passed";
 				dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id);
+				if(i == end) {
+					Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
+					if(user.isPresent()) {
+						String text = user.get().getQuestions();
+						String[] ids = text.split(",");
+						System.out.println(ids.length);
+						boolean flag = false;
+						for(String ele : ids) if(ele.equals(quesId)) {flag = true; break;}
+						if(!flag) {
+							text += quesId + ",";
+							user.get().setQuestions(text);
+							user_repo.save(user.get());
+						}
+					}
+				}
 			}
 			else {
 				System.out.println(verd);

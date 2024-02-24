@@ -141,6 +141,14 @@
         }
 
         /* Main content */
+        .content {
+            display: none;
+            animation: fadeInContent 2s forwards;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+        }
 
         @keyframes fadeInContent {
             from {
@@ -169,12 +177,6 @@
             color: #bbb;
         }
 
-        header h3 {
-            margin: 5px 0 0;
-            font-size: 20px;
-            color: #bbb;
-        }
-
         /* Navigation bar */
         nav {
             background-color: #333;
@@ -195,7 +197,7 @@
             background-color: #444;
         }
 
-        @media screen and (max-width: 900px) {
+        @media screen and (max-width: 500px) {
             nav {
                 background-color: #333;
                 padding: 10px 0;
@@ -228,6 +230,7 @@
         }
         /* Table styles */
         table {
+            width: 80%;
             margin: 20px auto;
             border-collapse: collapse;
             background-color: #444;
@@ -261,31 +264,14 @@
         #scrollTopBtn:hover {
             opacity: 0.8;
         }
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
         .centered-container {
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/clike/clike.min.js"></script>
-        <style>
-            .CodeMirror {
-                height: 400px;
-                width: 750px;
-            }
-        </style>
 </head>
 <body>
-
     <!-- Loading screen -->
     <div class="boot-screen">
         <div class="loading-text">
@@ -311,52 +297,37 @@
             <a href="/ide" target = "_blank">Code Editor</a>
             <a href="/profile" th:text="${status}"></a>
         </nav>
+
         <main>
-            <h2 th:text="${name}"></h2>
-            <div style = "margin-bottom: 5px;" class = "centered-container">
-                    <form action = "/contest-load" method = "get">
-                        <input type = "submit" style = " margin-right: 20px;" value = "Problems">
-                        <input type = "hidden" name = "id" th:value = "${id}">
-                    </form>
-
-                    <form action="/subs" method = "get">
-                        <input type = "submit" style = " margin-right: 20px;" value = "My Submissions">
-                        <input type = "hidden" name = "id" th:value = "${id}">
-                        <input type = "hidden" name = "user" value  = "0">
-                    </form>
-
-                    <form>
-                        <input type = "submit" style = " margin-right: 20px;" value = "Status">
-                        <input type = "hidden" name = "id" th:value = "${id}">
-                    </form>
-
-                    <form action = "/board" method = "get">
-                        <input type = "submit" style = " margin-right: 20px;" value = "Standings">
-                        <input type = "hidden" name = "id" th:value = "${id}">
-                    </form>
-                </div>
-            <h3>Standings</h2>
-            <table border="1" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 40px;">
-                <tr>
-                    <th style = "width: 250px;">Who</th>
-                    <th style = "width: 75px;"> = </th>
-                    <th th:each="column : ${#numbers.sequence(1, numberOfColumns)}" style = "width: 60px;" >
-                        <span th:text="${column}"></span>
-                    </th>
-                    <th style = "width: 100px;"> </th>
-                </tr>
-                <tr th:each="row : ${arr}" style="text-align: center;">
-                    <td>
-                        <form action = "/user" method = "get">
-                            <input type = "hidden" name = "username" th:value="${row[0]}">
-                            <input type = "submit" style = "text-decoration: none;" th:value="${row[0]}">
-                        </form>
-                    </td>
-                    <td th:each="value : ${row}" th:if="${!#strings.startsWith(value, row[0])}" th:text="${value}"></td>
-                    <td></td>
-                </tr>
+            <h2>User Problems Solved</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each = "question, status : ${questions}">
+                        <td style = "width: 50px; text-align: center;" th:text = "${status.index + 1}"> </td>
+                        <td> 
+                            <div style = "display: flex; justify-content: space-between;">
+                                <form action="/start" method="get">
+                                    <input type="hidden" name = "ques-id" th:value = "${question.id}">
+                                    <input type = "hidden" name = "id" th:value = "${question.contestId}">
+                                    <input type="submit" th:value="${question.questionName}">
+                                </form>
+                                <form action="/submit-button" method="get">
+                                    <input type="hidden" name = "ques-id" th:value = "${question.id}">
+                                    <input type = "hidden" name = "id" th:value = "${question.contestId}">
+                                    <input type="submit" value="Submit Code">
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
-            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         </main>
 
         <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">Top</button>

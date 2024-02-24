@@ -272,17 +272,6 @@
     </style>
 </head>
 <body>
-    <!-- Taskbar -->
-    <div class="taskbar">
-        <button class="start-button" onclick="toggleStartMenu()"></button>
-        <div class="start-menu" id="startMenu">
-            <ul>
-                <li><a href="#">Profile</a></li>
-                <li><a href="#">Log Out</a></li>
-            </ul>
-        </div>
-    </div>
-
     <!-- Loading screen -->
     <div class="boot-screen">
         <div class="loading-text">
@@ -367,15 +356,6 @@
     </div>
 
     <script>
-        // Function to toggle the start menu
-        function toggleStartMenu() {
-            var startMenu = document.getElementById('startMenu');
-            if (startMenu.style.display === 'block') {
-                startMenu.style.display = 'none';
-            } else {
-                startMenu.style.display = 'block';
-            }
-        }
 
         // Function to scroll to the top of the page
         function scrollToTop() {

@@ -68,7 +68,7 @@ public class LoginController {
 			pass = mul(pass, 31);
 			pass = add(pass, password.charAt(i));
 		}
-		Users user = new Users(username, email, pass, 0, 0);
+		Users user = new Users(username, email, pass, 0, 0, ",");
 		Optional<Users> existingUser = user_repo.findByUsername(username);
 		if(existingUser.isPresent()) {
 			return "test2.html";
@@ -114,13 +114,5 @@ public class LoginController {
     long inv(long x) {return pow(x, mod - 2);}
     long div(long x, long y) {return mul(x, inv(y));}
     long pow(long a, long b) {a %= mod;long res = 1;while (b > 0) {if ((b & 1) != 0)res = mul(res, a);a = mul(a, a);b /= 2;}return res;}
-    
-    @GetMapping("/profile")
-    public String profile(HttpSession session, Model model) {
-    	if(session.getAttribute("P") == null) return "test2.html";
-    	if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
-		else model.addAttribute("status", "My Profile");
-		return "profile.html";
-    }
     
 }

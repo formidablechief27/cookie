@@ -345,8 +345,14 @@
                     </th>
                     <th style = "width: 100px;"> </th>
                 </tr>
-                <tr th:each="row : ${arr}" style = "text-align: center;">
-                    <td th:each="value : ${row}" th:text="${value}"></td>
+                <tr th:each="row : ${arr}" style="text-align: center;">
+                    <td>
+                        <form action = "/user" method = "get">
+                            <input type = "hidden" name = "username" th:value="${row[0]}">
+                            <input type = "submit" style = "text-decoration: none;" th:value="${row[0]}">
+                        </form>
+                    </td>
+                    <td th:each="value : ${row}" th:if="${!#strings.startsWith(value, row[0])}" th:text="${value}"></td>
                     <td></td>
                 </tr>
             </table>

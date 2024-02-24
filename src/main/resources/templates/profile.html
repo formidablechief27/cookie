@@ -3,44 +3,11 @@
 <head>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2857343152539721"
      crossorigin="anonymous"></script>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlgoChief</title>
     <style>
-        /* Global styles */
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #2e2e2e;
-            color: #fff;
-            overflow-x: hidden; /* Prevent horizontal scrollbar */
-        }
-
-        /* Taskbar */
-        .taskbar {
-            background-color: #292929;
-            height: 40px;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding-left: 10px;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .start-button {
-            width: 36px;
-            height: 36px;
-            background-color: #007bff;
-            border: none;
-            border-radius: 50%;
-            margin-right: 10px;
-            cursor: pointer;
-        }
 
         input[type="submit"] {
                 background: none;
@@ -52,101 +19,12 @@
                 font-family: Verdana, Geneva, Tahoma, sans-serif;
         }
 
-        .start-button:hover {
-            background-color: #0056b3;
-        }
-
-        .start-menu {
-            position: fixed;
-            bottom: 40px;
-            left: 10px;
-            width: 200px;
-            background-color: #292929;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-
-        .start-menu ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .start-menu li {
-            padding: 5px 0;
-        }
-
-        .start-menu li a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            padding: 5px 10px;
-            transition: background-color 0.3s;
-        }
-
-        .start-menu li a:hover {
-            background-color: #444;
-        }
-
-        /* Loading screen */
-        .boot-screen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            color: #fff;
-            z-index: 1000;
-        }
-
-        .loading-text {
-            text-align: center;
-            font-size: 24px;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        .loading-bar {
-            width: 300px;
-            height: 20px;
-            background-color: #444;
-            border-radius: 10px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
-
-        .progress {
-            width: 0;
-            height: 100%;
-            background-color: #007bff;
-            animation: progressAnimation 5s linear forwards;
-        }
-
-        @keyframes progressAnimation {
-            0% { width: 0; }
-            100% { width: 100%; }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
         /* Main content */
         .content {
             display: none;
             animation: fadeInContent 2s forwards;
             position: relative;
             z-index: 1;
-            text-align: center;
             padding: 20px;
         }
 
@@ -264,6 +142,156 @@
         #scrollTopBtn:hover {
             opacity: 0.8;
         }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+                Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1c1c1e;
+            color: #e5e5e5;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #29292b;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: fadeIn 1s;
+        }
+        .profile-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+            animation: scaleIn 1s;
+        }
+        .profile-header h1 {
+            margin: 0;
+            font-size: 24px;
+            animation: slideInLeft 1s;
+        }
+        .profile-info {
+            margin-bottom: 20px;
+            animation: slideInRight 1s;
+        }
+        .profile-info p {
+            margin: 5px 0;
+        }
+        .profile-info p strong {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .chart-container {
+            margin-top: 20px;
+            border: 1px solid #48484a;
+            border-radius: 10px;
+            padding: 10px;
+            background-color: #363638;
+            animation: fadeIn 1s;
+        }
+        .problem-list {
+            margin-top: 20px;
+            animation: slideInUp 1s;
+        }
+        .problem-list li {
+            margin-bottom: 5px;
+        }
+        .contest-section {
+            margin-top: 20px;
+            animation: slideInUp 1s;
+        }
+        .contest-section ul {
+            padding: 0;
+            list-style-type: none;
+        }
+        .contest-section li {
+            margin-bottom: 5px;
+        }
+        .user-stats {
+            margin-top: 20px;
+            animation: slideInUp 1s;
+        }
+        .user-stats p {
+            margin: 5px 0;
+        }
+        .favorite-tags {
+            margin-top: 20px;
+            animation: slideInUp 1s;
+        }
+        .favorite-tags ul {
+            padding: 0;
+            list-style-type: none;
+            margin: 0;
+        }
+        .favorite-tags li {
+            display: inline-block;
+            background-color: #48484a;
+            padding: 5px 10px;
+            margin-right: 5px;
+            border-radius: 5px;
+        }
+
+        /* Keyframe animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideInUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        .centered-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -294,7 +322,105 @@
         </nav>
 
         <main>
-            <h3>User Profile</h3>
+            <h3 style = "text-align: center;">User Profile</h3>
+            <div style = "margin-bottom: 20px;" class = "centered-container">
+
+                <form action = "/prob-list" method = "get">
+                    <input type = "submit" style = " margin-right: 20px;" value = "Problems Solved">
+                    <input type = "hidden" name = "id" th:value = "${id}">
+                </form>
+
+                <form action = "/cont-list" method = "get">
+                    <input type = "submit" style = " margin-right: 20px;" value = "Previous Contests">
+                    <input type = "hidden" name = "id" th:value = "${id}">
+                </form>
+
+                <form action = "/sub-list" method = "get">
+                    <input type = "submit" style = " margin-right: 20px;" value = "Submissions">
+                    <input type = "hidden" name = "id" th:value = "${id}">
+                </form>
+            </div>
+            <div class="container">
+                <div class="profile-header">
+                    <img src="https://via.placeholder.com/150" alt="Profile Picture">
+                    <h1 th:text="${uname}"></h1>
+                </div>
+                <div class="profile-info">
+                    <strong>Rating => </strong><span th:text="${rating}"> </span><br>
+                    <strong>Rank => </strong><span th:text="${rank}"> </span><br>
+                    <strong>Problems Solved => </strong><span th:text="${solved}"> </span><br>
+                    <strong>Contests Participated => </strong><span>0</span>
+                </div>
+                <br>
+                <div style = "font-size: 12px;">Contest graph will be active once we start hosting contests</div>
+                <div class="chart-container">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+            <script>
+                // Mock data for activity chart
+                const activityData = {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Activity',
+                        data: [12, 19, 3, 5, 2, 3, 9],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                };
+
+                // Mock data for submission chart
+                const submissionData = {
+                    labels: ['Accepted', 'Wrong Answer', 'Runtime Error', 'Time Limit Exceeded'],
+                    datasets: [{
+                        label: 'Submissions',
+                        data: [50, 10, 5, 8],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(255, 205, 86, 0.2)',
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 205, 86, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                };
+
+                // Activity chart
+                const activityCtx = document.getElementById('activityChart').getContext('2d');
+                const activityChart = new Chart(activityCtx, {
+                    type: 'line',
+                    data: activityData,
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Submission chart
+                const submissionCtx = document.getElementById('submissionChart').getContext('2d');
+                const submissionChart = new Chart(submissionCtx, {
+                    type: 'bar',
+                    data: submissionData,
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
         </main>
 
         <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">Top</button>

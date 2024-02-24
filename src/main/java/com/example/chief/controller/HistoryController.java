@@ -2,8 +2,10 @@ package com.example.chief.controller;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
@@ -13,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.chief.controller.CodeController.Subs;
 import com.example.chief.model.*;
 import com.example.chief.repository.*;
 
@@ -146,6 +149,80 @@ public class HistoryController {
 	    public void setTimeSubmitted(String timeSubmitted) {
 	        this.timeSubmitted = timeSubmitted;
 	    }
+	}
+	
+	@GetMapping("/user")
+	public String user(Model model, @RequestParam("username") String username) {
+		Optional<Users> u = user_repo.findByUsername(username);
+		String text = u.get().getQuestions();
+    	String p[] = text.split(",");
+    	int count = 0;
+    	for(String ele : p) if(ele.trim().length() > 0) count++;
+    	model.addAttribute("solved", count);
+    	model.addAttribute("rating", u.get().getRating());
+    	model.addAttribute("uname", u.get().getUsername());
+    	model.addAttribute("rank", "Newbie");
+    	model.addAttribute("id", u.get().getId());
+		return "profile.html";
+	}
+	
+	@GetMapping("/profile")
+    public String profile(HttpSession session, Model model) {
+    	if(session.getAttribute("P") == null) return "test2.html";
+    	if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
+    	Optional<Users> user = user_repo.findById((Integer)session.getAttribute("P"));
+    	String text = user.get().getQuestions();
+    	String p[] = text.split(",");
+    	int count = 0;
+    	for(String ele : p) if(ele.trim().length() > 0) count++;
+    	model.addAttribute("solved", count);
+    	model.addAttribute("rating", user.get().getRating());
+    	model.addAttribute("uname", user.get().getUsername());
+    	model.addAttribute("rank", "Newbie");
+    	model.addAttribute("id", (Integer)session.getAttribute("P"));
+		return "profile.html";
+    }
+	
+	@GetMapping("/prob-list")
+	public String problems(Model model, @RequestParam("id") int id) {
+		Optional<Users> user = user_repo.findById(id);
+		String text = user.get().getQuestions();
+		String p[] = text.split(",");
+    	List<Questions> list = new ArrayList<>();
+    	for(String ele : p) {
+    		if(ele.trim().length() > 0) {
+    			int quesId = Integer.parseInt(ele.trim());
+    			Optional<Questions> ques = ques_repo.findById(quesId);
+    			list.add(ques.get());
+    		}
+    	}
+    	model.addAttribute("questions", list);
+		return "display.html";
+	}
+	
+	public String getQuestionNameById(int questionId) {
+        return ques_repo.findById(questionId)
+                .map(Questions::getQuestionName)
+                .orElse(null);
+    }
+	
+	public List<Subs> subs(int user) {
+		List<Submissions> list;
+		list = subs_repo.findByUserId(user);
+		list = list.stream()
+		        .sorted(Comparator.comparing(Submissions::getTimeSubmitted).reversed())
+		        .collect(Collectors.toList());
+		List<Subs> newlist = new ArrayList<>();
+		Optional<Users> us = user_repo.findById(user);
+		for(Submissions sub : list) newlist.add(new Subs(sub.getId(), us.get().getUsername(), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().toString()));
+		return newlist;
+	}
+	
+	@GetMapping("/sub-list") 
+	public String subs(Model model, @RequestParam("id") int id) {
+		model.addAttribute("submissions", subs(id));
+		return "displaysub.html";
 	}
 	
 }
