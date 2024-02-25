@@ -195,7 +195,10 @@ public class CodeController {
 	
 	@GetMapping("/submit-button")
     public String handleFormSubmission(HttpSession session, @RequestParam("ques-id") String quesId, @RequestParam("id") int contestid, Model model) {
-		if(session.getAttribute("P") == null) return "test2.html"; 
+		if(session.getAttribute("P") == null) return "test2.html";
+		int userId = (Integer)(session.getAttribute("P"));
+		if(DataCache.queue.containsKey(userId)) DataCache.queue.put(userId, DataCache.queue.get(userId) + 1);
+		else DataCache.queue.put(userId, 1);
 		model.addAttribute("status", "My Profile");
 		model.addAttribute("num", quesId);
 		model.addAttribute("id", contestid);
@@ -284,6 +287,8 @@ public class CodeController {
 							user_repo.save(user.get());
 						}
 					}
+					DataCache.queue.put(user.get().getId(), DataCache.queue.get(user.get().getId()) - 1);
+					if(DataCache.queue.get(user.get().getId()) == 0) DataCache.queue.remove(user.get().getId());
 				}
 			}
 			else {
@@ -501,6 +506,8 @@ public class CodeController {
 		model.addAttribute("id", id);
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
+		int userId = (Integer) (session.getAttribute("P"));
+		if(DataCache.queue.containsKey(userId)) model.addAttribute("reload", 1);
 		return "submissions.html";
 	}
 	
@@ -510,6 +517,8 @@ public class CodeController {
 		model.addAttribute("id", id);
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
+		int userId = (Integer) (session.getAttribute("P"));
+		if(DataCache.queue.containsKey(userId)) model.addAttribute("reload", 1);
 		return "submissions.html";
 	}
 	

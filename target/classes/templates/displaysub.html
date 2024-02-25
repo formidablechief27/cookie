@@ -311,16 +311,19 @@
                 <form action = "/sub-list" method = "get" style = "margin-top: 20px;">  
                     <div style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px;">
                         <label style = "margin-right: 20px;">
-                            <input type="radio" name="diff" value="Passed"> Passed
+                            <input type="radio" name="diff" value="Passed"> Pretests Passed
                         </label>
                         <label style = "margin-right: 20px;">
-                            <input type="radio" name="diff" value="Wrong Answer"> Wrong Answer
+                            <input type="radio" name="diff" value="Wrong"> Wrong Answer
                         </label>
                         <label style = "margin-right: 20px;">
-                            <input type="radio" name="diff" value="Time Limit Exceeded"> Time Limit Exceeded
+                            <input type="radio" name="diff" value="Time"> Time Limit Exceeded
+                        </label>
+                        <label style = "margin-right: 20px;">
+                            <input type="radio" name="diff" value="Runtime"> Run Time Error
                         </label>
                     </div>
-                    <input type = "hidden" th:value = "${uid}">
+                    <input type = "hidden" name = "id" th:value = "${uid}">
                     <input type = "submit" style = "margin-top: 20px" value = "Filter">
                 </form>
             </div>
@@ -368,7 +371,7 @@
                         // Check the starting text and apply the appropriate class
                         if (verdictText.startsWith("Pretests")) {
                             $(this).css("color", "rgb(5, 247, 70)"); // Green
-                        } else if (verdictText.startsWith("Wrong")) {
+                        } else if (verdictText.startsWith("Wrong") || verdictText.startsWith("Runtime")) {
                             $(this).css("color", "rgb(247, 13, 5)"); // Red
                         } else if (verdictText.startsWith("Time")) {
                             $(this).css("color", "rgb(8, 112, 163"); // Yellow

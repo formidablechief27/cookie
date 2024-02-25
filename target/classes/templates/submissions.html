@@ -279,6 +279,10 @@
 </head>
 <body>
 
+<script th:inline="javascript">
+    var val = /*[[${reload}]]*/ 0;
+</script>
+
     <!-- Loading screen -->
     <div class="boot-screen">
         <div class="loading-text">
@@ -370,7 +374,7 @@
                         // Check the starting text and apply the appropriate class
                         if (verdictText.startsWith("Pretests")) {
                             $(this).css("color", "rgb(5, 247, 70)"); // Green
-                        } else if (verdictText.startsWith("Wrong")) {
+                        } else if (verdictText.startsWith("Wrong") || verdictText.startsWith("Runtime")) {
                             $(this).css("color", "rgb(247, 13, 5)"); // Red
                         } else if (verdictText.startsWith("Time")) {
                             $(this).css("color", "rgb(8, 112, 163"); // Yellow
@@ -381,12 +385,12 @@
 
             <script>
                 // Function to reload the page
-                function reloadPage() {
-                    location.reload();
+                if(reload == 1) {
+                    function reloadPage() {
+                        location.reload();
+                    }
+                    setTimeout(reloadPage, 4000);
                 }
-
-                // Reload the page every 3 seconds
-                setTimeout(reloadPage, 7500);
             </script>
         </main>
 
