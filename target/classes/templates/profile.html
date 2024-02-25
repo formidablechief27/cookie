@@ -295,6 +295,9 @@
     </style>
 </head>
 <body>
+<script th:inline="javascript">
+    var list = /*[[${list}]]*/ [0, 0, 0, 0];
+</script>
     <!-- Loading screen -->
     <div class="boot-screen">
         <div class="loading-text">
@@ -356,6 +359,9 @@
                 <div class="chart-container">
                     <canvas id="activityChart"></canvas>
                 </div>
+                <div class="chart-container">
+                    <canvas id="submissionChart"></canvas>
+                </div>
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
             <script>
@@ -376,7 +382,7 @@
                     labels: ['Accepted', 'Wrong Answer', 'Runtime Error', 'Time Limit Exceeded'],
                     datasets: [{
                         label: 'Submissions',
-                        data: [50, 10, 5, 8],
+                        data: list,
                         backgroundColor: [
                             'rgba(75, 192, 192, 0.2)',
                             'rgba(255, 99, 132, 0.2)',

@@ -172,6 +172,15 @@ public class HistoryController {
     	if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
     	Optional<Users> user = user_repo.findById((Integer)session.getAttribute("P"));
+    	List<Subs> list = subs(user.get().getId());
+    	ArrayList<Long> flist = new ArrayList<>();
+    	flist.add(0L); flist.add(0L); flist.add(0L); flist.add(0L);
+    	for(Subs S : list) {
+    		if(S.getVerdict().contains("Passed") || S.getVerdict().contains("Accepted")) flist.set(0, flist.get(0) + 1L);
+    		if(S.getVerdict().contains("Wrong")) flist.set(1, flist.get(1) + 1L);
+    		if(S.getVerdict().contains("Time")) flist.set(2, flist.get(2) + 1L);
+    		if(S.getVerdict().contains("Runtime")) flist.set(3, flist.get(3) + 1L);
+    	}
     	String text = user.get().getQuestions();
     	String p[] = text.split(",");
     	int count = 0;
@@ -179,6 +188,7 @@ public class HistoryController {
     	model.addAttribute("solved", count);
     	model.addAttribute("rating", user.get().getRating());
     	model.addAttribute("uname", user.get().getUsername());
+    	model.addAttribute("list", flist);
     	model.addAttribute("rank", "Newbie");
     	model.addAttribute("id", (Integer)session.getAttribute("P"));
 		return "profile.html";

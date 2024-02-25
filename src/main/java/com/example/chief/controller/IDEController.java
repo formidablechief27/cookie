@@ -285,7 +285,7 @@ public class IDEController {
             }
         });
         try {
-            StringBuilder result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
+            StringBuilder result = future.get(5, TimeUnit.SECONDS); // 5 seconds timeout
             return result;
         } catch (Exception e) {
             future.cancel(true);

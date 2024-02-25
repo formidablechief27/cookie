@@ -340,6 +340,10 @@ public class CodeController {
 			    	if(!line.trim().equals(expected[i++].trim())) flag = false;
 			    	foutput += line.trim() + "\n";
 	            }
+			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+			    while ((line = reader.readLine()) != null) {
+			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput);
+		        }
 			    //System.out.println(foutput);
 			    if(i != expected.length) flag = false;
 			    if(!flag) return new Pair("Wrong Answer ", foutput);
@@ -406,6 +410,10 @@ public class CodeController {
 			    	if(!line.trim().equals(expected[i++].trim())) flag = false;
 			    	foutput += line.trim() + "\n";
 			    }
+			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+			    while ((line = reader.readLine()) != null) {
+			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput);
+		        }
 			    if(i != expected.length) flag = false;
 			    if(!flag) return new Pair("Wrong Answer ", foutput);
 			    return new Pair("Passed ", foutput);
@@ -464,6 +472,10 @@ public class CodeController {
 			    	if(!line.trim().equals(expected[i++].trim())) flag = false;
 			    	foutput += line.trim() + "\n";
 	            }
+			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+			    while ((line = reader.readLine()) != null) {
+			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput);
+		        }
 			    if(i != expected.length) flag = false;
 			    if(!flag) return new Pair("Wrong Answer", foutput);
 			    return new Pair("Passed", foutput);
@@ -473,7 +485,7 @@ public class CodeController {
             }
         });
         try {
-            Pair result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
+            Pair result = future.get(5, TimeUnit.SECONDS); // 5 seconds timeout
             return result;
         } catch (Exception e) {
             System.out.println("Time Out occurred ");
