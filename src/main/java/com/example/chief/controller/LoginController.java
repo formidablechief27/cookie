@@ -71,7 +71,7 @@ public class LoginController {
 		Users user = new Users(username, email, pass, 0, 0, ",");
 		Optional<Users> existingUser = user_repo.findByUsername(username);
 		if(existingUser.isPresent()) {
-			return "test2.html";
+			return "test.html";
 		}
 		else {
 			user_repo.save(user);
@@ -80,7 +80,7 @@ public class LoginController {
 			session.setAttribute("P", existing.get().getId());
 			session.setAttribute("user", username);
 			model.addAttribute("val", 1);
-			return "test2.html";
+			return "test.html";
 		}
     }
 	
@@ -99,12 +99,12 @@ public class LoginController {
 				session.setAttribute("P", existingUser.get().getId());
 				session.setAttribute("user", existingUser.get().getUsername());
 				model.addAttribute("val", 1);
-				return "test.html";
+				return "test2.html";
 			}
-			else return "test.html";
+			else return "test2.html";
 		}
 		else {
-			return "test.html";
+			return "test2.html";
 		}
     }
 	

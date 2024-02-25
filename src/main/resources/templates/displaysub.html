@@ -305,7 +305,27 @@
             <a href="/profile" th:text="${status}"></a>
         </nav>
         <main>
-            <h2>User Submissions</h2>
+
+            <div style = "padding: 20px;">   
+                Filter Submissions By Type
+                <form action = "/sub-list" method = "get" style = "margin-top: 20px;">  
+                    <div style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px;">
+                        <label style = "margin-right: 20px;">
+                            <input type="radio" name="diff" value="Passed"> Passed
+                        </label>
+                        <label style = "margin-right: 20px;">
+                            <input type="radio" name="diff" value="Wrong Answer"> Wrong Answer
+                        </label>
+                        <label style = "margin-right: 20px;">
+                            <input type="radio" name="diff" value="Time Limit Exceeded"> Time Limit Exceeded
+                        </label>
+                    </div>
+                    <input type = "hidden" th:value = "${uid}">
+                    <input type = "submit" style = "margin-top: 20px" value = "Filter">
+                </form>
+            </div>
+
+            <h2 style = "margin-top: 20px;">User Submissions</h2>
             
             <table border="1" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 700;">
                 <thead>
@@ -325,7 +345,12 @@
                             <td><input type = "submit" style = "padding: 0px; border: none; color: white; text-decoration: none;" value = "View"></td>
                         </form>
                         <td th:text="${submission.timeSubmitted}" style="width: 200px;"></td>
-                        <td th:text="${submission.user}" style="width: 200px;"></td>
+                        <td style = "width: 200px;">
+                            <form action = "/user" method = "get">
+                                <input type = "hidden" name = "username" th:value="${submission.user}">
+                                <input type = "submit" style = "text-decoration: none; font-weight: 700;" th:value="${submission.user}">
+                            </form>
+                        </td>
                         <td th:text="${submission.question}" style="width: 300px;"></td>
                         <td th:text="${submission.verdict}" style="width: 350px;" class="verdict-cell"></td>
                     </tr>

@@ -220,8 +220,18 @@ public class HistoryController {
 	}
 	
 	@GetMapping("/sub-list") 
-	public String subs(Model model, @RequestParam("id") int id) {
-		model.addAttribute("submissions", subs(id));
+	public String subs(Model model, @RequestParam("id") int id, @RequestParam(name = "type", required = false) String type) {
+		List<Subs> list = subs(id);
+		List<Subs> flist = new ArrayList<>();
+		for(Subs S : list) {
+			if(type == null) {
+				flist.add(S);
+				continue;
+			}
+			else if (S.getVerdict().contains(type)) flist.add(S);
+		}
+		model.addAttribute("uid", id);
+		model.addAttribute("submissions", flist);
 		return "displaysub.html";
 	}
 	

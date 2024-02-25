@@ -18,6 +18,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -97,7 +98,7 @@ public class CodeController {
 		List<Subs> newlist = new ArrayList<>();
 		for(Submissions sub : list) {
 			int ques_id = sub.getQuestionId();
-			newlist.add(new Subs(sub.getId(), (String)session.getAttribute("user"), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().toString()));
+			newlist.add(new Subs(sub.getId(), (String)session.getAttribute("user"), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().toString().replace('T', ' ')));
 		}
 		return newlist;
 	}
@@ -214,8 +215,12 @@ public class CodeController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		ZoneId istZone = ZoneId.of("Asia/Kolkata");
+
+        // Get the current date and time in the specified time zone
+        LocalDateTime istDateTime = LocalDateTime.now(istZone);
 		LocalDateTime date = java.time.LocalDateTime.now();
-		dataentry(session, code, "Running", sub, date.toString(), Integer.parseInt(quesId), contest_id);
+		dataentry(session, code, "Running", sub, istDateTime.toString(), Integer.parseInt(quesId), contest_id);
 		if(!DataCache.ques_map.containsKey(Integer.parseInt(quesId))){
 			getQuestion(Integer.parseInt(quesId)).ifPresent(question -> {
             	DataCache.ques_map.put(Integer.parseInt(quesId), question);
