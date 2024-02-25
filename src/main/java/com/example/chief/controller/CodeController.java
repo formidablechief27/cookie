@@ -513,10 +513,10 @@ public class CodeController {
 	
 	@GetMapping("/subs")
 	public String exe(@RequestParam("id") int id, @RequestParam("user") int userid, HttpSession session, Model model) {
+		if(session.getAttribute("P") == null) return "test2.html";
 		model.addAttribute("submissions", subs(id, session, userid));
 		model.addAttribute("id", id);
-		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
-		else model.addAttribute("status", "My Profile");
+		model.addAttribute("status", "My Profile");
 		int userId = (Integer) (session.getAttribute("P"));
 		if(DataCache.queue.containsKey(userId)) model.addAttribute("reload", 1);
 		return "submissions.html";
