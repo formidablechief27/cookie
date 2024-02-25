@@ -197,7 +197,7 @@
             background-color: #444;
         }
 
-        @media screen and (max-width: 500px) {
+        @media screen and (max-width: 900px) {
             nav {
                 background-color: #333;
                 padding: 10px 0;
@@ -299,7 +299,7 @@
         </nav>
 
         <main>
-            <h2 th:text = "${name}">Contests for Practice</h2>
+            <h2 th:text = "${name}"></h2>
                 <div style = "margin-bottom: 5px;" class = "centered-container">
                     <form action = "/contest-load" method = "get">
                         <input type = "submit" style = " margin-right: 20px;" value = "Problems">

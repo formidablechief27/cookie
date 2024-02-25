@@ -46,6 +46,7 @@ public class ContestController {
 		model.addAttribute("contests", ls);
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
+		model.addAttribute("cname", "Contests for Practice");
 		return "home.html";
 	}
 	
@@ -54,9 +55,10 @@ public class ContestController {
 		List<Contests> list = getAllContests();
 		List<Contests> ls = new ArrayList<>();
 		for(Contests c : list) if(c.getId() <= 15) ls.add(c);
-		model.addAttribute("contests", ls);
+		//model.addAttribute("contests", ls);
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
+		model.addAttribute("cname", "DSA Course launching on June 1 ;)");
 		return "home.html";
 	}
 	
@@ -70,9 +72,17 @@ public class ContestController {
 		else model.addAttribute("status", "My Profile");
 		List<Questions> list = getQuestionsByContestId(id);
 		Optional<Contests> c = getContest((long)id);
+		List<Questions> flist = new ArrayList<>(list.size());
+		for(int i=0;i<list.size();i++) flist.add(null);
+		int start = c.get().getSt();
+		for(Questions Q : list) {
+			int qid = Q.getId();
+			int index = qid - start;
+			flist.set(index, Q);
+		}
 		if(c.isPresent()) model.addAttribute("title", c.get().getTitle());
 		model.addAttribute("id", id);
-		model.addAttribute("questions", list);
+		model.addAttribute("questions", flist);
 		model.addAttribute("name", c.get().getTitle());
 		return "contesthome.html";
 	}
@@ -82,5 +92,28 @@ public class ContestController {
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
 		return "error.html";
+	}
+	
+	@GetMapping("/problemset")
+	public String problems(HttpSession session, Model model, @RequestParam(name = "diff", required = false) String diff) {
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
+		List<Questions> list = questions.findAll();
+		List<Questions> flist = new ArrayList<>();
+		for(Questions Q : list) {
+			if(Q.getId() > 200) {
+				if(diff == null) {
+					flist.add(Q);
+					continue;
+				}
+				if(diff.equals("Newbie") && Q.getMinPoints() < 1200) flist.add(Q);
+				else if (diff.equals("Pupil") && Q.getMinPoints() >= 1200 && Q.getMinPoints() < 1400) flist.add(Q);
+				else if (diff.equals("Specialist") && Q.getMinPoints() >= 1400 && Q.getMinPoints() < 1600) flist.add(Q);
+				else if (diff.equals("Expert") && Q.getMinPoints() >= 1600 && Q.getMinPoints() < 1900) flist.add(Q);
+				else if (diff.equals("Candidate Master") && Q.getMinPoints() >= 1900) flist.add(Q);
+			}
+		}
+		model.addAttribute("questions", flist);
+		return "problemset.html";
 	}
 }
