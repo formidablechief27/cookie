@@ -152,7 +152,7 @@ public class HistoryController {
 	}
 	
 	@GetMapping("/user")
-	public String user(Model model, @RequestParam("username") String username) {
+	public String user(HttpSession session, Model model, @RequestParam("username") String username) {
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
 		Optional<Users> user = user_repo.findByUsername(username);
@@ -174,7 +174,7 @@ public class HistoryController {
     	model.addAttribute("uname", user.get().getUsername());
     	model.addAttribute("list", flist);
     	model.addAttribute("rank", "Newbie");
-    	model.addAttribute("id", (Integer)session.getAttribute("P"));
+    	model.addAttribute("id", user.get().getId());
 		return "profile.html";
 	}
 	
