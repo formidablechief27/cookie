@@ -153,16 +153,28 @@ public class HistoryController {
 	
 	@GetMapping("/user")
 	public String user(Model model, @RequestParam("username") String username) {
-		Optional<Users> u = user_repo.findByUsername(username);
-		String text = u.get().getQuestions();
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
+		Optional<Users> user = user_repo.findByUsername(username);
+		List<Subs> list = subs(user.get().getId());
+    	ArrayList<Long> flist = new ArrayList<>();
+    	flist.add(0L); flist.add(0L); flist.add(0L); flist.add(0L);
+    	for(Subs S : list) {
+    		if(S.getVerdict().contains("Passed") || S.getVerdict().contains("Accepted")) flist.set(0, flist.get(0) + 1L);
+    		if(S.getVerdict().contains("Wrong")) flist.set(1, flist.get(1) + 1L);
+    		if(S.getVerdict().contains("Time")) flist.set(2, flist.get(2) + 1L);
+    		if(S.getVerdict().contains("Runtime")) flist.set(3, flist.get(3) + 1L);
+    	}
+    	String text = user.get().getQuestions();
     	String p[] = text.split(",");
     	int count = 0;
     	for(String ele : p) if(ele.trim().length() > 0) count++;
     	model.addAttribute("solved", count);
-    	model.addAttribute("rating", u.get().getRating());
-    	model.addAttribute("uname", u.get().getUsername());
+    	model.addAttribute("rating", user.get().getRating());
+    	model.addAttribute("uname", user.get().getUsername());
+    	model.addAttribute("list", flist);
     	model.addAttribute("rank", "Newbie");
-    	model.addAttribute("id", u.get().getId());
+    	model.addAttribute("id", (Integer)session.getAttribute("P"));
 		return "profile.html";
 	}
 	
