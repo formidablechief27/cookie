@@ -268,8 +268,27 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/clike/clike.min.js"></script>
         <style>
             .CodeMirror {
-                height: auto;
-                width: 1200px;
+                height: 400px;
+                width: 750px;
+            }
+            @media screen and (max-width: 500px) {
+                .CodeMirror {
+                    width:400px;
+                    height:200px;
+                }
+                .inp-area {
+                    width: 175px;
+                    height: 100px;
+                    margin-right: 10px;
+                }
+                .out-area {
+                    width: 175px;
+                    height: 100px;
+                    margin-bottom: 10px;
+                }
+                #inp-out {
+                    display: flex;
+                }
             }
         </style>
 </head>
