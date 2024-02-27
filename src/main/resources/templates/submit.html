@@ -332,7 +332,7 @@
                     </div>
                     <input type="hidden" name="run" value = "0">
                     <input type="hidden" name = "ques-id" th:value = "${num}">
-                    <input type="submit" style = "margin-left:80px; margin-top: 20px; margin-bottom: 20px;" value="Submit ?">
+                    <input type="submit" id = "cookie" style = "margin-left:80px; margin-top: 20px; margin-bottom: 20px;" value="Submit ?">
                 </form>
 
                 <div id = "wait" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-bottom: 50px;">
@@ -356,6 +356,10 @@
             </script>
             <script>
                 function sendFormData(event) {
+                    var button = document.getElementById('cookie');
+                    button.disabled = true;
+                    var og = button.style.display;
+                    button.style.display = none;
                     event.preventDefault();
                     var code = editor.getValue();
                     code = encodeURIComponent(code);
@@ -364,6 +368,8 @@
                         
                         if (selectedLanguages.length !== 1) {
                             alert('Please select exactly one programming language.');
+                            button.disabled = false;
+                    button.style.display = og;
                             return false;
                         }
                     
@@ -379,6 +385,7 @@
                         if (xhr.readyState === 4) {
                             if (xhr.status === 200) {
                                 // Request was successful, handle the response
+                                
                                 console.log(xhr.responseText);
                             } else {
                                 // Handle errors
@@ -390,6 +397,8 @@
                     var ele = document.getElementById("wait");
                     ele.innerHTML = "Processing Your Request ...";
                     var link = "/subs-self?id=" + c;
+                    button.disabled = false;
+                    button.style.display = og;
                     setTimeout(function () {window.location.href = link;}, 2500);
                 }
         </script>

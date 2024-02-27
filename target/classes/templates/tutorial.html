@@ -361,18 +361,7 @@
 <script th:inline="javascript">
         var contest_id = /*[[${id}]]*/ '';
         var question_id = /*[[${qid}]]*/ '';
-        console.log(id);
     </script>
-
-    <!-- Loading screen -->
-    <div class="boot-screen">
-        <div class="loading-text">
-            <p>Loading AlgoChief...</p>
-            <div class="loading-bar">
-                <div class="progress"></div>
-            </div>
-        </div>
-    </div>
 
     <!-- Main content -->
     <div class="content">
@@ -426,6 +415,7 @@
         <script>
             var link = "sol" + question_id + ".png";
             document.getElementById("tut-img").src = link;
+            console.log(link);
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -505,10 +495,7 @@
         }
 
         // Simulate loading delay
-        setTimeout(function() {
-            document.querySelector('.boot-screen').style.display = 'none';
-            document.querySelector('.content').style.display = 'block';
-        }, 0); // Delay to simulate loading
+        
     </script>
 </body>
 </html>

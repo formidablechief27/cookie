@@ -85,7 +85,17 @@ public class CodeController {
 	}
 	
 	public List<Submissions> getAllSubmissionsByUserIdAndContestId(Integer userId, Integer contestId) {
-        return subs_repo.findByUserIdAndContestId(userId, contestId);
+		List<Submissions> list = new ArrayList<>();
+		for(int i=0;i<subs_repo.count();i++) {
+			if(DataCache.sub_map.containsKey(i)) if (DataCache.sub_map.get(i).getId() == userId && DataCache.sub_map.get(i).getContestId() == contestId) list.add(DataCache.sub_map.get(i));
+			else {
+				Submissions l = subs_repo.getById(i);
+				if(l == null) continue;
+				if(!l.getVerdict().contains("Running")) DataCache.sub_map.put(i, l);
+				if (DataCache.sub_map.get(i).getId() == userId && DataCache.sub_map.get(i).getContestId() == contestId) list.add(l);
+			}
+		}
+        return list;
     }
 	
 	public List<Subs> subs(int id, HttpSession session, int user) {
@@ -556,6 +566,7 @@ public class CodeController {
 	    LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
 		Submissions sub = new Submissions(sub_id, (Integer) session.getAttribute("P"), ques_id, code, verdict, contest_id, 300, dateTime);
 		addSubmission(sub);
+		if(!verdict.contains("Running")) DataCache.sub_map.put(sub_id, sub);
 	}
 	
 	public void addSubmission(Submissions submission) {

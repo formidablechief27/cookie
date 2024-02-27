@@ -269,7 +269,26 @@
         <style>
             .CodeMirror {
                 height: auto;
-                width: 1200px;
+                width: 750px;
+            }
+            @media screen and (max-width: 500px) {
+                .CodeMirror {
+                    width:400px;
+                    height: auto;
+                }
+                .inp-area {
+                    width: 175px;
+                    height: 100px;
+                    margin-right: 10px;
+                }
+                .out-area {
+                    width: 175px;
+                    height: 100px;
+                    margin-bottom: 10px;
+                }
+                #inp-out {
+                    display: flex;
+                }
             }
         </style>
 </head>

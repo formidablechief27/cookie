@@ -356,7 +356,7 @@
                 </form>
 
                 <form id="submit-code-form" style = "margin-top: 10px;">
-                    <input type="submit" value="Execute All Tests">
+                    <input type="submit" id = "cookie" value="Execute All Tests">
                 </form>
             <script>
             var codeTextArea = document.getElementById("view");
@@ -369,27 +369,7 @@
                     handle();
                 },
                 extraKeys: {
-                    "Enter": function (cm) {
-                        var cursor = cm.getCursor();
-                        var line = cm.getLine(cursor.line);
-                        // Check if the line ends with an open brace '{'
-                        if(line.trim().endsWith("}")) {
-                            CodeMirror.commands.newlineAndDedent(cm);
-                        }
-                        else if (line.trim().endsWith('{') || (line.trim().endsWith(":"))) {
-                            CodeMirror.commands.newlineAndIndent(cm);
-                        } else {
-                            CodeMirror.commands.newline(cm);
-                        }
-                    },
-                    "Backspace": function (cm) {
-                        var cursor = cm.getCursor();
-                        if (cursor.ch === 0 && cursor.line > 0) {
-                            cm.setCursor(cursor.line - 1, cm.getLine(cursor.line - 1).length);
-                        } else {
-                            CodeMirror.commands.delCharBefore(cm);
-                        }
-                    }
+                    
                 }
             });
 
@@ -414,6 +394,10 @@
             </script>
             <script>
             function sendData(event) {
+                var button = document.getElementById('cookie');
+                var og = button.style.display;
+                button.disabled = true;
+                button.style.display = none;
                 event.preventDefault();
                 var code = editor.getValue();
                 code = encodeURIComponent(code);
@@ -421,6 +405,8 @@
                 var selectedLanguages = document.querySelectorAll('input[name="lang"]:checked');    
                 if (selectedLanguages.length !== 1) {
                     alert('Please select exactly one programming language.');
+                    button.disabled = false;
+                    button.style.display = og;
                     return false;
                 }
                 var lang = selectedLanguages[0].value;
@@ -469,7 +455,8 @@
                         xhr.send(formData);
                     })(i);
                 }
-
+                button.disabled = false;
+                button.style.display = og;
             }
             document.getElementById('submit-code-form').addEventListener('submit', function (event) {
                 sendData(event); // Pass the event parameter when calling sendData

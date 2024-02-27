@@ -361,7 +361,6 @@
 <script th:inline="javascript">
         var contest_id = /*[[${id}]]*/ '';
         var question_id = /*[[${qid}]]*/ '';
-        console.log(id);
     </script>
 
     <!-- Main content -->
@@ -416,6 +415,7 @@
         <script>
             var link = "sol" + question_id + ".png";
             document.getElementById("tut-img").src = link;
+            console.log(link);
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
