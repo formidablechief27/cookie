@@ -215,13 +215,8 @@ public class HistoryController {
     	for(String ele : p) {
     		if(ele.trim().length() > 0) {
     			int quesId = Integer.parseInt(ele.trim());
-    			Questions q;
-    			if(DataCache.ques_map.containsKey(quesId)) q = DataCache.ques_map.get(quesId);
-    			else {
-    				q = ques_repo.findById(quesId).get();
-    				DataCache.ques_map.put(quesId, q);
-    			}
-    			list.add(q);
+    			Optional<Questions> ques = ques_repo.findById(quesId);
+    			list.add(ques.get());
     		}
     	}
     	model.addAttribute("questions", list);
@@ -235,16 +230,8 @@ public class HistoryController {
     }
 	
 	public List<Subs> subs(int user) {
-		List<Submissions> list = new ArrayList<>();
-		for(int i=0;i<subs_repo.count();i++) {
-			if(DataCache.sub_map.containsKey(i)) if (DataCache.sub_map.get(i).getId() == user) list.add(DataCache.sub_map.get(i));
-			else {
-				Submissions l = subs_repo.getById(i);
-				if(l == null) continue;
-				if(!l.getVerdict().contains("Running")) DataCache.sub_map.put(i, l);
-				if(l.getId() == user) list.add(l);
-			}
-		}
+		List<Submissions> list;
+		list = subs_repo.findByUserId(user);
 		list = list.stream()
 		        .sorted(Comparator.comparing(Submissions::getTimeSubmitted).reversed())
 		        .collect(Collectors.toList());
