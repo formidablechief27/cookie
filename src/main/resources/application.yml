@@ -1,0 +1,19 @@
+# DataSource Configuration
+spring:
+  datasource:
+    url: jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:5432/postgres?user=postgres.flpzrnoogourkqxrpsnd&password=${p}
+    username: ${u}
+    password: ${p}
+    driverClassName: org.postgresql.Driver
+
+server:
+  tomcat:
+    max-threads: 200
+  servlet:
+    session:
+      timeout: 86400s
+      cookie:
+        max-age: 86400s
+  compression:
+    enabled: true
+    min-response-size: 2048
