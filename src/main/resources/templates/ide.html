@@ -363,7 +363,7 @@
                     <input type = "submit" id = "add-btn" value = "Add Testcase">
                 </form>
 
-                <form id="submit-code-form" style = "margin-top: 10px;">
+                <form id="submit-code-form2" style = "margin-top: 10px;">
                     <input type="submit" value="Execute All Tests">
                 </form>
             <script>
@@ -514,6 +514,9 @@ int main () {
 
             }
             document.getElementById('submit-code-form').addEventListener('submit', function (event) {
+                sendData(event); // Pass the event parameter when calling sendData
+            });
+            document.getElementById('submit-code-form2').addEventListener('submit', function (event) {
                 sendData(event); // Pass the event parameter when calling sendData
             });
             </script>
