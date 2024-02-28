@@ -43,13 +43,16 @@
         }
 
         input[type="submit"] {
-                background: none;
-                border: none;
-                color : white;/* Set the color you want for the text */
-                text-decoration: underline; /* Underline the text to make it look like a hyperlink */
-                cursor: pointer; /* Change cursor to pointer on hover */
-                margin-top: 5px;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            display: block;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: opacity 0.3s;
         }
 
         .start-button:hover {
@@ -330,7 +333,8 @@
         </nav>
         <main>
             <h2>Code Editor</h2>
-                <div style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 20px;">
+                <div style = "display: flex;">
+                    <div style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 20px;">
                     <label style = "margin-right: 20px;">
                         <input type="radio" name="lang" value="Java"> Java
                     </label>
@@ -340,6 +344,10 @@
                     <label style = "margin-right: 20px;">
                         <input type="radio" name="lang" value="Python"> Python
                     </label>
+                    </div>
+                    <form id="submit-code-form" style = "margin-top: 15px;margin-left: 50px;">
+                        <input type="submit" value="Execute All Tests">
+                    </form>
                 </div>
                 <div style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;">
                     <textarea id="view" style="white-space: pre-wrap;"></textarea>
@@ -375,6 +383,56 @@
 
             </script>
             <script>
+                // Adding event listener to radio buttons
+                function setJavaCode() {
+            var javaCode = `import java.util.*;
+
+public class Main {
+    Scanner SC = new Scanner(System.in);
+    public static void main(String args[]) {
+        Main FC27 = new Main();
+        FC27.solve();
+    }
+
+    public void solve() {
+    	// write your logic here
+    }
+}`;
+            editor.setValue(javaCode);
+        }
+        function setCppCode() {
+            var cppCode = `#include<bits/stdc++.h>
+using namespace std;
+
+void solve() {
+    // write your logic here
+}
+
+int main () {
+    solve();
+}`;
+            editor.setValue(cppCode);
+        }
+                var radioButtons = document.querySelectorAll('input[name="lang"]');
+                
+                radioButtons.forEach(function(radioButton) {
+                    radioButton.addEventListener('change', function() {
+                        // Retrieving the value of the selected radio button
+                        var lang = document.querySelector('input[name="lang"]:checked').value;
+                        console.log(editor.getValue().length);
+                        if (lang === "Java") {
+                            setJavaCode();
+                        }
+                        if(lang === "C++") {
+                            setCppCode();
+                        }
+                        if(lang === "Python") {
+                            editor.setValue("");
+                        }
+                    });
+                });
+            </script>
+            <script>
                 var addButton = document.getElementById('add-btn');
                 var count = 2;
                 addButton.addEventListener('click', function (event) {
@@ -403,6 +461,10 @@
                     alert('Please select exactly one programming language.');
                     return false;
                 }
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                }); 
                 var lang = selectedLanguages[0].value;
                 console.log("lang => " + lang);
                 var num = 1;

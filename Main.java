@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Main {
 
-    long mod = (long)900;
+    long mod = (long)998244353;
     long inf = (long) (9e18);
     PrintWriter out = new PrintWriter(System.out);
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,6 +34,7 @@ public class Main {
     void ps(long s) {out.print(s + " ");}
     void ps(double s) {out.print(s + " ");}
     void ps(char c) {out.print(c + " ");}
+    void ps(String s) {out.print(s + " ");}
     void yes() {pl("Yes");}
     void no() {pl("No");}
 
@@ -137,14 +138,26 @@ public class Main {
     }	 
         
     // This one's for you ;)
+    HashSet<Long> set;
     public void solve() {
-    	String s = ins();
-    	long num = 0;
-    	int n = s.length();
-    	for(int i=0;i<n;i++) {
-    		num *= 26;
-    		num += s.charAt(i) - 96;
+    	int n = ini();
+    	int m = ini();
+    	long a[][] = new long[n][m];
+    	for(int i=0;i<n;i++) a[i] = in(m);
+    	set = new HashSet<>();
+    	solve(a, 0, 0, 0, n, m);
+    	long sum = 0;
+    	for(long ele : set) sum += ele;
+    	pl(set.size() + " " + sum);
+    }
+    
+    public void solve(long a[][], int i, int j, long sum, int n, int m) {
+    	sum += a[i][j];
+    	if(i == n-1 && j == m - 1) {
+    		set.add(sum);
+    		return;
     	}
-    	pl(num);
+    	if(i + 1 < n) solve(a, i + 1, j, sum, n, m);
+    	if(j + 1 < m) solve(a, i, j + 1, sum, n, m);
     }
 }

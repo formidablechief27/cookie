@@ -71,6 +71,7 @@ public class CodeController {
     }
 	
 	public String getQuestionNameById(int questionId) {
+		if(DataCache.ques_map.containsKey(questionId)) return DataCache.ques_map.get(questionId).getQuestionName();
         return ques_repo.findById(questionId)
                 .map(Questions::getQuestionName)
                 .orElse(null);
@@ -81,11 +82,27 @@ public class CodeController {
 	}
 	
 	public Optional<Questions> getQuestion(int id) {
-		return ques_repo.findById(id);
+		if(DataCache.ques_map.containsKey(id)) {
+			Optional<Questions> q = Optional.of(DataCache.ques_map.get(id));
+			return q;
+		}
+        return ques_repo.findById(id);
 	}
 	
 	public List<Submissions> getAllSubmissionsByUserIdAndContestId(Integer userId, Integer contestId) {
-        return subs_repo.findByUserIdAndContestId(userId, contestId);
+		List<Submissions> list = new ArrayList<>();
+		for(int i=1;i<=subs_repo.count();i++) {
+			if(DataCache.sub_map.containsKey(i)) {
+				if(DataCache.sub_map.get(i).getUserId() == userId && DataCache.sub_map.get(i).getContestId() == contestId) list.add(DataCache.sub_map.get(i));
+				continue;
+			}
+			Optional<Submissions> s = subs_repo.findById(i);
+			if(s.isPresent()) {
+				if(s.get().getVerdict().contains("Passed")) DataCache.sub_map.put(i, s.get());
+				if(s.get().getUserId() == userId && s.get().getContestId() == contestId) list.add(s.get());
+			}
+		}
+        return list;
     }
 	
 	public List<Subs> subs(int id, HttpSession session, int user) {
@@ -295,6 +312,9 @@ public class CodeController {
 				System.out.println(verd);
 				fverd = verd + " on Pretest " + (te);
 				dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id);
+				Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
+				DataCache.queue.put(user.get().getId(), DataCache.queue.get(user.get().getId()) - 1);
+				if(DataCache.queue.get(user.get().getId()) == 0) DataCache.queue.remove(user.get().getId());
 				break;
 			}
 		}

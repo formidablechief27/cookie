@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,10 +43,18 @@ public class HistoryController {
     }
 	
 	public Optional<Questions> getContestById1(Integer id) {
+		if(DataCache.ques_map.containsKey(id)) {
+			Optional<Questions> q = Optional.of(DataCache.ques_map.get(id));
+			return q;
+		}
         return ques_repo.findById(id);
     }
 	
 	public Optional<Submissions> getContestById(Integer id) {
+		if(DataCache.sub_map.containsKey(id)) {
+			Optional<Submissions> s = Optional.of(DataCache.sub_map.get(id));
+			return s;
+		}
         return subs_repo.findById(id);
     }
 
@@ -215,8 +224,13 @@ public class HistoryController {
     	for(String ele : p) {
     		if(ele.trim().length() > 0) {
     			int quesId = Integer.parseInt(ele.trim());
+    			if(DataCache.ques_map.containsKey(quesId)) {
+    				list.add(DataCache.ques_map.get(quesId));
+    				continue;
+    			}
     			Optional<Questions> ques = ques_repo.findById(quesId);
     			list.add(ques.get());
+    			DataCache.ques_map.put(quesId, ques.get());
     		}
     	}
     	model.addAttribute("questions", list);
@@ -224,20 +238,33 @@ public class HistoryController {
 	}
 	
 	public String getQuestionNameById(int questionId) {
+		if(DataCache.ques_map.containsKey(questionId)) return DataCache.ques_map.get(questionId).getQuestionName();
         return ques_repo.findById(questionId)
                 .map(Questions::getQuestionName)
                 .orElse(null);
     }
 	
 	public List<Subs> subs(int user) {
-		List<Submissions> list;
-		list = subs_repo.findByUserId(user);
+		List<Submissions> list = new ArrayList<>();
+		for(int i=1;i<=subs_repo.count();i++) {
+			if(DataCache.sub_map.containsKey(i)) {
+				if(DataCache.sub_map.get(i).getUserId() == user) list.add(DataCache.sub_map.get(i));
+				continue;
+			}
+			Optional<Submissions> s = subs_repo.findById(i);
+			if(s.isPresent()) {
+				if(s.get().getVerdict().contains("Passed")) DataCache.sub_map.put(i, s.get());
+				if(s.get().getUserId() == user) list.add(s.get());
+			}
+		}
+		//System.out.println(list.size());
+		//list = subs_repo.findByUserId(user);
 		list = list.stream()
 		        .sorted(Comparator.comparing(Submissions::getTimeSubmitted).reversed())
 		        .collect(Collectors.toList());
 		List<Subs> newlist = new ArrayList<>();
 		Optional<Users> us = user_repo.findById(user);
-		for(Submissions sub : list) newlist.add(new Subs(sub.getId(), us.get().getUsername(), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().toString()));
+		for(Submissions sub : list) newlist.add(new Subs(sub.getId(), us.get().getUsername(), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().toString().replace('T', ' ')));
 		return newlist;
 	}
 	

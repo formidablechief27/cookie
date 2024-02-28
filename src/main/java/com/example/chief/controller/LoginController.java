@@ -71,6 +71,7 @@ public class LoginController {
 		Users user = new Users(username, email, pass, 0, 0, ",");
 		Optional<Users> existingUser = user_repo.findByUsername(username);
 		if(existingUser.isPresent()) {
+			model.addAttribute("msg", 1);
 			return "test.html";
 		}
 		else {
@@ -101,9 +102,13 @@ public class LoginController {
 				model.addAttribute("val", 1);
 				return "test2.html";
 			}
-			else return "test2.html";
+			else {
+				model.addAttribute("msg", 1);
+				return "test2.html";
+			}
 		}
 		else {
+			model.addAttribute("msg", 2);
 			return "test2.html";
 		}
     }

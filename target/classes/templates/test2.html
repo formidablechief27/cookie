@@ -110,6 +110,7 @@
 </head>
 <body>
 <script th:inline="javascript">
+    var msg = /*[[${msg}]]*/ '0';
     var val1 = /*[[${val}]]*/ 'defaultVal1';
 </script>
 
@@ -117,7 +118,13 @@
     </form>
 
     <script>
-        if(val1 == 1) {
+        if(msg == 1) {
+            window.alert("Password does not match");
+        }
+        else if (msg == 2) {
+            window.alert("User does not exist");
+        }
+        else if(val1 == 1) {
             var f = document.getElementById("enter");
             f.submit();
         }

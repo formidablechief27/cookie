@@ -53,7 +53,19 @@ public class Board_Controller {
     }
 	
 	public List<Submissions> getAllSubmissionsByContestId(int contestId) {
-        return subs_repo.findByContestId(contestId);
+		List<Submissions> list = new ArrayList<>();
+		for(int i=1;i<=subs_repo.count();i++) {
+			if(DataCache.sub_map.containsKey(i)) {
+				if(DataCache.sub_map.get(i).getContestId() == contestId) list.add(DataCache.sub_map.get(i));
+				continue;
+			}
+			Optional<Submissions> s = subs_repo.findById(i);
+			if(s.isPresent()) {
+				if(s.get().getVerdict().contains("Passed")) DataCache.sub_map.put(i, s.get());
+				if(s.get().getContestId() == contestId) list.add(s.get());
+			}
+		}
+        return list;
     }
 	
 	@GetMapping("/leaderboard")

@@ -119,14 +119,29 @@ public class IDEController {
 		        }
 			    return output;
 			} else {
-			    output.append("Compilation Error ");
-			    return output;
+				try {
+		            ProcessBuilder processBuilder = new ProcessBuilder("javac", sourceFile.getPath());
+		            processBuilder.redirectError(ProcessBuilder.Redirect.PIPE);
+		            Process compilationProcess = processBuilder.start();
+		            // Read the error stream and append to output
+		            try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(compilationProcess.getErrorStream()))) {
+		                String line;
+		                while ((line = errorReader.readLine()) != null) {
+		                    output.append(line).append("\n");
+		                }
+		            }
+		            return output;
+		        } catch (IOException e) {
+		            e.printStackTrace(); // Handle exceptions as needed
+		            return output.append("Error during compilation");
+		        }
 			}
         });
         try {
             StringBuilder result = future.get(5, TimeUnit.SECONDS); // 5 seconds timeout
             return result;
         } catch (Exception e) {
+        	e.printStackTrace();
             future.cancel(true);
             output.append("Time Limit Exceeded");
             return output;
