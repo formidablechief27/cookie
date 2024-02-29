@@ -98,7 +98,7 @@ public class CodeController {
 			}
 			Optional<Submissions> s = subs_repo.findById(i);
 			if(s.isPresent()) {
-				if(s.get().getVerdict().contains("Passed")) DataCache.sub_map.put(i, s.get());
+				if(!s.get().getVerdict().contains("Running")) DataCache.sub_map.put(i, s.get());
 				if(s.get().getUserId() == userId && s.get().getContestId() == contestId) list.add(s.get());
 			}
 		}
