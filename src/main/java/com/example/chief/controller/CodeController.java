@@ -91,18 +91,18 @@ public class CodeController {
 	
 	public List<Submissions> getAllSubmissionsByUserIdAndContestId(Integer userId, Integer contestId) {
 		List<Submissions> list = new ArrayList<>();
-		for(int i=1;i<=subs_repo.count();i++) {
-			if(DataCache.sub_map.containsKey(i)) {
-				if(DataCache.sub_map.get(i).getUserId() == userId && DataCache.sub_map.get(i).getContestId() == contestId) list.add(DataCache.sub_map.get(i));
-				continue;
-			}
-			Optional<Submissions> s = subs_repo.findById(i);
-			if(s.isPresent()) {
-				if(!s.get().getVerdict().contains("Running")) DataCache.sub_map.put(i, s.get());
-				if(s.get().getUserId() == userId && s.get().getContestId() == contestId) list.add(s.get());
-			}
-		}
-        return list;
+//		for(int i=1;i<=subs_repo.count();i++) {
+//			if(DataCache.sub_map.containsKey(i)) {
+//				if(DataCache.sub_map.get(i).getUserId() == userId && DataCache.sub_map.get(i).getContestId() == contestId) list.add(DataCache.sub_map.get(i));
+//				continue;
+//			}
+//			Optional<Submissions> s = subs_repo.findById(i);
+//			if(s.isPresent()) {
+//				if(!s.get().getVerdict().contains("Running")) DataCache.sub_map.put(i, s.get());
+//				if(s.get().getUserId() == userId && s.get().getContestId() == contestId) list.add(s.get());
+//			}
+//		}
+        return subs_repo.findByUserIdAndContestId(userId, contestId);
     }
 	
 	public List<Subs> subs(int id, HttpSession session, int user) {

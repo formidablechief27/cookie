@@ -246,19 +246,19 @@ public class HistoryController {
 	
 	public List<Subs> subs(int user) {
 		List<Submissions> list = new ArrayList<>();
-		for(int i=1;i<=subs_repo.count();i++) {
-			if(DataCache.sub_map.containsKey(i)) {
-				if(DataCache.sub_map.get(i).getUserId() == user) list.add(DataCache.sub_map.get(i));
-				continue;
-			}
-			Optional<Submissions> s = subs_repo.findById(i);
-			if(s.isPresent()) {
-				if(!s.get().getVerdict().contains("Running")) DataCache.sub_map.put(i, s.get());
-				if(s.get().getUserId() == user) list.add(s.get());
-			}
-		}
+//		for(int i=1;i<=subs_repo.count();i++) {
+//			if(DataCache.sub_map.containsKey(i)) {
+//				if(DataCache.sub_map.get(i).getUserId() == user) list.add(DataCache.sub_map.get(i));
+//				continue;
+//			}
+//			Optional<Submissions> s = subs_repo.findById(i);
+//			if(s.isPresent()) {
+//				if(!s.get().getVerdict().contains("Running")) DataCache.sub_map.put(i, s.get());
+//				if(s.get().getUserId() == user) list.add(s.get());
+//			}
+//		}
 		//System.out.println(list.size());
-		//list = subs_repo.findByUserId(user);
+		list = subs_repo.findByUserId(user);
 		list = list.stream()
 		        .sorted(Comparator.comparing(Submissions::getTimeSubmitted).reversed())
 		        .collect(Collectors.toList());

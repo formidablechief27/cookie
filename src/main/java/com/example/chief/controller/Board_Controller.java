@@ -5,12 +5,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
@@ -54,18 +56,18 @@ public class Board_Controller {
 	
 	public List<Submissions> getAllSubmissionsByContestId(int contestId) {
 		List<Submissions> list = new ArrayList<>();
-		for(int i=1;i<=subs_repo.count();i++) {
-			if(DataCache.sub_map.containsKey(i)) {
-				if(DataCache.sub_map.get(i).getContestId() == contestId) list.add(DataCache.sub_map.get(i));
-				continue;
-			}
-			Optional<Submissions> s = subs_repo.findById(i);
-			if(s.isPresent()) {
-				if(!s.get().getVerdict().contains("Running")) DataCache.sub_map.put(i, s.get());
-				if(s.get().getContestId() == contestId) list.add(s.get());
-			}
-		}
-        return list;
+//		for(int i=1;i<=subs_repo.count();i++) {
+//			if(DataCache.sub_map.containsKey(i)) {
+//				if(DataCache.sub_map.get(i).getContestId() == contestId) list.add(DataCache.sub_map.get(i));
+//				continue;
+//			}
+//			Optional<Submissions> s = subs_repo.findById(i);
+//			if(s.isPresent()) {
+//				if(!s.get().getVerdict().contains("Running")) DataCache.sub_map.put(i, s.get());
+//				if(s.get().getContestId() == contestId) list.add(s.get());
+//			}
+//		}
+        return subs_repo.findByContestId(contestId);
     }
 	
 	@GetMapping("/leaderboard")
@@ -367,9 +369,10 @@ public class Board_Controller {
 			 int st = con.getSt();
 			 int ind = ques_id - st;
 			 if(sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted")) map.get(user)[ind] = 1;
-			 if((sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong")) && map.get(user)[ind] == 0) map.get(user)[ind] = -1;
+			 if((sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Runtime")) && map.get(user)[ind] == 0) map.get(user)[ind] = -1;
 		 }
 		 List<String> arr[] = new ArrayList[map.size()];
+		 long a[][] = new long[2][map.size()];
 		 for(int i=0;i<map.size();i++) arr[i] = new ArrayList<>();
 		 int ind = 0;
 		 for(Map.Entry<Integer, int[]> entry : map.entrySet()) {
@@ -385,11 +388,26 @@ public class Board_Controller {
 				 if(p[i] == 0) arr[ind].add(" ");
 			 }
 			 System.out.println(arr[ind]);
+			 a[0][ind] = sum;
+			 a[1][ind] = entry.getKey();
 			 ind++;
 		 }
-		 model.addAttribute("arr", arr);
+		 rsort(a);
+		 List<String> farr[] = new ArrayList[map.size()];
+		 for(int i=0;i<map.size();i++) farr[i] = new ArrayList<>();
+		 for(int i=0;i<map.size();i++) {
+			 int index = (int)a[1][i];
+			 for(String val : arr[index]) farr[i].add(val);
+		 }
+		 model.addAttribute("arr", farr);
 		 model.addAttribute("id", contestid);
 		 model.addAttribute("name", contest.get().getTitle());
 		 return "board.html";
 	 }
+	 
+	void sort(long a[][]) {divide(a, 0, a[0].length - 1, true);}
+    void rsort(long a[][]) {divide(a, 0, a[0].length - 1, false);}
+    void divide(long a[][], int l, int r, boolean order) {if (l < r) {int m = l + (r - l) / 2;divide(a, l, m, order);divide(a, m + 1, r,order);merge(a, l, m, r, order);}}
+    void merge(long a[][], int l, int m, int r, boolean order) {int n1 = m - l + 1;int n2 = r - m;long L[] = new long[n1]; long R[] = new long[n2];long b1[][] = new long[a.length][n1]; long b2[][] = new long[a.length][n2];for (int i = 0; i < n1; ++i) {L[i] = a[0][l + i];for (int p = 1; p < a.length; p++) b1[p][i] = a[p][l + i];}for (int j = 0; j < n2; ++j) {R[j] = a[0][m + 1 + j];for (int p = 1; p < a.length; p++) b2[p][j] = a[p][m + 1 + j];}int i = 0, j = 0; int k = l;while (i < n1 && j < n2) {if ((L[i] <= R[j] && order) || (L[i] >= R[j] && !order)) {a[0][k] = L[i]; for (int p = 1; p < a.length; p++) a[p][k] = b1[p][i];i++;} else {a[0][k] = R[j];for (int p = 1; p < a.length; p++) a[p][k] = b2[p][j];j++;}k++;}while (i < n1) {a[0][k] = L[i];for (int p = 1; p < a.length; p++) a[p][k] = b1[p][i];i++;k++;}while (j < n2) {a[0][k] = R[j];for (int p = 1; p < a.length; p++) a[p][k] = b2[p][j];j++;k++;}}
+    
 }
