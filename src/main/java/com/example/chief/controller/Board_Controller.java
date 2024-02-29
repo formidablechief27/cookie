@@ -389,7 +389,7 @@ public class Board_Controller {
 			 }
 			 System.out.println(arr[ind]);
 			 a[0][ind] = sum;
-			 a[1][ind] = entry.getKey();
+			 a[1][ind] = ind;
 			 ind++;
 		 }
 		 rsort(a);
