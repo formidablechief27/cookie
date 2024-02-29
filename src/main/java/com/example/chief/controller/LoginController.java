@@ -40,6 +40,7 @@ public class LoginController {
 	
 	@GetMapping("/")
 	public String start(HttpSession session, Model model) {
+		System.out.println(DataCache.sub_map.size());
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
 		return "start.html";
