@@ -8,7 +8,8 @@ public class Main {
     }
 
     public void solve() {
-    	long n = SC.nextLong();
-        System.out.println((n - 1)*10 + 2);
+        long n = SC.nextLong();
+        System.out.println(n * 10 - 8);
+    	// write your logic here
     }
 }

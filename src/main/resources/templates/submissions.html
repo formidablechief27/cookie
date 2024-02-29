@@ -386,16 +386,17 @@
 
             <script>
                 var flag = 1;
-                for (var i = 0; i < table.size(); i++) {
+                for (var i = 0; i < table.length; i++) {
                     if (table[i].verdict && table[i].verdict.indexOf("Running") !== -1) {
                         flag = 0;
                         break;
                     }
                 }
+                console.log(flag);
                 if (flag === 0) {
                     setTimeout(function() {
                         location.reload();
-                    }, 3000);   
+                    }, 4000);
                 }
             </script>
         </main>
