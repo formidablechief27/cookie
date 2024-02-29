@@ -40,6 +40,7 @@ public class ContestController {
 	
 	@GetMapping("/contest-list")
 	public String main(HttpSession session, Model model) {
+		System.out.println(DataCache.user_map.size());
 		List<Contests> list = getAllContests();
 		List<Contests> ls = new ArrayList<>();
 		for(Contests c : list) if(c.getId() > 15) ls.add(c);

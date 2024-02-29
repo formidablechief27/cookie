@@ -45,9 +45,10 @@ public class Board_Controller {
     }
 	
 	public String getUserById(int Id) {
-        return user_repo.findById(Id)
-                .map(Users::getUsername)
-                .orElse(null);
+		if(DataCache.user_map.containsKey(Id)) return DataCache.user_map.get(Id).getUsername();
+		Optional<Users> user = user_repo.findById(Id);
+		DataCache.user_map.put(Id, user.get());
+		return user.get().getUsername();
     }
 	
 	public Optional<Contests> getContestById(Long id) {
@@ -55,19 +56,7 @@ public class Board_Controller {
     }
 	
 	public List<Submissions> getAllSubmissionsByContestId(int contestId) {
-		List<Submissions> list = new ArrayList<>();
-//		for(int i=1;i<=subs_repo.count();i++) {
-//			if(DataCache.sub_map.containsKey(i)) {
-//				if(DataCache.sub_map.get(i).getContestId() == contestId) list.add(DataCache.sub_map.get(i));
-//				continue;
-//			}
-//			Optional<Submissions> s = subs_repo.findById(i);
-//			if(s.isPresent()) {
-//				if(!s.get().getVerdict().contains("Running")) DataCache.sub_map.put(i, s.get());
-//				if(s.get().getContestId() == contestId) list.add(s.get());
-//			}
-//		}
-        return subs_repo.findByContestId(contestId);
+		return subs_repo.findByContestId(contestId);
     }
 	
 	@GetMapping("/leaderboard")
@@ -352,10 +341,17 @@ public class Board_Controller {
 		 else model.addAttribute("status", "My Profile");
 		 int probs = 0;
 		 Long key = (long) contestid;
-		 Optional<Contests> contest = getContestById(key);
-		 Contests con = contest.get();
-		 System.out.println(con.getCount());
+		 Contests con;
+		 if(DataCache.contest_map.containsKey(contestid)) {
+			 con = DataCache.contest_map.get(contestid);
+		 }
+		 else {
+			 Optional<Contests> contest = getContestById(key);
+			 con = contest.get();
+		 }
+		 //System.out.println(con.getCount());
 		 probs = con.getCount();
+		 long start = System.currentTimeMillis();
 		 model.addAttribute("numberOfColumns", con.getCount());
 		 List<Submissions> list = getAllSubmissionsByContestId(contestid);
 		 HashMap<Integer, int[]> map = new HashMap<>();
@@ -401,7 +397,7 @@ public class Board_Controller {
 		 }
 		 model.addAttribute("arr", farr);
 		 model.addAttribute("id", contestid);
-		 model.addAttribute("name", contest.get().getTitle());
+		 model.addAttribute("name", con.getTitle());
 		 return "board.html";
 	 }
 	 

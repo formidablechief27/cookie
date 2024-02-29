@@ -281,6 +281,7 @@
 
 <script th:inline="javascript">
     var val = /*[[${reload}]]*/ 0;
+    var table = /*[[${submissions}]]*/ []
 </script>
 
     <!-- Loading screen -->
@@ -296,7 +297,7 @@
     <!-- Main content -->
     <div class="content">
         <header>
-            <h1>Algo Chief</h1>
+            <img src = "log.png" style = "width: 20%;">
             <h2>Master Data Structures and Algorithms</h2>
         </header>
 
@@ -384,12 +385,17 @@
             </script>
 
             <script>
-                // Function to reload the page
-                if(val == 1) {
-                    function reloadPage() {
-                        location.reload();
+                var flag = 1;
+                for (var i = 0; i < table.size(); i++) {
+                    if (table[i].verdict && table[i].verdict.indexOf("Running") !== -1) {
+                        flag = 0;
+                        break;
                     }
-                    setTimeout(reloadPage, 4000);
+                }
+                if (flag === 0) {
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);   
                 }
             </script>
         </main>

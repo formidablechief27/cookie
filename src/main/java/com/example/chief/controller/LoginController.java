@@ -79,6 +79,7 @@ public class LoginController {
 			user_repo.save(user);
 			HttpSession session = request.getSession();
 			Optional<Users> existing = user_repo.findByUsername(username);
+			DataCache.user_map.put(existing.get().getId(), user);
 			session.setAttribute("P", existing.get().getId());
 			session.setAttribute("user", username);
 			model.addAttribute("val", 1);
@@ -98,6 +99,7 @@ public class LoginController {
 			HttpSession session = request.getSession();
 			long pass = existingUser.get().getPassword();
 			if(pass == pass2) {
+				DataCache.user_map.put(existingUser.get().getId(), existingUser.get());
 				session.setAttribute("P", existingUser.get().getId());
 				session.setAttribute("user", existingUser.get().getUsername());
 				model.addAttribute("val", 1);
