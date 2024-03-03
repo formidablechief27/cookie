@@ -11,7 +11,7 @@ public class Tutorial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String text;
 
@@ -24,17 +24,17 @@ public class Tutorial {
     }
 
     public Tutorial(String text, String code) {
-        this.text = text;
+    	this.text = text;
         this.code = code;
     }
 
     // Getters and Setters
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

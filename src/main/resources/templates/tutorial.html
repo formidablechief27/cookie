@@ -353,14 +353,22 @@
             justify-content: center;
             align-items: center;
         }
-        
+        .video-container {
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        @media screen and (max-width: 500px) {
+            .video-container {
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
 
-<script th:inline="javascript">
-        var contest_id = /*[[${id}]]*/ '';
-        var question_id = /*[[${qid}]]*/ '';
+    <script th:inline="javascript">
+        var link = /*[[${link}]]*/ "some";
     </script>
 
     <!-- Main content -->
@@ -401,23 +409,17 @@
                     <input type = "hidden" name = "id" th:value = "${id}">
                 </form>
             </div>
-            <div class = "tutorial-text" style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500;;">
-            <h1 style = "text-align: center; font-size: 20px; line-height: 20px; text-decoration: none solid rgb(34, 34, 34); font-family: Verdana, Geneva, Tahoma, sans-serif;"> 
-                <span th:text="${question_name}"></span>
-            </h1>
-            <p style = "word-spacing: 2px;" id = "para1">
-                <span th:text="${question}"></span>
-            </p>
         </div>
-        <div>Detailed explanation will be updated in a few days</div>
+        <!-- <div>Detailed explanation will be updated in a few days</div>
         <div>
             <img id = "tut-img" style = "width: 60%;">
+        </div> -->
+        <div style = "display: flex; justify-content: center; margin-top: 20px;">
+            <span th:text="${text}"></span>
         </div>
-        <script>
-            var link = "sol" + question_id + ".png";
-            document.getElementById("tut-img").src = link;
-            console.log(link);
-        </script>
+        <div class="video-container" style = "display: flex; justify-content: center;">
+            <iframe id = "videoFrame" width="560" height="315" th:src="${link}" frameborder="0" allowfullscreen></iframe>
+        </div>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 var paragraph = document.getElementById("para1");

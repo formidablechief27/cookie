@@ -22,11 +22,13 @@ import com.example.chief.repository.*;
 public class Question_Controller {
 	private QuestionsRepository questions_repository;
 	private TestsRepository tests_repository;
+	private TutorialRepository tutorial_repo;
 	
 	@Autowired
-    public Question_Controller(QuestionsRepository questionsRepository, TestsRepository tests_Repository) {
+    public Question_Controller(QuestionsRepository questionsRepository, TestsRepository tests_Repository, TutorialRepository t) {
         this.questions_repository = questionsRepository;
         this.tests_repository = tests_Repository;
+        this.tutorial_repo = t;
     }
 
 	public Optional<Questions> getQuestion(int id) {
@@ -109,6 +111,12 @@ public class Question_Controller {
 	public String tutorial(Model model, @RequestParam("ques-id") int ques_id, @RequestParam("id") int cid, HttpSession session) {
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
+		Optional<Tutorial> t = tutorial_repo.findById(ques_id);
+		if(t.isPresent()) {
+			model.addAttribute("link", t.get().getCode());
+			System.out.println(t.get().getCode());
+		}
+		else model.addAttribute("text", "Video will be updated in few days");
 		model.addAttribute("id", cid);
 		model.addAttribute("qid", ques_id);
 		return "tutorial.html";
