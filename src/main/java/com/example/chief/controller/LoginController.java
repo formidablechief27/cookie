@@ -130,6 +130,11 @@ public class LoginController {
 		}
     }
 	
+	@GetMapping("/admin")
+	public String admin() {
+		return "admin.html";
+	}
+	
 	long add(long a, long b) {return (((a + mod) % mod + (b + mod) % mod) % mod);}
     long sub(long a, long b) {return (((a + mod) % mod + ((-b) + mod) % mod) % mod);}
     long mul(long a, long b) {return ((a % mod * b % mod) % mod);}
