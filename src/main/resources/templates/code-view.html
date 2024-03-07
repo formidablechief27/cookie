@@ -3,6 +3,7 @@
 <head>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2857343152539721"
      crossorigin="anonymous"></script>
+     <meta name="monetag" content="dbd888b27b29830f048cf7ebc3e441fd">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlgoChief</title>
@@ -237,6 +238,17 @@
             background-color: #333;
         }
 
+        #b {
+            display: block;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
         /* Scroll to top button */
         #scrollTopBtn {
             display: none;
@@ -346,9 +358,26 @@
             </table>
 
             <div style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;">
-            <textarea id="view" style="display: none; white-space: pre-wrap;" th:text="${code}"></textarea>
-            <div id="code-container" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;"> </div>
+                <textarea id="view" style="display: none; white-space: pre-wrap;" th:text="${code}"></textarea>
+                <div id="code-container" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;"> </div>
             </div>
+            <script>
+                function copyToClipboard(text) {
+                    var textToCopy = document.getElementById(text).innerText;
+                    var tempElement = document.createElement("span");
+                    tempElement.value = textToCopy;
+
+                    // Append the temporary element to the DOM
+                    document.body.appendChild(tempElement);
+
+                    // Select and copy the text
+                    tempElement.select();
+                    document.execCommand("copy");
+
+                    // Remove the temporary element
+                    document.body.removeChild(tempElement);
+                }
+            </script>
 
             <script>
                 var codeTextArea = document.getElementById("view");

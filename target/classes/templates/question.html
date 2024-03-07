@@ -3,6 +3,7 @@
 <head>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2857343152539721"
      crossorigin="anonymous"></script>
+     <meta name="monetag" content="dbd888b27b29830f048cf7ebc3e441fd">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlgoChief</title>
@@ -317,6 +318,17 @@
             }
 
         /* Scroll to top button */
+        #b {
+            display: block;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
         #scrollTopBtn {
             display: none;
             position: fixed;
@@ -439,23 +451,28 @@
                     <table class = "input-table">
                         <tr>
                             <td class = "input-output"> Input </td>
+                            <td style = "width: 20px;"><button id = "b" onclick="copyToClipboard('inp1')">Copy</button></td>
                         </tr>
                         <tr>
                             <td> 
                                 <p class = "input-text" id = "inp1"> 
                                     <span th:text="${input1}"></span>
+                                    
                                 </p>
                                 <!-- Input 1 -->
                             </td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td class = "input-output"> Output </td>
+                            <td><button id = "b" onclick="copyToClipboard('out1')">Copy</button></td>
                         </tr>
                         <tr>
-                            <td class = "input-text"> 
+                            <td class = "input-text" id = "out1"> 
                                 <span th:text="${output1}"></span>
                                 <!-- Output 1  -->
                             </td>
+                            <td></td>
                         </tr>
                     </table>
                     <p class = "question-details" style = "max-width: 500px; word-wrap: break-word; font-size: 12px; font-family: Verdana, Geneva, Tahoma, sans-serif;" id = "para4">
@@ -467,22 +484,27 @@
                     <table class = "input-table">
                         <tr>
                             <td class = "input-output"> Input </td>
+                            <td style = "width: 20px;"><button id = "b" onclick="copyToClipboard('inp2')">Copy</button></td>
                         </tr>
                         <tr>
                             <td> 
                                 <p class = "input-text" id = "inp2"> 
                                     <span th:text="${input2}"></span>
+                                    
                                 </p>
                             </td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td class = "input-output"> Output </td>
+                            <td><button id = "b" onclick="copyToClipboard('out2')">Copy</button></td>
                         </tr>
                         <tr>
-                            <td class = "input-text"> 
+                            <td class = "input-text" id = "out2"> 
                                 <span th:text="${output2}"></span>
                                 <!-- Output 2  -->
                             </td>
+                            <td></td>
                         </tr>
                     </table>
                     <p class = "question-details" style = "max-width: 500px; word-wrap: break-word; font-size: 12px; font-family: Verdana, Geneva, Tahoma, sans-serif;" id = "para5">
@@ -494,23 +516,28 @@
                     <table class = "input-table">
                         <tr>
                             <td class = "input-output"> Input </td>
+                            <td style = "width: 20px;"><button id = "b" onclick="copyToClipboard('inp3')">Copy</button></td>
                         </tr>
                         <tr>
                             <td> 
                                 <p class = "input-text" id = "inp3"> 
                                     <span th:text="${input3}"></span>
+                                    
                                 </p>
                                 <!-- Input 3 -->
                             </td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td class = "input-output"> Output </td>
+                            <td><button id = "b" onclick="copyToClipboard('out3')">Copy</button></td>
                         </tr>
                         <tr>
-                            <td class = "input-text"> 
+                            <td class = "input-text" id = "out3"> 
                                 <span th:text="${output3}"></span>
                                 <!-- Output 3 -->
                             </td>
+                            <td></td>
                         </tr>
                     </table>
                     <p class = "question-details" style = "max-width: 500px; word-wrap: break-word; font-size: 12px; font-family: Verdana, Geneva, Tahoma, sans-serif;" id = "para6">
@@ -520,6 +547,23 @@
                 </div>
             </div>
         </div>
+        <script>
+            function copyToClipboard(text) {
+                var textToCopy = document.getElementById(text).innerText;
+                var tempElement = document.createElement("textarea");
+                tempElement.value = textToCopy;
+
+                // Append the temporary element to the DOM
+                document.body.appendChild(tempElement);
+
+                // Select and copy the text
+                tempElement.select();
+                document.execCommand("copy");
+
+                // Remove the temporary element
+                document.body.removeChild(tempElement);
+            }
+        </script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 var paragraph = document.getElementById("para1");
@@ -566,6 +610,21 @@
                 var text = paragraph.innerHTML;
                 text = text.replace(/\$/g, '<br>');
                 var resultElement = document.getElementById("inp3");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("out1");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("out1");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("out2");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("out2");
+                resultElement.innerHTML = text;
+                var paragraph = document.getElementById("out3");
+                var text = paragraph.innerHTML;
+                text = text.replace(/\$/g, '<br>');
+                var resultElement = document.getElementById("out3");
                 resultElement.innerHTML = text;
             });
         </script>

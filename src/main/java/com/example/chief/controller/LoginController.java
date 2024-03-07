@@ -40,7 +40,21 @@ public class LoginController {
 	
 	@GetMapping("/")
 	public String start(HttpSession session, Model model) {
-		System.out.println(DataCache.sub_map.size());
+		Runtime runtime = Runtime.getRuntime();
+
+        long totalMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+        long usedMemory = totalMemory - freeMemory;
+        totalMemory /= 1024;
+        totalMemory /= 1024;
+        freeMemory /= 1024;
+        freeMemory /= 1024;
+        usedMemory /= 1024;
+        usedMemory /= 1024;
+        
+        System.out.println("Total Memory: " + totalMemory + " mb");
+        System.out.println("Free Memory: " + freeMemory + " mb");
+        System.out.println("Used Memory: " + usedMemory + " mb");
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
 		return "start.html";
