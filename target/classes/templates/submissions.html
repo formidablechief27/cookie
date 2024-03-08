@@ -343,6 +343,7 @@
                         <th style="width: 200px;">User</th>
                         <th style="width: 300px;">Question</th>
                         <th style="width: 350px;">Verdict</th>
+                        <th style="width: 100px;">ms</th>
                     </tr>
                 </thead>
                 <tbody style="font-size: 11px; text-align: center;">
@@ -360,7 +361,8 @@
                             </form>
                         </td>
                         <td th:text="${submission.question}" style="width: 300px;"></td>
-                        <td th:text="${submission.verdict}" style="width: 350px;" class="verdict-cell"></td>
+                        <td th:text="${submission.verdict}" style="width: 300px;" class="verdict-cell"></td>
+                        <td th:text="${submission.timeExecution}" style = "width: 100px;"></td>
                     </tr>
                 </tbody>
             </table>

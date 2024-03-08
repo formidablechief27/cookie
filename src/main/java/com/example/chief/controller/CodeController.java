@@ -240,7 +240,7 @@ public class CodeController {
         // Get the current date and time in the specified time zone
         LocalDateTime istDateTime = LocalDateTime.now(istZone);
 		LocalDateTime date = java.time.LocalDateTime.now();
-		dataentry(session, code, "Running", sub, istDateTime.toString(), Integer.parseInt(quesId), contest_id);
+		dataentry(session, code, "Running", sub, istDateTime.toString(), Integer.parseInt(quesId), contest_id, 0);
 		if(!DataCache.ques_map.containsKey(Integer.parseInt(quesId))){
 			getQuestion(Integer.parseInt(quesId)).ifPresent(question -> {
             	DataCache.ques_map.put(Integer.parseInt(quesId), question);
@@ -264,6 +264,7 @@ public class CodeController {
 		Questions quest = DataCache.ques_map.get(Integer.parseInt(quesId));
 		int start = quest.getTestcaseStart();
 		int end = quest.getTestcaseEnd();
+		int time = 0;
 		for(int i=start;i<=end;i++) {
 			System.out.println("Running on Test " + (i - start + 1));
 			//System.out.println(DataCache.test_map);
@@ -278,6 +279,10 @@ public class CodeController {
 			if(lang.equals("2")) p = run_cpp(code_final, input, output);
 			if(lang.equals("3")) p = runpy(code_final, input, output);
 			verd = p.f;
+			String ti = p.s.substring(p.s.lastIndexOf(' ') + 1, p.s.length() - 2);
+			int ppp = Integer.parseInt(ti);
+			System.out.println(ppp);
+			if(ppp > time) time = ppp;
 			//String time = verd.substring(verd.lastIndexOf(' ')+1, verd.length());
 			//time = time.substring(0, time.length()-2);
 			//String time = verd.substring(verd.lastIndexOf(' ') + 1, verd.length());
@@ -289,7 +294,7 @@ public class CodeController {
 				System.out.println("Test passed ");
 				fverd = "Running on Pretest " + (te + 1);
 				if(i == end) fverd = "Pretests Passed";
-				dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id);
+				dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
 				if(i == end) {
 					Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
 					if(user.isPresent()) {
@@ -311,7 +316,7 @@ public class CodeController {
 			else {
 				System.out.println(verd);
 				fverd = verd + " on Pretest " + (te);
-				dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id);
+				dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
 				Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
 				DataCache.queue.put(user.get().getId(), DataCache.queue.get(user.get().getId()) - 1);
 				if(DataCache.queue.get(user.get().getId()) == 0) DataCache.queue.remove(user.get().getId());
@@ -355,6 +360,11 @@ public class CodeController {
                     outputStream.write(inputBytes);
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                long end = System.currentTimeMillis();   
+                System.out.println(end - start + "ms");
+                if(end - start >= 5000) {
+                	throw new Exception();
+                }
                 String line;
 			    int i = 0;
 			    boolean flag = true;
@@ -367,18 +377,18 @@ public class CodeController {
 	            }
 			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			    while ((line = reader.readLine()) != null) {
-			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput);
+			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput + " " + (end - start) + "ms");
 		        }
 			    //System.out.println(foutput);
 			    if(i != expected.length) flag = false;
-			    if(!flag) return new Pair("Wrong Answer ", foutput);
-			    return new Pair("Passed ", foutput);
+			    if(!flag) return new Pair("Wrong Answer ", foutput + " " + (end - start) + "ms");
+			    return new Pair("Passed ", foutput + " " + (end - start) + "ms");
 			} else {
 			    return new Pair("Compilation Error ", "-1");
 			}
         });
         try {
-            Pair result = future.get(5, TimeUnit.SECONDS); // 5 seconds timeout
+            Pair result = future.get(10, TimeUnit.SECONDS); // 5 seconds timeout
             return result;
         } catch (Exception e) {
             future.cancel(true);
@@ -426,6 +436,8 @@ public class CodeController {
 			        outputStream.write(inputBytes);
 			    }
 			    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			    long end = System.currentTimeMillis();
+			    if(end - start >= 5000) throw new Exception();
 			    String line;
 			    int i = 0;
 			    boolean flag = true;
@@ -437,11 +449,11 @@ public class CodeController {
 			    }
 			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			    while ((line = reader.readLine()) != null) {
-			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput);
+			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput + " " + (end - start) + "ms");
 		        }
 			    if(i != expected.length) flag = false;
-			    if(!flag) return new Pair("Wrong Answer ", foutput);
-			    return new Pair("Passed ", foutput);
+			    if(!flag) return new Pair("Wrong Answer ", foutput + " " + (end - start) + "ms");
+			    return new Pair("Passed ", foutput + " " + (end - start) + "ms");
 			} catch (IOException e) {
 			    e.printStackTrace();
 			    return new Pair("Internal Error ", "-1");
@@ -449,7 +461,7 @@ public class CodeController {
         });
 
         try {
-            Pair result = future.get(5, TimeUnit.SECONDS); // 5 seconds timeout
+            Pair result = future.get(10, TimeUnit.SECONDS); // 5 seconds timeout
             return result;
         } catch (Exception e) {
             future.cancel(true);
@@ -477,6 +489,7 @@ public class CodeController {
             processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
 
             try {
+            	long start = System.currentTimeMillis();
                 Process process = processBuilder.start();
 
                 // Write the input to the standard input of the process
@@ -487,6 +500,8 @@ public class CodeController {
 
                 // Capture the output
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                long end = System.currentTimeMillis();
+                if(end - start >= 5000) throw new Exception();
                 String line;
                 int i = 0;
 			    boolean flag = true;
@@ -499,18 +514,18 @@ public class CodeController {
 	            }
 			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			    while ((line = reader.readLine()) != null) {
-			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput);
+			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput + " " + (end - start) + "ms");
 		        }
 			    if(i != expected.length) flag = false;
-			    if(!flag) return new Pair("Wrong Answer", foutput);
-			    return new Pair("Passed", foutput);
+			    if(!flag) return new Pair("Wrong Answer", foutput + " " + (end - start) + "ms");
+			    return new Pair("Passed", foutput + " " + (end - start) + "ms");
             } catch (IOException e) {
                 e.printStackTrace();
                 return new Pair("Execution Error", "-1");
             }
         });
         try {
-            Pair result = future.get(5, TimeUnit.SECONDS); // 5 seconds timeout
+            Pair result = future.get(10, TimeUnit.SECONDS); // 5 seconds timeout
             return result;
         } catch (Exception e) {
             System.out.println("Time Out occurred ");
@@ -570,11 +585,11 @@ public class CodeController {
        return className;
 	}
 	
-	public void dataentry(HttpSession session, String code, String verdict, int sub_id, String date, int ques_id, int contest_id) {
+	public void dataentry(HttpSession session, String code, String verdict, int sub_id, String date, int ques_id, int contest_id, int time) {
 		String dateString = date.substring(0, date.lastIndexOf('.'));
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 	    LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
-		Submissions sub = new Submissions(sub_id, (Integer) session.getAttribute("P"), ques_id, code, verdict, contest_id, 300, dateTime);
+		Submissions sub = new Submissions(sub_id, (Integer) session.getAttribute("P"), ques_id, code, verdict, contest_id, time, dateTime);
 		addSubmission(sub);
 	}
 	
