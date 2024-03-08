@@ -115,7 +115,7 @@ public class CodeController {
 		List<Subs> newlist = new ArrayList<>();
 		for(Submissions sub : list) {
 			int ques_id = sub.getQuestionId();
-			newlist.add(new Subs(sub.getId(), (String)session.getAttribute("user"), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().toString().replace('T', ' ')));
+			newlist.add(new Subs(sub.getId(), (String)session.getAttribute("user"), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().plusHours(5).plusMinutes(30).toString().replace('T', ' ')));
 		}
 		return newlist;
 	}
@@ -234,7 +234,6 @@ public class CodeController {
 			e.printStackTrace();
 		}
 		ZoneId istZone = ZoneId.of("Asia/Kolkata");
-
         // Get the current date and time in the specified time zone
         LocalDateTime istDateTime = LocalDateTime.now(istZone);
 		LocalDateTime date = java.time.LocalDateTime.now();

@@ -1,5 +1,7 @@
 package com.example.chief.controller;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -62,6 +64,7 @@ public class HistoryController {
 	public String view(@RequestParam("sub-id") int id, @RequestParam("id") int contestid, Model model, HttpSession session) {
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
+		long i = contestid;
 		Optional<Submissions> sub = getContestById(id);
 		if(sub.isPresent()) {
 			Submissions s = sub.get();
@@ -71,7 +74,21 @@ public class HistoryController {
 			Subs obj = new Subs(s.getId(), getContestById2(s.getUserId()).get().getUsername(), getContestById1(s.getQuestionId()).get().getQuestionName(), s.getVerdict(), s.getContestId(), s.getTimeExecution(), formattedDateTime);
 			list.add(obj);
 			String code = s.getCode();
-			model.addAttribute("code", code);
+			Optional<Contests> con = contest_repo.findById(i);
+			LocalDateTime end_time = con.get().getEd();
+			LocalDateTime endTime = LocalDateTime.now(); // Replace with your end time
+	        Duration duration = Duration.between(endTime, end_time);
+	        long totalSeconds = duration.getSeconds();
+	        if(totalSeconds <= 0) {
+	        	model.addAttribute("code", code);
+	        }
+	        else if(!(session.getAttribute("P") == null) && (Integer)session.getAttribute("P") == s.getUserId()) { 
+	        	model.addAttribute("code", code);
+	        }
+	        else {
+	        	code = "Kya bhai ? Aapko kya laga hum aapko contest khatam hone ke pehle dusre ka solution dekhne denge";
+	        	model.addAttribute("code", code);
+	        }
 			model.addAttribute("submissions", list);
 			model.addAttribute("id", contestid);
 		}
@@ -264,7 +281,7 @@ public class HistoryController {
 		        .collect(Collectors.toList());
 		List<Subs> newlist = new ArrayList<>();
 		Optional<Users> us = user_repo.findById(user);
-		for(Submissions sub : list) newlist.add(new Subs(sub.getId(), us.get().getUsername(), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().toString().replace('T', ' ')));
+		for(Submissions sub : list) newlist.add(new Subs(sub.getId(), us.get().getUsername(), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().plusHours(5).plusMinutes(30).toString().replace('T', ' ')));
 		return newlist;
 	}
 	

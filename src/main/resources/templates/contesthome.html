@@ -272,6 +272,9 @@
         }
     </style>
 </head>
+<script th:inline="javascript">
+    var val = /*[[${queslist}]]*/ [];
+</script>
 <body>
     <!-- Loading screen -->
     <div class="boot-screen">
@@ -352,6 +355,19 @@
                 </tbody>
             </table>
         </main>
+        <script>
+            // Assuming 'questionIds' is the array of IDs you received from the server
+            var questionIds = val; // Replace this with your actual array
+
+            // Iterate through the table rows
+            questionIds.forEach(function(questionId) {
+                // Find the corresponding row by ID
+                var row = document.querySelector('input[name="ques-id"][value="' + questionId + '"]').closest('tr');
+                // Add the 'green-text' class to make the text green
+                console.log(row);
+                row.querySelector('input[type="submit"]').style.color = 'rgb(5, 247, 70)';
+            });
+        </script>
 
         <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">Top</button>
     </div>

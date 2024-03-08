@@ -1,6 +1,7 @@
 com\example\chief\controller\Board_Controller.class
 com\example\chief\controller\Board_Controller$1.class
 com\example\chief\repository\SubmissionsRepository.class
+com\example\chief\controller\ContestController$Contest.class
 com\example\chief\MyInitializer.class
 com\example\chief\controller\ContestController.class
 com\example\chief\repository\DataCache.class

@@ -1,5 +1,6 @@
 package com.example.chief.controller;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -335,6 +336,22 @@ public class Board_Controller {
 		    }
 		}
 	 
+	 int calculate(LocalDateTime start, LocalDateTime current, int minus, int ind) {
+		 int max_score = (ind + 1)*500;
+		 int ans = max_score;
+         Duration duration = Duration.between(start, current);
+	     long totalMinutes = duration.toMinutes();
+	     if(totalMinutes < 0) {
+	    	 if(minus <= 1) return 1;
+	    	 else return minus;
+	     }
+	     System.out.println(minus + " " + totalMinutes);
+	     if(minus <= 0) ans += (50*minus);
+	     ans -= (totalMinutes * (ind + 1));
+	     ans = Math.max((3*max_score)/10, ans);
+		 return ans;
+	 }
+	 
 	 @GetMapping("/board")
 	 public String go(HttpSession session, @RequestParam("id") int contestid, Model model) {
 		 if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
@@ -364,6 +381,17 @@ public class Board_Controller {
 			 int ques_id = sub.getQuestionId();
 			 int st = con.getSt();
 			 int ind = ques_id - st;
+			LocalDateTime time = con.getEd();
+			LocalDateTime subtime = sub.getTimeSubmitted(); // Replace with your end time
+	        Duration duration = Duration.between(subtime, time);
+	        long totalMinutes = duration.toMinutes();
+	        long totalSeconds = duration.getSeconds();
+	        long remainingSeconds = totalSeconds % 60;
+	        if(totalSeconds >= 0) {
+	        	if(sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted")) map.get(user)[ind] = calculate(con.getStart(), subtime, map.get(user)[ind], ind);
+				 if(((sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Runtime")) && !sub.getVerdict().trim().endsWith("1")) && map.get(user)[ind] == 0) map.get(user)[ind]--;
+	        	continue;
+	        }
 			 if(sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted")) map.get(user)[ind] = 1;
 			 if((sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Runtime")) && map.get(user)[ind] == 0) map.get(user)[ind] = -1;
 		 }
@@ -376,12 +404,13 @@ public class Board_Controller {
 			 arr[ind].add(user);
 			 int p[] = entry.getValue();
 			 int sum = 0;
-			 for(int i=0;i<p.length;i++) if(p[i] == 1) sum++;
+			 for(int i=0;i<p.length;i++) if(p[i] > 0) sum += p[i];
 			 arr[ind].add(sum + "");
 			 for(int i=0;i<p.length;i++) {
 				 if(p[i] == 1) arr[ind].add("+");
-				 if(p[i] == -1) arr[ind].add("-");
-				 if(p[i] == 0) arr[ind].add(" ");
+				 else if(p[i] == -1) arr[ind].add(Integer.toString(p[i]));
+				 else if(p[i] == 0) arr[ind].add(" ");
+				 else arr[ind].add(Integer.toString(p[i]));
 			 }
 			 System.out.println(arr[ind]);
 			 a[0][ind] = sum;
