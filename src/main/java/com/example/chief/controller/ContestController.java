@@ -99,8 +99,8 @@ public class ContestController {
 		List<Contest> fls = new ArrayList<>();
 		for(int i=0;i<ls.size();i++) {
 			Contests c = ls.get(i);
-			c.setStart(c.getStart());
-			c.setEd(c.getEd());
+			c.setStart(c.getStart().plusHours(5).plusMinutes(30));
+			c.setEd(c.getEd().plusHours(5).plusMinutes(30));
 			Contest con = new Contest(c.getId(), c.getStart().toString().replace('T', ' '), c.getEd().toString().replace('T', ' '), c.getTitle());
 			fls.add(con);
 		}
