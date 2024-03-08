@@ -384,7 +384,7 @@ public class CodeController {
 			    if(!flag) return new Pair("Wrong Answer ", foutput + " " + (end - start) + "ms");
 			    return new Pair("Passed ", foutput + " " + (end - start) + "ms");
 			} else {
-			    return new Pair("Compilation Error ", "-1");
+			    return new Pair("Compilation Error ", " -1ms");
 			}
         });
         try {
@@ -393,7 +393,7 @@ public class CodeController {
         } catch (Exception e) {
             future.cancel(true);
             //System.out.println("TLE ");
-            return new Pair("Time Limit Exceeded  ", "-1");
+            return new Pair("Time Limit Exceeded  ", " -1ms");
         }
 	}
 	
@@ -415,7 +415,7 @@ public class CodeController {
 		try {
 			compileProcess = processBuilder.start();
 			int code = compileProcess.waitFor();
-			if(code != 0) return new Pair("Compilation Error ", "-1");
+			if(code != 0) return new Pair("Compilation Error ", " -1ms");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -456,7 +456,7 @@ public class CodeController {
 			    return new Pair("Passed ", foutput + " " + (end - start) + "ms");
 			} catch (IOException e) {
 			    e.printStackTrace();
-			    return new Pair("Internal Error ", "-1");
+			    return new Pair("Internal Error ", " -1ms");
 			}
         });
 
@@ -466,7 +466,7 @@ public class CodeController {
         } catch (Exception e) {
             future.cancel(true);
             //System.out.println("TLE ");
-            return new Pair("Time Limit Exceeded  ", "-1");
+            return new Pair("Time Limit Exceeded  ", " -1 ms");
         }
 	}
 	
@@ -521,7 +521,7 @@ public class CodeController {
 			    return new Pair("Passed", foutput + " " + (end - start) + "ms");
             } catch (IOException e) {
                 e.printStackTrace();
-                return new Pair("Execution Error", "-1");
+                return new Pair("Execution Error", " -1ms");
             }
         });
         try {
@@ -531,7 +531,7 @@ public class CodeController {
             System.out.println("Time Out occurred ");
             future.cancel(true);
             //System.out.println("TLE ");
-            return new Pair("Time Limit Exceeded ", "-1");
+            return new Pair("Time Limit Exceeded ", " -1ms");
         }
     }
 	
