@@ -214,8 +214,6 @@ public class CodeController {
     public String handleFormSubmission(HttpSession session, @RequestParam("ques-id") String quesId, @RequestParam("id") int contestid, Model model) {
 		if(session.getAttribute("P") == null) return "test2.html";
 		int userId = (Integer)(session.getAttribute("P"));
-		if(DataCache.queue.containsKey(userId)) DataCache.queue.put(userId, DataCache.queue.get(userId) + 1);
-		else DataCache.queue.put(userId, 1);
 		model.addAttribute("status", "My Profile");
 		model.addAttribute("num", quesId);
 		model.addAttribute("id", contestid);
@@ -309,17 +307,12 @@ public class CodeController {
 							user_repo.save(user.get());
 						}
 					}
-					DataCache.queue.put(user.get().getId(), DataCache.queue.get(user.get().getId()) - 1);
-					if(DataCache.queue.get(user.get().getId()) == 0) DataCache.queue.remove(user.get().getId());
 				}
 			}
 			else {
 				System.out.println(verd);
 				fverd = verd + " on Pretest " + (te);
 				dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
-				Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
-				DataCache.queue.put(user.get().getId(), DataCache.queue.get(user.get().getId()) - 1);
-				if(DataCache.queue.get(user.get().getId()) == 0) DataCache.queue.remove(user.get().getId());
 				break;
 			}
 		}
