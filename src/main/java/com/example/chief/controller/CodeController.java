@@ -320,7 +320,12 @@ public class CodeController {
 	
 	public Pair run(String code, String input, String output) {
 		String expected[] = output.trim().split("\n");
-		File sourceFile = new File(extract(code) + ".java");
+		String filename = extract(code);
+		String og_class = filename;
+		Random rand = new Random();
+		filename += rand.nextInt(1000);
+		code = code.replace(og_class, filename);
+		File sourceFile = new File(filename + ".java");
         FileWriter writer;
 		try {
 			writer = new FileWriter(sourceFile);
@@ -345,7 +350,6 @@ public class CodeController {
 			    processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
 			    long start = System.currentTimeMillis();
 			    Process process = processBuilder.start();
-
                 // Write the input to the standard input of the process
                 try (OutputStream outputStream = process.getOutputStream()) {
                     byte[] inputBytes = input.getBytes(StandardCharsets.UTF_8);
@@ -355,6 +359,7 @@ public class CodeController {
                 long end = System.currentTimeMillis();   
                 System.out.println(end - start + "ms");
                 if(end - start >= 5000) {
+                	System.out.println("gadbad");
                 	throw new Exception();
                 }
                 String line;
@@ -380,10 +385,12 @@ public class CodeController {
 			}
         });
         try {
-            Pair result = future.get(10, TimeUnit.SECONDS); // 5 seconds timeout
+            Pair result = future.get(15, TimeUnit.SECONDS); // 5 seconds timeout
+            sourceFile.delete();
             return result;
         } catch (Exception e) {
             future.cancel(true);
+            sourceFile.delete();
             //System.out.println("TLE ");
             return new Pair("Time Limit Exceeded  ", " -1ms");
         }
@@ -466,7 +473,10 @@ public class CodeController {
         String[] expected = output.trim().split("\n");
         ArrayList<Long> times = new ArrayList<>();
         // Write the Python code to a file
-        File sourceFile = new File("main.py");
+        Random rand = new Random();
+        int num = rand.nextInt(1000);
+        String file_name = "main" + num + ".py";
+        File sourceFile = new File(file_name);
         try (FileWriter writer = new FileWriter(sourceFile)) {
             writer.write(code);
         } catch (IOException e1) {
@@ -517,7 +527,7 @@ public class CodeController {
             }
         });
         try {
-            Pair result = future.get(10, TimeUnit.SECONDS); // 5 seconds timeout
+            Pair result = future.get(15, TimeUnit.SECONDS); // 5 seconds timeout
             return result;
         } catch (Exception e) {
             System.out.println("Time Out occurred ");
