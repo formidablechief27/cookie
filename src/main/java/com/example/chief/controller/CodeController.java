@@ -338,54 +338,50 @@ public class CodeController {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		int compilationResult = compiler.run(null, null, null, sourceFile.getPath());
+		if(compilationResult != 0) return new Pair("Compilation Error ", " -1ms");
+		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+	    String className = sourceFile.getName().replace(".java", "");
+	    ProcessBuilder processBuilder = new ProcessBuilder("java", "-Xint", className);
+	    processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
+	    processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
         // Use a Future to track the execution
+	    long start = System.currentTimeMillis();
         Future<Pair> future = executor.submit(() -> {
             // Compile the Java source file
-			if (compilationResult == 0) {
-			    // Compilation succeeded, execute the compiled class
-			    InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
-			    String className = sourceFile.getName().replace(".java", "");
-			    ProcessBuilder processBuilder = new ProcessBuilder("java", "-Xint", className);
-			    processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
-			    processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
-			    long start = System.currentTimeMillis();
-			    Process process = processBuilder.start();
-                // Write the input to the standard input of the process
-                try (OutputStream outputStream = process.getOutputStream()) {
-                    byte[] inputBytes = input.getBytes(StandardCharsets.UTF_8);
-                    outputStream.write(inputBytes);
-                }
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                long end = System.currentTimeMillis();   
-                System.out.println(end - start + "ms");
-                if(end - start >= 5000) {
-                	System.out.println("gadbad");
-                	throw new Exception();
-                }
-                String line;
-			    int i = 0;
-			    boolean flag = true;
-			    String foutput = "";
-			    while ((line = reader.readLine()) != null) {
-			    	//System.out.println("output : " + line.trim());
-			    	if(i == expected.length) flag = false;
-			    	if(!line.trim().equals(expected[i++].trim())) flag = false;
-			    	foutput += line.trim() + "\n";
-	            }
-			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-			    while ((line = reader.readLine()) != null) {
-			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput + " " + (end - start) + "ms");
-		        }
-			    //System.out.println(foutput);
-			    if(i != expected.length) flag = false;
-			    if(!flag) return new Pair("Wrong Answer ", foutput + " " + (end - start) + "ms");
-			    return new Pair("Passed ", foutput + " " + (end - start) + "ms");
-			} else {
-			    return new Pair("Compilation Error ", " -1ms");
-			}
+		    Process process = processBuilder.start();
+            // Write the input to the standard input of the process
+            try (OutputStream outputStream = process.getOutputStream()) {
+                byte[] inputBytes = input.getBytes(StandardCharsets.UTF_8);
+                outputStream.write(inputBytes);
+            }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            long end = System.currentTimeMillis();   
+            System.out.println(end - start + "ms");
+            if(end - start >= 5000) {
+            	System.out.println("gadbad");
+            	throw new Exception();
+            }
+            String line;
+		    int i = 0;
+		    boolean flag = true;
+		    String foutput = "";
+		    while ((line = reader.readLine()) != null) {
+		    	//System.out.println("output : " + line.trim());
+		    	if(i == expected.length) flag = false;
+		    	if(!line.trim().equals(expected[i++].trim())) flag = false;
+		    	foutput += line.trim() + "\n";
+            }
+		    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+		    while ((line = reader.readLine()) != null) {
+		    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput + " " + (end - start) + "ms");
+	        }
+		    //System.out.println(foutput);
+		    if(i != expected.length) flag = false;
+		    if(!flag) return new Pair("Wrong Answer ", foutput + " " + (end - start) + "ms");
+		    return new Pair("Passed ", foutput + " " + (end - start) + "ms");
         });
         try {
-            Pair result = future.get(15, TimeUnit.SECONDS); // 5 seconds timeout
+            Pair result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
             sourceFile.delete();
             return result;
         } catch (Exception e) {
