@@ -360,13 +360,8 @@ public class Board_Controller {
 		 int probs = 0;
 		 Long key = (long) contestid;
 		 Contests con;
-		 if(DataCache.contest_map.containsKey(contestid)) {
-			 con = DataCache.contest_map.get(contestid);
-		 }
-		 else {
-			 Optional<Contests> contest = getContestById(key);
-			 con = contest.get();
-		 }
+		 Optional<Contests> contest = getContestById(key);
+		 con = contest.get();
 		 //System.out.println(con.getCount());
 		 probs = con.getCount();
 		 long start = System.currentTimeMillis();
