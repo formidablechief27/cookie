@@ -341,13 +341,14 @@ public class Board_Controller {
 		 int ans = max_score;
          Duration duration = Duration.between(start, current);
 	     long totalMinutes = duration.toMinutes();
+	     System.out.println(current + "," + start + "," + totalMinutes);
 	     if(totalMinutes < 0) {
 	    	 if(minus <= 1) return 1;
 	    	 else return minus;
 	     }
-	     System.out.println(minus + " " + totalMinutes);
+	     //System.out.println(minus + " " + totalMinutes);
 	     if(minus <= 0) ans += (50*minus);
-	     ans -= (totalMinutes * (ind + 1));
+	     ans -= (totalMinutes * 2 * (ind + 1));
 	     ans = Math.max((3*max_score)/10, ans);
 		 return ans;
 	 }
@@ -381,12 +382,11 @@ public class Board_Controller {
 			 int ques_id = sub.getQuestionId();
 			 int st = con.getSt();
 			 int ind = ques_id - st;
+			 if(ind < 0) continue;
 			LocalDateTime time = con.getEd();
 			LocalDateTime subtime = sub.getTimeSubmitted(); // Replace with your end time
 	        Duration duration = Duration.between(subtime, time);
-	        long totalMinutes = duration.toMinutes();
 	        long totalSeconds = duration.getSeconds();
-	        long remainingSeconds = totalSeconds % 60;
 	        if(totalSeconds >= 0) {
 	        	if(sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted")) map.get(user)[ind] = calculate(con.getStart(), subtime, map.get(user)[ind], ind);
 				 if(((sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Runtime")) && !sub.getVerdict().trim().endsWith("1")) && map.get(user)[ind] == 0) map.get(user)[ind]--;

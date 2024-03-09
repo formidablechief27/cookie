@@ -153,20 +153,19 @@ public class ContestController {
         long totalMinutes = duration.toMinutes();
         long totalSeconds = duration.getSeconds();
         long remainingSeconds = totalSeconds % 60;
-        System.out.println("Total Minutes: " + totalMinutes);
-        System.out.println("Total Seconds: " + totalSeconds);
-        System.out.println("Remaining Seconds (excluding minutes): " + remainingSeconds);
         if(totalSeconds > 0) {
+        	if(session.getAttribute("P") == null) return "test2.html";
         	if(c.isPresent()) model.addAttribute("name", c.get().getTitle());
         	model.addAttribute("min", totalMinutes);
         	model.addAttribute("sec", remainingSeconds);
         	model.addAttribute("id", id);
         	return "timer.html";
         }
-		List<Questions> flist = new ArrayList<>(list.size());
-		for(int i=0;i<list.size();i++) flist.add(null);
+		List<Questions> flist = new ArrayList<>(c.get().getCount());
+		for(int i=0;i<c.get().getCount();i++) flist.add(null);
 		int start = c.get().getSt();
 		for(Questions Q : list) {
+			System.out.println(Q.getId());
 			int qid = Q.getId();
 			int index = qid - start;
 			flist.set(index, Q);
@@ -206,7 +205,7 @@ public class ContestController {
 		List<Questions> list = questions.findAll();
 		List<Questions> flist = new ArrayList<>();
 		for(Questions Q : list) {
-			if(Q.getId() > 200) {
+			if(Q.getId() > 200 && Q.getId() <= 1000) {
 				if(diff == null) {
 					flist.add(Q);
 					continue;
