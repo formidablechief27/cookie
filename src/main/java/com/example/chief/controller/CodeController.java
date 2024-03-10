@@ -277,9 +277,9 @@ public class CodeController {
 			if(lang.equals("3")) p = runpy(code_final, input, output);
 			verd = p.f;
 			String ti = p.s.substring(p.s.lastIndexOf(' ') + 1, p.s.length() - 2);
-			int ppp = Integer.parseInt(ti);
-			System.out.println(ppp);
-			if(ppp > time) time = ppp;
+//			int ppp = Integer.parseInt(ti);
+//			System.out.println(ppp);
+//			if(ppp > time) time = ppp;
 			//String time = verd.substring(verd.lastIndexOf(' ')+1, verd.length());
 			//time = time.substring(0, time.length()-2);
 			//String time = verd.substring(verd.lastIndexOf(' ') + 1, verd.length());

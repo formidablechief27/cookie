@@ -5,13 +5,9 @@ com\example\chief\controller\ContestController$Contest.class
 com\example\chief\MyInitializer.class
 com\example\chief\controller\ContestController.class
 com\example\chief\repository\DataCache.class
-com\example\chief\controller\HistoryController.class
-com\example\chief\controller\HistoryController$Subs.class
 com\example\chief\model\Tests.class
-com\example\chief\controller\CodeController$Subs.class
 com\example\chief\model\Users.class
 com\example\chief\controller\LoginController.class
-com\example\chief\controller\CodeController$Pair.class
 com\example\chief\repository\ContestsRepository.class
 com\example\chief\controller\IDEController.class
 com\example\chief\repository\TutorialRepository.class
@@ -23,6 +19,5 @@ com\example\chief\model\Contests.class
 com\example\chief\controller\Board_Controller$Score.class
 com\example\chief\repository\UserRepository.class
 com\example\chief\model\Questions.class
-com\example\chief\controller\CodeController.class
 com\example\chief\model\Submissions.class
 com\example\chief\repository\QuestionsRepository.class
