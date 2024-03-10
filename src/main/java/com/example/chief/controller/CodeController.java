@@ -276,7 +276,7 @@ public class CodeController {
 			if(lang.equals("2")) p = run_cpp(code_final, input, output);
 			if(lang.equals("3")) p = runpy(code_final, input, output);
 			verd = p.f;
-			String ti = p.s.substring(p.s.lastIndexOf(' ') + 1, p.s.length() - 2);
+			//String ti = p.s.substring(p.s.lastIndexOf(' ') + 1, p.s.length() - 2);
 //			int ppp = Integer.parseInt(ti);
 //			System.out.println(ppp);
 //			if(ppp > time) time = ppp;
@@ -318,6 +318,16 @@ public class CodeController {
 		return ResponseEntity.status(HttpStatus.OK).body("Request processed successfully");
 	}
 	
+	public void cleanupClassFiles(String filename) {
+	    File dir = new File(".");
+	    File[] matchingFiles = dir.listFiles((dir1, name) -> name.startsWith(filename) && name.endsWith(".class"));
+	    if (matchingFiles != null) {
+	        for (File file : matchingFiles) {
+	            file.delete();
+	        }
+	    }
+	}
+	
 	public Pair run(String code, String input, String output) {
 		String expected[] = output.trim().split("\n");
 		String filename = extract(code);
@@ -338,16 +348,19 @@ public class CodeController {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		int compilationResult = compiler.run(null, null, null, sourceFile.getPath());
-		if(compilationResult != 0) return new Pair("Compilation Error ", " -1ms");
+		if(compilationResult != 0) {
+			cleanupClassFiles(filename);
+			return new Pair("Compilation Error ", " -1ms");
+		}
 		InputStream inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
 	    String className = sourceFile.getName().replace(".java", "");
 	    ProcessBuilder processBuilder = new ProcessBuilder("java", "-Xint", className);
 	    processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
 	    processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
         // Use a Future to track the execution
-	    long start = System.currentTimeMillis();
         Future<Pair> future = executor.submit(() -> {
             // Compile the Java source file
+        	long start = System.currentTimeMillis();
 		    Process process = processBuilder.start();
             // Write the input to the standard input of the process
             try (OutputStream outputStream = process.getOutputStream()) {
@@ -383,10 +396,12 @@ public class CodeController {
         try {
             Pair result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
             sourceFile.delete();
+            cleanupClassFiles(filename);
             return result;
         } catch (Exception e) {
             future.cancel(true);
             sourceFile.delete();
+            cleanupClassFiles(filename);
             //System.out.println("TLE ");
             return new Pair("Time Limit Exceeded  ", " -1ms");
         }
@@ -395,7 +410,8 @@ public class CodeController {
 	public Pair run_cpp(String f_code, String input, String output) {
 		Random rand = new Random();
 		int num = rand.nextInt(1000);
-    	File sourceFile = new File("main.cpp");
+		String fname = "main" + num + ".cpp";
+    	File sourceFile = new File(fname);
         FileWriter writer;
         try {
             writer = new FileWriter(sourceFile);
@@ -456,10 +472,18 @@ public class CodeController {
         });
 
         try {
-            Pair result = future.get(10, TimeUnit.SECONDS); // 5 seconds timeout
+            Pair result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
+            sourceFile.delete();
+            String outputFileName = "output" + num + ".exe";
+            File outputFile = new File(outputFileName);
+            outputFile.delete();
             return result;
         } catch (Exception e) {
             future.cancel(true);
+            sourceFile.delete();
+            String outputFileName = "output" + num + ".exe";
+            File outputFile = new File(outputFileName);
+            outputFile.delete();
             //System.out.println("TLE ");
             return new Pair("Time Limit Exceeded  ", " -1 ms");
         }
@@ -512,6 +536,7 @@ public class CodeController {
 	            }
 			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			    while ((line = reader.readLine()) != null) {
+			    	System.out.println(line);
 			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput + " " + (end - start) + "ms");
 		        }
 			    if(i != expected.length) flag = false;
@@ -524,10 +549,12 @@ public class CodeController {
         });
         try {
             Pair result = future.get(15, TimeUnit.SECONDS); // 5 seconds timeout
+            sourceFile.delete();
             return result;
         } catch (Exception e) {
             System.out.println("Time Out occurred ");
             future.cancel(true);
+            sourceFile.delete();
             //System.out.println("TLE ");
             return new Pair("Time Limit Exceeded ", " -1ms");
         }
