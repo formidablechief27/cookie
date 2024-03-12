@@ -71,7 +71,7 @@ public class HistoryController {
 			List<Subs> list = new ArrayList<>();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	        String formattedDateTime = s.getTimeSubmitted().format(formatter);
-			Subs obj = new Subs(s.getId(), getContestById2(s.getUserId()).get().getUsername(), getContestById1(s.getQuestionId()).get().getQuestionName(), s.getVerdict(), s.getContestId(), s.getTimeExecution(), formattedDateTime);
+			Subs obj = new Subs(s.getId(), getContestById2(s.getUserId()).get().getUsername(), getContestById1(s.getQuestionId()).get().getQuestionName(), s.getVerdict(), s.getContestId(), s.getTimeExecution(), formattedDateTime, s.getQuestionId());
 			list.add(obj);
 			String code = s.getCode();
 			Optional<Contests> con = contest_repo.findById(i);
@@ -103,8 +103,9 @@ public class HistoryController {
 		int contestId;
 		int timeExecution;
 		String timeSubmitted;
+		int ques;
 		
-		public Subs(int id, String user, String question, String verdict, int contestId, int timeExecution, String timeSubmitted) {
+		public Subs(int id, String user, String question, String verdict, int contestId, int timeExecution, String timeSubmitted, int ques) {
 	        this.id = id;
 	        this.user = user;
 	        this.question = question;
@@ -112,7 +113,16 @@ public class HistoryController {
 	        this.contestId = contestId;
 	        this.timeExecution = timeExecution;
 	        this.timeSubmitted = timeSubmitted;
+	        this.ques = ques;
 	    }
+		
+		public int getQues() {
+			return ques;
+		}
+		
+		public void setQues(int ques) {
+			this.ques = ques;
+		}
 		
 		public int getId() {
 	        return id;
@@ -281,7 +291,7 @@ public class HistoryController {
 		        .collect(Collectors.toList());
 		List<Subs> newlist = new ArrayList<>();
 		Optional<Users> us = user_repo.findById(user);
-		for(Submissions sub : list) newlist.add(new Subs(sub.getId(), us.get().getUsername(), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().plusHours(5).plusMinutes(30).toString().replace('T', ' ')));
+		for(Submissions sub : list) newlist.add(new Subs(sub.getId(), us.get().getUsername(), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().plusHours(5).plusMinutes(30).toString().replace('T', ' '), sub.getQuestionId()));
 		return newlist;
 	}
 	

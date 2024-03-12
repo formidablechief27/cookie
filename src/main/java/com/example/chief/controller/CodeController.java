@@ -1,6 +1,8 @@
 package com.example.chief.controller;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -30,6 +33,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,6 +58,8 @@ import com.example.chief.repository.*;
 
 @Controller
 public class CodeController {
+	
+	private final Semaphore semaphore = new Semaphore(7);
 	
 	class Pair {String f; String s; Pair(String f, String s) {this.f = f;this.s = s;}@Override public boolean equals(Object o) {if (this == o) return true; if (o == null || getClass() != o.getClass()) return false;Pair pair = (Pair) o;return f.equals(pair.f) && s.equals(pair.s);}@Override public int hashCode() {return Objects.hash(f, s);}}
 	
@@ -115,7 +121,7 @@ public class CodeController {
 		List<Subs> newlist = new ArrayList<>();
 		for(Submissions sub : list) {
 			int ques_id = sub.getQuestionId();
-			newlist.add(new Subs(sub.getId(), (String)session.getAttribute("user"), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().plusHours(5).plusMinutes(30).toString().replace('T', ' ')));
+			newlist.add(new Subs(sub.getId(), (String)session.getAttribute("user"), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().plusHours(5).plusMinutes(30).toString().replace('T', ' '), sub.getQuestionId()) );
 		}
 		return newlist;
 	}
@@ -128,8 +134,9 @@ public class CodeController {
 		int contestId;
 		int timeExecution;
 		String timeSubmitted;
+		int ques;
 		
-		public Subs(int id, String user, String question, String verdict, int contestId, int timeExecution, String timeSubmitted) {
+		public Subs(int id, String user, String question, String verdict, int contestId, int timeExecution, String timeSubmitted, int ques) {
 	        this.id = id;
 	        this.user = user;
 	        this.question = question;
@@ -137,6 +144,7 @@ public class CodeController {
 	        this.contestId = contestId;
 	        this.timeExecution = timeExecution;
 	        this.timeSubmitted = timeSubmitted;
+	        this.ques = ques;
 	    }
 		
 		public int getId() {
@@ -145,6 +153,14 @@ public class CodeController {
 
 	    public void setId(int id) {
 	        this.id = id;
+	    }
+	    
+	    public int getQues() {
+	    	return ques;
+	    }
+	    
+	    public void setQues(int ques) {
+	    	this.ques = ques;
 	    }
 
 	    // Getter and Setter methods for user
@@ -272,48 +288,56 @@ public class CodeController {
 			String code_final = code;
 			String verd = "";
 			Pair p = null;
-			if(lang.equals("1")) p = run(code_final, input, output);
-			if(lang.equals("2")) p = run_cpp(code_final, input, output);
-			if(lang.equals("3")) p = runpy(code_final, input, output);
-			verd = p.f;
-			//String ti = p.s.substring(p.s.lastIndexOf(' ') + 1, p.s.length() - 2);
-//			int ppp = Integer.parseInt(ti);
-//			System.out.println(ppp);
-//			if(ppp > time) time = ppp;
-			//String time = verd.substring(verd.lastIndexOf(' ')+1, verd.length());
-			//time = time.substring(0, time.length()-2);
-			//String time = verd.substring(verd.lastIndexOf(' ') + 1, verd.length());
-			//verd = verd.substring(0, verd.lastIndexOf(' '));
-			int te = i - start;
-			te++;
-			String fverd = "";
-			if(verd.contains("Passed")) {
-				System.out.println("Test passed ");
-				fverd = "Running on Pretest " + (te + 1);
-				if(i == end) fverd = "Pretests Passed";
-				dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
-				if(i == end) {
-					Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
-					if(user.isPresent()) {
-						String text = user.get().getQuestions();
-						String[] ids = text.split(",");
-						System.out.println(ids.length);
-						boolean flag = false;
-						for(String ele : ids) if(ele.equals(quesId)) {flag = true; break;}
-						if(!flag) {
-							text += quesId + ",";
-							user.get().setQuestions(text);
-							user_repo.save(user.get());
+			try {
+	            //semaphore.acquire(); // Acquire a permit, blocks if none is available
+	            if(lang.equals("1")) p = run(code_final, input, output);
+				if(lang.equals("2")) p = run_cpp(code_final, input, output);
+				if(lang.equals("3")) p = runpy(code_final, input, output);
+				verd = p.f;
+				//String ti = p.s.substring(p.s.lastIndexOf(' ') + 1, p.s.length() - 2);
+//				int ppp = Integer.parseInt(ti);
+//				System.out.println(ppp);
+//				if(ppp > time) time = ppp;
+				//String time = verd.substring(verd.lastIndexOf(' ')+1, verd.length());
+				//time = time.substring(0, time.length()-2);
+				//String time = verd.substring(verd.lastIndexOf(' ') + 1, verd.length());
+				//verd = verd.substring(0, verd.lastIndexOf(' '));
+				int te = i - start;
+				te++;
+				String fverd = "";
+				//semaphore.release();
+				if(verd.contains("Passed")) {
+					System.out.println("Test passed ");
+					fverd = "Running on Pretest " + (te + 1);
+					if(i == end) fverd = "Pretests Passed";
+					dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
+					if(i == end) {
+						Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
+						if(user.isPresent()) {
+							String text = user.get().getQuestions();
+							String[] ids = text.split(",");
+							System.out.println(ids.length);
+							boolean flag = false;
+							for(String ele : ids) if(ele.equals(quesId)) {flag = true; break;}
+							if(!flag) {
+								text += quesId + ",";
+								user.get().setQuestions(text);
+								user_repo.save(user.get());
+							}
 						}
 					}
 				}
-			}
-			else {
-				System.out.println(verd);
-				fverd = verd + " on Pretest " + (te);
-				dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
-				break;
-			}
+				else {
+					System.out.println(verd);
+					fverd = verd + " on Pretest " + (te);
+					dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
+					break;
+				}
+	            // Your operation logic here
+	        } catch (Exception e) {
+	        	//semaphore.release();
+	            Thread.currentThread().interrupt();
+	        }
 		}
 		return ResponseEntity.status(HttpStatus.OK).body("Request processed successfully");
 	}
@@ -331,6 +355,7 @@ public class CodeController {
 	public Pair run(String code, String input, String output) {
 		String expected[] = output.trim().split("\n");
 		String filename = extract(code);
+		ArrayList<String> outputs = new ArrayList<>();
 		String og_class = filename;
 		Random rand = new Random();
 		filename += rand.nextInt(1000);
@@ -349,6 +374,7 @@ public class CodeController {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		int compilationResult = compiler.run(null, null, null, sourceFile.getPath());
 		if(compilationResult != 0) {
+			sourceFile.delete();
 			cleanupClassFiles(filename);
 			return new Pair("Compilation Error ", " -1ms");
 		}
@@ -358,7 +384,7 @@ public class CodeController {
 	    processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
 	    processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
         // Use a Future to track the execution
-        Future<Pair> future = executor.submit(() -> {
+        Future<Boolean> future = executor.submit(() -> {
             // Compile the Java source file
         	long start = System.currentTimeMillis();
 		    Process process = processBuilder.start();
@@ -368,42 +394,41 @@ public class CodeController {
                 outputStream.write(inputBytes);
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            long end = System.currentTimeMillis();   
-            System.out.println(end - start + "ms");
-            if(end - start >= 5000) {
-            	System.out.println("gadbad");
-            	throw new Exception();
-            }
+            long end = System.currentTimeMillis();
+            System.out.println((end - start) + "ms");
             String line;
-		    int i = 0;
-		    boolean flag = true;
-		    String foutput = "";
-		    while ((line = reader.readLine()) != null) {
-		    	//System.out.println("output : " + line.trim());
-		    	if(i == expected.length) flag = false;
-		    	if(!line.trim().equals(expected[i++].trim())) flag = false;
-		    	foutput += line.trim() + "\n";
-            }
+            start = System.currentTimeMillis();
+		    while ((line = reader.readLine()) != null) outputs.add(line);
+		    end = System.currentTimeMillis();
+		    System.out.println((end - start) + "ms");
+		    start = System.currentTimeMillis();
 		    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 		    while ((line = reader.readLine()) != null) {
-		    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput + " " + (end - start) + "ms");
+		    	System.out.println(line);
+		    	if(line.trim().length() > 0) return false;
 	        }
-		    //System.out.println(foutput);
-		    if(i != expected.length) flag = false;
-		    if(!flag) return new Pair("Wrong Answer ", foutput + " " + (end - start) + "ms");
-		    return new Pair("Passed ", foutput + " " + (end - start) + "ms");
+		    end = System.currentTimeMillis();
+		    System.out.println(end - start + "ms");
+		    return true;
         });
         try {
-            Pair result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
+            boolean result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
             sourceFile.delete();
             cleanupClassFiles(filename);
-            return result;
+            if(!result) return new Pair("Runtime Error ", " ");
+            int i = 0;
+            for(String ele : outputs) {
+            	if(i == expected.length) return new Pair("Wrong Answer ", " ");
+            	if(!ele.trim().equals(expected[i++].trim())) return new Pair("Wrong Answer ", " ");
+            }
+            if(i != expected.length) return new Pair("Wrong Answer ", " ");
+            return new Pair("Passed ", " ");
         } catch (Exception e) {
             future.cancel(true);
             sourceFile.delete();
             cleanupClassFiles(filename);
             //System.out.println("TLE ");
-            return new Pair("Time Limit Exceeded  ", " -1ms");
+            return new Pair("Time Limit Exceeded  ", " ");
         }
 	}
 	
@@ -420,78 +445,117 @@ public class CodeController {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        ArrayList<String> outputs = new ArrayList<>();
         String expected[] = output.trim().split("\n");
-        ProcessBuilder processBuilder = new ProcessBuilder("g++", "-O0" , sourceFile.getPath(), "-o", "output" + num);
+        ProcessBuilder processBuilder = new ProcessBuilder("g++", "-O0", "-m64", sourceFile.getPath(), "-o", "output" + num);
         Process compileProcess;
-		try {
-			compileProcess = processBuilder.start();
-			int code = compileProcess.waitFor();
-			if(code != 0) return new Pair("Compilation Error ", " -1ms");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<Pair> future = executor.submit(() -> {
-            ProcessBuilder processbuilder = new ProcessBuilder("./output" + num);
+        try {
+            compileProcess = processBuilder.start();
+
+            // Capture compilation errors
+            try (BufferedReader compileErrorReader = new BufferedReader(new InputStreamReader(compileProcess.getErrorStream()))) {
+                String line;
+                while ((line = compileErrorReader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+
+            int compileExitCode = compileProcess.waitFor();
+
+            if (compileExitCode != 0) {
+                // Compilation error occurred
+            	sourceFile.delete();
+            	 String outputFileName = "output" + num + ".exe";
+                 File outputFile = new File(outputFileName);
+                 if(outputFile.exists()) outputFile.delete();
+            	return new Pair("Compilation Error ", " ");
+            }
+
+        } catch (IOException | InterruptedException e1) {
+            e1.printStackTrace();
+            sourceFile.delete();
+            String outputFileName = "output" + num + ".exe";
+            File outputFile = new File(outputFileName);
+            if(outputFile.exists()) outputFile.delete();
+            return new Pair("Compilation Error ", " ");
+        }
+       try {
+			ProcessBuilder processbuilder = new ProcessBuilder("./output" + num);
 			processbuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
 			processbuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+			ExecutorService executor = Executors.newSingleThreadExecutor();
 			long start = System.currentTimeMillis();
-			try {
-			    Process process = processbuilder.start();
-			    try (OutputStream outputStream = process.getOutputStream()) {
-			        byte[] inputBytes = input.getBytes(StandardCharsets.UTF_8);
-			        outputStream.write(inputBytes);
-			    }
-			    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			    long end = System.currentTimeMillis();
-			    if(end - start >= 5000) throw new Exception();
-			    String line;
-			    int i = 0;
-			    boolean flag = true;
-			    String foutput = "";
-			    while ((line = reader.readLine()) != null) {
-			    	if(i == expected.length) flag = false;
-			    	if(!line.trim().equals(expected[i++].trim())) flag = false;
-			    	foutput += line.trim() + "\n";
-			    }
-			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-			    while ((line = reader.readLine()) != null) {
-			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput + " " + (end - start) + "ms");
-		        }
-			    if(i != expected.length) flag = false;
-			    if(!flag) return new Pair("Wrong Answer ", foutput + " " + (end - start) + "ms");
-			    return new Pair("Passed ", foutput + " " + (end - start) + "ms");
-			} catch (IOException e) {
-			    e.printStackTrace();
-			    return new Pair("Internal Error ", " -1ms");
-			}
-        });
+			Process process = processbuilder.start();
+			
+           Future<Boolean> future = executor.submit(() -> {
+   			
+   			try {
+   				System.out.println(System.currentTimeMillis());
+   				try (BufferedOutputStream outputStream = new BufferedOutputStream(process.getOutputStream())) {
+   				    outputStream.write(input.getBytes());
+   				    outputStream.flush();
+   				}
+   				System.out.println(System.currentTimeMillis());
+   			    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+   			    long end = System.currentTimeMillis();
+   			    System.out.println((end - start) + "ms");
+   			    if(end - start >= 5000) throw new Exception();
+   			    String line;
+   			    int i = 0;
+   			    boolean flag = true;
+   			    String foutput = "";
+   			    long start1 = System.currentTimeMillis();
+   			    while ((line = reader.readLine()) != null) {
+   			    	outputs.add(line);
+   			    }
+   			    end = System.currentTimeMillis();
+   			    System.out.println((end - start1) + "ms");
+   			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+   			    while ((line = reader.readLine()) != null) {
+   			    	System.out.println(line);
+   			    	if(line.trim().length() > 0) return false;
+   		        }
+   			    return true;
+   			} catch (IOException e) {
+   			    e.printStackTrace();
+   			    return false;
+   			}
+           });
 
-        try {
-            Pair result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
-            sourceFile.delete();
-            String outputFileName = "output" + num + ".exe";
-            File outputFile = new File(outputFileName);
-            outputFile.delete();
-            return result;
-        } catch (Exception e) {
-            future.cancel(true);
-            sourceFile.delete();
-            String outputFileName = "output" + num + ".exe";
-            File outputFile = new File(outputFileName);
-            outputFile.delete();
-            //System.out.println("TLE ");
-            return new Pair("Time Limit Exceeded  ", " -1 ms");
-        }
+           try {
+               boolean result = future.get(15, TimeUnit.SECONDS); // 5 seconds timeout
+               sourceFile.delete();
+               String outputFileName = "output" + num + ".exe";
+               File outputFile = new File(outputFileName);
+               outputFile.delete();
+               if(!result) {
+               	return new Pair("Runtime Error ", " ");
+               }
+               int i = 0;
+               for(String ele : outputs) {
+               	if(i == expected.length) return new Pair("Wrong Answer ", " ");
+   		    	if(!ele.trim().equals(expected[i++].trim())) return new Pair("Wrong Answer ", " ");
+               }
+               if(i != expected.length) return new Pair("Wrong Answer ", " ");
+               return new Pair("Passed ", " ");
+           } catch (Exception e) {
+               future.cancel(true);
+               sourceFile.delete();
+               String outputFileName = "output" + num + ".exe";
+               File outputFile = new File(outputFileName);
+               outputFile.delete();
+               //System.out.println("TLE ");
+               return new Pair("Time Limit Exceeded  ", " -1 ms");
+           }
+       }
+       catch(Exception e) {
+    	   return new Pair("IO Exception "," ");
+       }
 	}
 	
 	public Pair runpy(String code, String input, String output) {
         String[] expected = output.trim().split("\n");
-        ArrayList<Long> times = new ArrayList<>();
+        ArrayList<String> outputs = new ArrayList<>();
         // Write the Python code to a file
         Random rand = new Random();
         int num = rand.nextInt(1000);
@@ -504,12 +568,10 @@ public class CodeController {
         }
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<Pair> future = executor.submit(() -> {
-            // Run Python code
-            ProcessBuilder processBuilder = new ProcessBuilder("python3", sourceFile.getPath());
-            processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
-            processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
-
+        ProcessBuilder processBuilder = new ProcessBuilder("python3", sourceFile.getPath());
+        processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
+        processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+        Future<Boolean> future = executor.submit(() -> {
             try {
             	long start = System.currentTimeMillis();
                 Process process = processBuilder.start();
@@ -525,32 +587,31 @@ public class CodeController {
                 long end = System.currentTimeMillis();
                 if(end - start >= 5000) throw new Exception();
                 String line;
-                int i = 0;
-			    boolean flag = true;
-			    String foutput = "";
 			    while ((line = reader.readLine()) != null) {
-			    	//System.out.println(line);
-			    	if(i == expected.length) flag = false;
-			    	if(!line.trim().equals(expected[i++].trim())) flag = false;
-			    	foutput += line.trim() + "\n";
+			    	outputs.add(line);
 	            }
 			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			    while ((line = reader.readLine()) != null) {
 			    	System.out.println(line);
-			    	if(line.trim().length() > 0) return new Pair("Runtime Error ", foutput + " " + (end - start) + "ms");
+			    	if(line.trim().length() > 0) return false;
 		        }
-			    if(i != expected.length) flag = false;
-			    if(!flag) return new Pair("Wrong Answer", foutput + " " + (end - start) + "ms");
-			    return new Pair("Passed", foutput + " " + (end - start) + "ms");
+			    return true;
             } catch (IOException e) {
                 e.printStackTrace();
-                return new Pair("Execution Error", " -1ms");
+                return false;
             }
         });
         try {
-            Pair result = future.get(15, TimeUnit.SECONDS); // 5 seconds timeout
+            boolean result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
             sourceFile.delete();
-            return result;
+            if(!result) return new Pair("Runtime Error ", " ");
+            int i = 0;
+            for(String ele : outputs) {
+            	if(i == expected.length) return new Pair("Wrong Answer ", " ");
+            	if(!ele.trim().equals(expected[i++].trim())) return new Pair("Wrong Answer ", " ");
+            }
+            if(i != expected.length) return new Pair("Wrong Answer ", " ");
+            return new Pair("Passed ", " ");
         } catch (Exception e) {
             System.out.println("Time Out occurred ");
             future.cancel(true);

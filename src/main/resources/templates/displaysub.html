@@ -355,7 +355,13 @@
                                 <input type = "submit" style = "text-decoration: none; font-weight: 700;" th:value="${submission.user}">
                             </form>
                         </td>
-                        <td th:text="${submission.question}" style="width: 300px;"></td>
+                        <td style = "width: 300px;">
+                            <form action = "/start" method = "get">
+                                <input type = "hidden" name = "ques-id" th:value="${submission.ques}">
+                                <input type = "hidden" name = "id" th:value = "${submission.contestId}">
+                                <input type = "submit" style = "text-decoration: none;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-weight: 700;" th:value="${submission.question}">
+                            </form>
+                        </td>
                         <td th:text="${submission.verdict}" style="width: 350px;" class="verdict-cell"></td>
                     </tr>
                 </tbody>

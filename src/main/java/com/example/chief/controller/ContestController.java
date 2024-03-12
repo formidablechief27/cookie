@@ -165,7 +165,6 @@ public class ContestController {
 		for(int i=0;i<c.get().getCount();i++) flist.add(null);
 		int start = c.get().getSt();
 		for(Questions Q : list) {
-			System.out.println(Q.getId());
 			int qid = Q.getId();
 			int index = qid - start;
 			flist.set(index, Q);

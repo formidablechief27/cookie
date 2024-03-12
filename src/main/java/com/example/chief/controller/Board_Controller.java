@@ -384,7 +384,7 @@ public class Board_Controller {
 	        long totalSeconds = duration.getSeconds();
 	        if(totalSeconds >= 0) {
 	        	if(sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted")) map.get(user)[ind] = calculate(con.getStart(), subtime, map.get(user)[ind], ind);
-				 if(((sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Runtime")) && !sub.getVerdict().trim().endsWith("1")) && map.get(user)[ind] == 0) map.get(user)[ind]--;
+				 if(((sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Runtime")) && !sub.getVerdict().trim().endsWith("1")) && map.get(user)[ind] == 0) map.get(user)[ind] = map.get(user)[ind] - 1;
 	        	continue;
 	        }
 			 if(sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted")) map.get(user)[ind] = 1;
