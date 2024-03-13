@@ -59,7 +59,7 @@ import com.example.chief.repository.*;
 @Controller
 public class CodeController {
 	
-	private final Semaphore semaphore = new Semaphore(7);
+	private final Semaphore semaphore = new Semaphore(3);
 	
 	class Pair {String f; String s; Pair(String f, String s) {this.f = f;this.s = s;}@Override public boolean equals(Object o) {if (this == o) return true; if (o == null || getClass() != o.getClass()) return false;Pair pair = (Pair) o;return f.equals(pair.f) && s.equals(pair.s);}@Override public int hashCode() {return Objects.hash(f, s);}}
 	
@@ -241,6 +241,7 @@ public class CodeController {
 	@PostMapping("/submit-code")
 	public ResponseEntity<String> execute(HttpSession session, @RequestParam("code") String code, @RequestParam("ques-id") String quesId, @RequestParam("lang") String lang, Model model, @RequestParam("id") int contest_id) {
 		System.out.println(lang);
+		
 		int sub = (int)subs_repo.count() + 1;
 		session.setAttribute("sub-id", sub);
 		try {
@@ -289,7 +290,7 @@ public class CodeController {
 			String verd = "";
 			Pair p = null;
 			try {
-	            //semaphore.acquire(); // Acquire a permit, blocks if none is available
+	            semaphore.acquire(); // Acquire a permit, blocks if none is available
 	            if(lang.equals("1")) p = run(code_final, input, output);
 				if(lang.equals("2")) p = run_cpp(code_final, input, output);
 				if(lang.equals("3")) p = runpy(code_final, input, output);
@@ -305,7 +306,7 @@ public class CodeController {
 				int te = i - start;
 				te++;
 				String fverd = "";
-				//semaphore.release();
+				semaphore.release();
 				if(verd.contains("Passed")) {
 					System.out.println("Test passed ");
 					fverd = "Running on Pretest " + (te + 1);
@@ -335,7 +336,7 @@ public class CodeController {
 				}
 	            // Your operation logic here
 	        } catch (Exception e) {
-	        	//semaphore.release();
+	        	semaphore.release();
 	            Thread.currentThread().interrupt();
 	        }
 		}
@@ -353,7 +354,8 @@ public class CodeController {
 	}
 	
 	public Pair run(String code, String input, String output) {
-		String expected[] = output.trim().split("\n");
+		String expected[] = output.trim().split("\\$");
+		//for(String ele : expected) System.out.println(ele);
 		String filename = extract(code);
 		ArrayList<String> outputs = new ArrayList<>();
 		String og_class = filename;
@@ -418,10 +420,15 @@ public class CodeController {
             if(!result) return new Pair("Runtime Error ", " ");
             int i = 0;
             for(String ele : outputs) {
+            	//System.out.println(ele + " " + expected[i]);
             	if(i == expected.length) return new Pair("Wrong Answer ", " ");
-            	if(!ele.trim().equals(expected[i++].trim())) return new Pair("Wrong Answer ", " ");
+		    	if(!ele.trim().equals(expected[i++].trim())) return new Pair("Wrong Answer ", " ");
             }
-            if(i != expected.length) return new Pair("Wrong Answer ", " ");
+            while(i < expected.length) {
+            	//System.out.println("," + expected[i]);
+         	   if(expected[i++].trim().equals("")) continue;
+         	   else return new Pair("Wrong Answer ", " ");
+            }
             return new Pair("Passed ", " ");
         } catch (Exception e) {
             future.cancel(true);
@@ -432,11 +439,34 @@ public class CodeController {
         }
 	}
 	
+	public static String injectFileRedirect(String cppCode, String filename) {
+        int mainIndex = cppCode.indexOf("main(");
+        if (mainIndex == -1) {
+            return cppCode;
+        }
+        int mainEndIndex = cppCode.indexOf("{", mainIndex);
+        if (mainEndIndex == -1) {
+            return cppCode;
+        }
+        StringBuilder modifiedCode = new StringBuilder(cppCode);
+        modifiedCode.insert(mainEndIndex + 1, "freopen(\"" + filename + "\", \"r\", stdin);");
+        return modifiedCode.toString();
+    }
+	
 	public Pair run_cpp(String f_code, String input, String output) {
 		Random rand = new Random();
 		int num = rand.nextInt(1000);
 		String fname = "main" + num + ".cpp";
     	File sourceFile = new File(fname);
+    	f_code = "#include <cstdio> \n" + f_code;
+    	f_code = injectFileRedirect(f_code, "pooja" + num + ".txt");
+    	System.out.println(f_code);
+    	try {
+			Thread.sleep(500);
+		} catch (InterruptedException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
         FileWriter writer;
         try {
             writer = new FileWriter(sourceFile);
@@ -446,12 +476,11 @@ public class CodeController {
             e1.printStackTrace();
         }
         ArrayList<String> outputs = new ArrayList<>();
-        String expected[] = output.trim().split("\n");
+        String expected[] = output.trim().split("\\$");
         ProcessBuilder processBuilder = new ProcessBuilder("g++", "-O0", "-m64", sourceFile.getPath(), "-o", "output" + num);
         Process compileProcess;
         try {
             compileProcess = processBuilder.start();
-
             // Capture compilation errors
             try (BufferedReader compileErrorReader = new BufferedReader(new InputStreamReader(compileProcess.getErrorStream()))) {
                 String line;
@@ -480,6 +509,11 @@ public class CodeController {
             return new Pair("Compilation Error ", " ");
         }
        try {
+    	    try (BufferedWriter writer_again = new BufferedWriter(new FileWriter("pooja" + num + ".txt"))) {
+	            writer_again.write(input);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
 			ProcessBuilder processbuilder = new ProcessBuilder("./output" + num);
 			processbuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
 			processbuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
@@ -490,12 +524,6 @@ public class CodeController {
            Future<Boolean> future = executor.submit(() -> {
    			
    			try {
-   				System.out.println(System.currentTimeMillis());
-   				try (BufferedOutputStream outputStream = new BufferedOutputStream(process.getOutputStream())) {
-   				    outputStream.write(input.getBytes());
-   				    outputStream.flush();
-   				}
-   				System.out.println(System.currentTimeMillis());
    			    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
    			    long end = System.currentTimeMillis();
    			    System.out.println((end - start) + "ms");
@@ -523,6 +551,9 @@ public class CodeController {
            });
 
            try {
+        	   String fileName = "pooja" + num + ".txt";
+        	   File cookie = new File(fileName);
+        	   if (cookie.exists()) cookie.delete();
                boolean result = future.get(15, TimeUnit.SECONDS); // 5 seconds timeout
                sourceFile.delete();
                String outputFileName = "output" + num + ".exe";
@@ -536,9 +567,15 @@ public class CodeController {
                	if(i == expected.length) return new Pair("Wrong Answer ", " ");
    		    	if(!ele.trim().equals(expected[i++].trim())) return new Pair("Wrong Answer ", " ");
                }
-               if(i != expected.length) return new Pair("Wrong Answer ", " ");
+               while(i < expected.length) {
+            	   if(expected[i++].trim().equals("")) continue;
+            	   else return new Pair("Wrong Answer ", " ");
+               }
                return new Pair("Passed ", " ");
            } catch (Exception e) {
+        	   String fileName = "pooja" + num + ".txt";
+        	   File cookie = new File(fileName);
+        	   if (cookie.exists()) cookie.delete();
                future.cancel(true);
                sourceFile.delete();
                String outputFileName = "output" + num + ".exe";
@@ -554,7 +591,7 @@ public class CodeController {
 	}
 	
 	public Pair runpy(String code, String input, String output) {
-        String[] expected = output.trim().split("\n");
+        String[] expected = output.trim().split("\\$");
         ArrayList<String> outputs = new ArrayList<>();
         // Write the Python code to a file
         Random rand = new Random();
