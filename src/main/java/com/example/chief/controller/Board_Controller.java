@@ -362,6 +362,15 @@ public class Board_Controller {
 		 Contests con;
 		 Optional<Contests> contest = getContestById(key);
 		 con = contest.get();
+		 HashMap<Integer, Integer> change_map = new HashMap<>();
+		 if(con.getChanges().length() > 1) {
+			 String changes[] = con.getChanges().split("\\$");
+			 for(String change : changes) {
+				 int user_id = Integer.parseInt(change.substring(0, change.indexOf(' ')));
+				 int delta = Integer.parseInt(change.substring(change.indexOf(' ') + 1, change.length()));
+				 change_map.put(user_id, delta);
+			 }
+		 }
 		 //System.out.println(con.getCount());
 		 probs = con.getCount();
 		 long start = System.currentTimeMillis();
@@ -406,6 +415,13 @@ public class Board_Controller {
 				 else if(p[i] == -1) arr[ind].add(Integer.toString(p[i]));
 				 else if(p[i] == 0) arr[ind].add(" ");
 				 else arr[ind].add(Integer.toString(p[i]));
+			 }
+			 if(change_map.containsKey(entry.getKey())) {
+				 if(change_map.get(entry.getKey()) > 0) arr[ind].add("+" + change_map.get(entry.getKey()));
+				 else arr[ind].add(change_map.get(entry.getKey()) + "");
+			 }
+			 else {
+				 arr[ind].add(" ");
 			 }
 			 System.out.println(arr[ind]);
 			 a[0][ind] = sum;

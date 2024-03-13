@@ -296,23 +296,53 @@
         </nav>
 
         <main>
-            <h2>"Unlock Your Coding Potential: Empowering Minds, One Line at a Time!"</h2>
-            <br>
-            <h3>Ongoing Events</h3>
-            <div>
-                <form action="/contest-load" method="get">
-                    <input type = "hidden" name = "id" value = "16">
-                    <input type = "submit" style = "font-size: 18px;" value = "JP Morgan Questions 2023">
-                </form>
-            </div>
-            <div style = "padding: 40px;">
-                <form action = "/contest-load" method = "get">
-                    <input type = "hidden" name = "id" value = "102">
-                    <input type = "submit" style = "font-size: 18px;" value = "AlgoChief Round 2">
-                    <div style = "margin-top: 10px;">
-                        Taking place on 17th March 2024 - 06:00 pm onwards
+            <div style = "display: flex; justify-content: center;">
+                <div>
+                    <h2>"Unlock Your Coding Potential"</h2>
+                    <br>
+                    <h3>Ongoing Events</h3>
+                    <div>
+                        <form action="/contest-load" method="get">
+                            <input type = "hidden" name = "id" value = "16">
+                            <input type = "submit" style = "font-size: 18px;" value = "JP Morgan Questions 2023">
+                        </form>
                     </div>
-                </form>
+                    <div style = "padding: 40px;">
+                        <form action = "/contest-load" method = "get">
+                            <input type = "hidden" name = "id" value = "102">
+                            <input type = "submit" style = "font-size: 18px;" value = "AlgoChief Round 2">
+                            <div style = "margin-top: 10px;">
+                                Taking place on 17th March 2024 - 06:00 pm onwards
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div style = "margin-top: 20px; margin-left: 50px;">
+                <div ><strong>AlgoChief Official Leaderboard </strong></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>User</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each = "user, status : ${board}">
+                            <td style = "width: 50px; text-align: center;" th:text = "${status.index + 1}"> </td>
+                            <td> 
+                                <div style = "display: flex; justify-content: space-between;">
+                                    <form action="/user" method="get">
+                                        <input type = "hidden" name = "username" th:value="${user.username}">
+                                        <input type="submit" style = "text-decoration: none; font-weight: 700;" th:value="${user.username}">
+                                    </form>
+                                </div>
+                            </td>
+                            <td th:text = "${user.rating}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
             </div>
         </main>
 

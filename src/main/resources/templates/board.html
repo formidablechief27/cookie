@@ -347,7 +347,7 @@
                     <th th:each="column : ${#numbers.sequence(1, numberOfColumns)}" style = "width: 60px;" >
                         <span th:text="${column}"></span>
                     </th>
-                    <th style = "width: 100px;"> </th>
+                    <th style = "width: 100px;">Δ</th>
                 </tr>
                 <tr th:each="row : ${arr}" style="text-align: center;">
                     <td>
@@ -357,7 +357,6 @@
                         </form>
                     </td>
                     <td th:each="value : ${row}" th:if="${!#strings.startsWith(value, row[0])}" class="value-cell" style = "font-weight: 700;" th:text="${value}"></td>
-                    <td></td>
                 </tr>
             </table>
             <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -367,13 +366,17 @@
                 var cells = document.querySelectorAll('.value-cell');
 
                 cells.forEach(function(cell) {
+                    if (cell.textContent.trim().charAt(0) === '+') {
+                        cell.style.color = 'rgb(5, 247, 70)';
+                    }
                     var value = parseInt(cell.textContent);
-                    if (!isNaN(value) && value >= 150) {
+                    if ((!isNaN(value) && value >= 150)) {
                         cell.style.color = 'rgb(5, 247, 70)';
                     }
                     else if(!isNaN(value) && value < 0) {
                         cell.style.color = 'rgb(247, 13, 5)';
                     }
+                    
                 });
             });
         </script>

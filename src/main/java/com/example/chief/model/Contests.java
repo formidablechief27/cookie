@@ -24,6 +24,9 @@ public class Contests {
     
     @Column(name = "st")
     private int st;
+    
+    @Column(name = "changes")
+    private String changes;
 
     // Constructors, getters, setters, and other methods
 
@@ -88,6 +91,14 @@ public class Contests {
 
     public void setSt(int st) {
         this.st = st;
+    }
+    
+    public String getChanges() {
+    	return changes;
+    }
+    
+    public void setChanges(String changes) {
+    	this.changes = changes;
     }
 
 

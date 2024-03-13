@@ -41,7 +41,6 @@ public class LoginController {
 	@GetMapping("/")
 	public String start(HttpSession session, Model model) {
 		Runtime runtime = Runtime.getRuntime();
-
         long totalMemory = runtime.totalMemory();
         long freeMemory = runtime.freeMemory();
         long usedMemory = totalMemory - freeMemory;
@@ -55,6 +54,9 @@ public class LoginController {
         System.out.println("Total Memory: " + totalMemory + " mb");
         System.out.println("Free Memory: " + freeMemory + " mb");
         System.out.println("Used Memory: " + usedMemory + " mb");
+        List<Users> arr = user_repo.findAllByOrderByRatingDesc();
+        List<Users> farr = arr.subList(0, 5);
+        model.addAttribute("board", farr);
 		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
 		else model.addAttribute("status", "My Profile");
 		return "start.html";
