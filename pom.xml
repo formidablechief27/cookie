@@ -14,7 +14,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                <mainClass>com.example.entry.Main</mainClass> <!-- Update with your actual main class -->
+                <mainClass>com.example.chief.Server</mainClass> <!-- Update with your actual main class -->
             </configuration>
             </plugin>
         <!-- other plugins -->
