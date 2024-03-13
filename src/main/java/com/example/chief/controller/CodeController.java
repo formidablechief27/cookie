@@ -571,7 +571,7 @@ public class CodeController {
                }
                int i = 0;
                for(String ele : outputs) {
-            	   System.out.println(ele + "," + expected[i]);
+            	   //System.out.println(ele + "," + expected[i]);
                	if(i == expected.length) {
              	   String fileName = "pooja" + num + ".txt";
             	   File cookie = new File(fileName);
