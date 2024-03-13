@@ -520,6 +520,7 @@ public class CodeController {
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
+    	    System.out.println("File Created");
 			ProcessBuilder processbuilder = new ProcessBuilder("./output" + num);
 			processbuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
 			processbuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
@@ -557,26 +558,46 @@ public class CodeController {
            });
 
            try {
-        	   String fileName = "pooja" + num + ".txt";
-        	   File cookie = new File(fileName);
-        	   if (cookie.exists()) cookie.delete();
                boolean result = future.get(15, TimeUnit.SECONDS); // 5 seconds timeout
                sourceFile.delete();
                String outputFileName = "output" + num + ".exe";
                File outputFile = new File(outputFileName);
                outputFile.delete();
                if(!result) {
+            	   String fileName = "pooja" + num + ".txt";
+            	   File cookie = new File(fileName);
+            	   if (cookie.exists()) cookie.delete();
                	return new Pair("Runtime Error ", " ");
                }
                int i = 0;
                for(String ele : outputs) {
-               	if(i == expected.length) return new Pair("Wrong Answer ", " ");
-   		    	if(!ele.trim().equals(expected[i++].trim())) return new Pair("Wrong Answer ", " ");
+            	   System.out.println(ele + "," + expected[i]);
+               	if(i == expected.length) {
+             	   String fileName = "pooja" + num + ".txt";
+            	   File cookie = new File(fileName);
+            	   if (cookie.exists()) cookie.delete();
+               		return new Pair("Wrong Answer ", " ");
+               	}
+   		    	if(!ele.trim().equals(expected[i++].trim())) {
+   	        	   String fileName = "pooja" + num + ".txt";
+   	        	   File cookie = new File(fileName);
+   	        	   if (cookie.exists()) cookie.delete();
+   		    		return new Pair("Wrong Answer ", " ");
+   		    	}
                }
                while(i < expected.length) {
             	   if(expected[i++].trim().equals("")) continue;
-            	   else return new Pair("Wrong Answer ", " ");
+            	   else {
+                	   String fileName = "pooja" + num + ".txt";
+                	   File cookie = new File(fileName);
+                	   if (cookie.exists()) cookie.delete();
+            		   return new Pair("Wrong Answer ", " ");
+            	   
+            	   }
                }
+        	   String fileName = "pooja" + num + ".txt";
+        	   File cookie = new File(fileName);
+        	   if (cookie.exists()) cookie.delete();
                return new Pair("Passed ", " ");
            } catch (Exception e) {
         	   String fileName = "pooja" + num + ".txt";
