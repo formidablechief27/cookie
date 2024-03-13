@@ -460,7 +460,7 @@ public class CodeController {
     	File sourceFile = new File(fname);
     	f_code = "#include <cstdio> \n" + f_code;
     	f_code = injectFileRedirect(f_code, "pooja" + num + ".txt");
-    	System.out.println(f_code);
+    	//System.out.println(f_code);
     	try {
 			Thread.sleep(500);
 		} catch (InterruptedException e2) {
@@ -497,6 +497,9 @@ public class CodeController {
             	 String outputFileName = "output" + num + ".exe";
                  File outputFile = new File(outputFileName);
                  if(outputFile.exists()) outputFile.delete();
+                 String fileName = "pooja" + num + ".txt";
+          	   File cookie = new File(fileName);
+          	   if (cookie.exists()) cookie.delete();
             	return new Pair("Compilation Error ", " ");
             }
 
@@ -506,6 +509,9 @@ public class CodeController {
             String outputFileName = "output" + num + ".exe";
             File outputFile = new File(outputFileName);
             if(outputFile.exists()) outputFile.delete();
+            String fileName = "pooja" + num + ".txt";
+     	   File cookie = new File(fileName);
+     	   if (cookie.exists()) cookie.delete();
             return new Pair("Compilation Error ", " ");
         }
        try {
@@ -576,11 +582,11 @@ public class CodeController {
         	   String fileName = "pooja" + num + ".txt";
         	   File cookie = new File(fileName);
         	   if (cookie.exists()) cookie.delete();
-               future.cancel(true);
-               sourceFile.delete();
+        	   sourceFile.delete();
                String outputFileName = "output" + num + ".exe";
                File outputFile = new File(outputFileName);
                outputFile.delete();
+               future.cancel(true);
                //System.out.println("TLE ");
                return new Pair("Time Limit Exceeded  ", " -1 ms");
            }
