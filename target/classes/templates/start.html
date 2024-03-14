@@ -266,6 +266,24 @@
         #scrollTopBtn:hover {
             opacity: 0.8;
         }
+
+        .pooja {
+            display: flex; justify-content: center;
+        }
+
+        .shruti {
+            margin-top: 20px; margin-left: 50px;
+        }
+
+        @media screen and (max-width: 500px) {
+            .pooja {
+                display: block;
+            }
+            .shruti {
+                margin-left: 0px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -296,7 +314,7 @@
         </nav>
 
         <main>
-            <div style = "display: flex; justify-content: center;">
+            <div class = "pooja">
                 <div>
                     <h2>"Unlock Your Coding Potential"</h2>
                     <br>
@@ -317,7 +335,7 @@
                         </form>
                     </div>
                 </div>
-                <div style = "margin-top: 20px; margin-left: 50px;">
+                <div class = "shruti">
                 <div ><strong>AlgoChief Official Leaderboard </strong></div>
                 <table>
                     <thead>
