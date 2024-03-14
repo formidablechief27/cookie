@@ -336,23 +336,6 @@ public class Board_Controller {
 		    }
 		}
 	 
-	 int calculate(LocalDateTime start, LocalDateTime current, int minus, int ind) {
-		 int max_score = (ind + 1)*500;
-		 int ans = max_score;
-         Duration duration = Duration.between(start, current);
-	     long totalMinutes = duration.toMinutes();
-	     System.out.println(current + "," + start + "," + totalMinutes);
-	     if(totalMinutes < 0) {
-	    	 if(minus <= 1) return 1;
-	    	 else return minus;
-	     }
-	     //System.out.println(minus + " " + totalMinutes);
-	     if(minus <= 0) ans += (50*minus);
-	     ans -= (totalMinutes * 2 * (ind + 1));
-	     ans = Math.max((3*max_score)/10, ans);
-		 return ans;
-	 }
-	 
 	 @GetMapping("/board")
 	 public String go(HttpSession session, @RequestParam("id") int contestid, Model model) {
 		 if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
@@ -362,20 +345,56 @@ public class Board_Controller {
 		 Contests con;
 		 Optional<Contests> contest = getContestById(key);
 		 con = contest.get();
+		 List<String> farr[] = official_leaderboard(con);
+		 List<String> farr2[] = practice_leaderboard(con);
+		 model.addAttribute("numberOfColumns", con.getCount());
+		 if(contestid >= 100) model.addAttribute("text1", "Official Standings");
+		 model.addAttribute("text2", "Practice Standings");
+		 if(contestid >= 100) model.addAttribute("arr", farr);
+		 if(contestid >= 100) model.addAttribute("check", 1); else model.addAttribute("check", 0);
+		 model.addAttribute("arr2", farr2);
+		 model.addAttribute("id", contestid);
+		 model.addAttribute("name", con.getTitle());
+		 return "board.html";
+	 }
+	 
+	 int calculate(LocalDateTime start, Submissions sub, int ind, int curr) {
+		 int max_score = (ind + 1)*500;
+		 boolean done = false;
+		 if(curr >= 150) done = true;
+		 int ans = max_score;
+		 LocalDateTime current = sub.getTimeSubmitted();
+         Duration duration = Duration.between(start, current);
+	     long totalMinutes = duration.toMinutes();
+	     if(totalMinutes >= 0) {
+	    	 ans -= (totalMinutes * 2 * (ind + 1));
+	    	 if((sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted"))) {
+	    		 done = true;
+	    		 if(curr <= 0) curr += ans;
+	    	 }
+	    	 if((sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Time") || sub.getVerdict().contains("Runtime")) && !sub.getVerdict().trim().endsWith("1")) {
+	    		 curr -= 50;
+	    	 }
+		     if(done) curr = Math.max((3*max_score)/10, curr);
+			 return curr;
+	     }
+	     else return 0;
+	 }
+	 
+	 public List<String>[] official_leaderboard(Contests contest) {
 		 HashMap<Integer, Integer> change_map = new HashMap<>();
-		 if(con.getChanges().length() > 1) {
-			 String changes[] = con.getChanges().split("\\$");
+		 if(contest.getChanges().length() > 1) {
+			 String changes[] = contest.getChanges().split("\\$");
 			 for(String change : changes) {
 				 int user_id = Integer.parseInt(change.substring(0, change.indexOf(' ')));
 				 int delta = Integer.parseInt(change.substring(change.indexOf(' ') + 1, change.length()));
 				 change_map.put(user_id, delta);
 			 }
 		 }
-		 //System.out.println(con.getCount());
-		 probs = con.getCount();
+		 long contestid = contest.getId();
+		 int probs = contest.getCount();
 		 long start = System.currentTimeMillis();
-		 model.addAttribute("numberOfColumns", con.getCount());
-		 List<Submissions> list = getAllSubmissionsByContestId(contestid);
+		 List<Submissions> list = getAllSubmissionsByContestId((int)contestid);
 		 HashMap<Integer, int[]> map = new HashMap<>();
 		 for(Submissions sub : list) {
 			 int user = sub.getUserId();
@@ -384,20 +403,14 @@ public class Board_Controller {
 				 map.put(user, empty); 
 			 }
 			 int ques_id = sub.getQuestionId();
-			 int st = con.getSt();
+			 int st = contest.getSt();
 			 int ind = ques_id - st;
 			 if(ind < 0) continue;
-			LocalDateTime time = con.getEd();
+			LocalDateTime time = contest.getEd();
 			LocalDateTime subtime = sub.getTimeSubmitted(); // Replace with your end time
 	        Duration duration = Duration.between(subtime, time);
 	        long totalSeconds = duration.getSeconds();
-	        if(totalSeconds >= 0) {
-	        	if(sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted")) map.get(user)[ind] = calculate(con.getStart(), subtime, map.get(user)[ind], ind);
-				 if(((sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Runtime")) && !sub.getVerdict().trim().endsWith("1")) && map.get(user)[ind] == 0) map.get(user)[ind] = map.get(user)[ind] - 1;
-	        	continue;
-	        }
-			 if(sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted")) map.get(user)[ind] = 1;
-			 if((sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Runtime")) && map.get(user)[ind] == 0) map.get(user)[ind] = -1;
+	        if(totalSeconds >= 0) map.get(user)[ind] = calculate(contest.getStart(), sub, ind, map.get(user)[ind]);
 		 }
 		 List<String> arr[] = new ArrayList[map.size()];
 		 long a[][] = new long[2][map.size()];
@@ -411,10 +424,9 @@ public class Board_Controller {
 			 for(int i=0;i<p.length;i++) if(p[i] > 0) sum += p[i];
 			 arr[ind].add(sum + "");
 			 for(int i=0;i<p.length;i++) {
-				 if(p[i] == 1) arr[ind].add("+");
-				 else if(p[i] == -1) arr[ind].add(Integer.toString(p[i]));
-				 else if(p[i] == 0) arr[ind].add(" ");
-				 else arr[ind].add(Integer.toString(p[i]));
+				 if(p[i] == 0) arr[ind].add(" ");
+				 else if(p[i] > 0) arr[ind].add(Integer.toString(p[i]));
+				 else if(p[i] < 0) arr[ind].add(Integer.toString((p[i])/50));
 			 }
 			 if(change_map.containsKey(entry.getKey())) {
 				 if(change_map.get(entry.getKey()) > 0) arr[ind].add("+" + change_map.get(entry.getKey()));
@@ -435,11 +447,60 @@ public class Board_Controller {
 			 int index = (int)a[1][i];
 			 for(String val : arr[index]) farr[i].add(val);
 		 }
-		 model.addAttribute("arr", farr);
-		 model.addAttribute("id", contestid);
-		 model.addAttribute("name", con.getTitle());
-		 return "board.html";
+		 return farr;
 	 }
+	 
+	 public List<String>[] practice_leaderboard(Contests contest) {
+		 long contestid = contest.getId();
+		 int probs = contest.getCount();
+		 long start = System.currentTimeMillis();
+		 List<Submissions> list = getAllSubmissionsByContestId((int)contestid);
+		 HashMap<Integer, int[]> map = new HashMap<>();
+		 for(Submissions sub : list) {
+			 int user = sub.getUserId();
+			 if(!map.containsKey(user)) {
+				 int empty[] = new int[probs];
+				 map.put(user, empty); 
+			 }
+			 int ques_id = sub.getQuestionId();
+			 int st = contest.getSt();
+			 int ind = ques_id - st;
+			 if(ind < 0) continue;
+			 if(sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted")) map.get(user)[ind] = 1;
+			 else if(sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Time") || sub.getVerdict().contains("Wrong")) if(map.get(user)[ind] <= 0) map.get(user)[ind] = -1;
+		 }
+		 List<String> arr[] = new ArrayList[map.size()];
+		 long a[][] = new long[2][map.size()];
+		 for(int i=0;i<map.size();i++) arr[i] = new ArrayList<>();
+		 int ind = 0;
+		 for(Map.Entry<Integer, int[]> entry : map.entrySet()) {
+			 String user = getUserById(entry.getKey());
+			 arr[ind].add(user);
+			 int p[] = entry.getValue();
+			 int sum = 0;
+			 for(int i=0;i<p.length;i++) if(p[i] > 0) sum += p[i];
+			 arr[ind].add(sum + "");
+			 for(int i=0;i<p.length;i++) {
+				 if(p[i] == 0) arr[ind].add(" ");
+				 else if(p[i] > 0) arr[ind].add("+");
+				 else if(p[i] < 0) arr[ind].add("-");
+			 }
+			 arr[ind].add(" ");
+			 System.out.println(arr[ind]);
+			 a[0][ind] = sum;
+			 a[1][ind] = ind;
+			 ind++;
+		 }
+		 rsort(a);
+		 List<String> farr[] = new ArrayList[map.size()];
+		 for(int i=0;i<map.size();i++) farr[i] = new ArrayList<>();
+		 for(int i=0;i<map.size();i++) {
+			 int index = (int)a[1][i];
+			 for(String val : arr[index]) farr[i].add(val);
+		 }
+		 return farr;
+	 }
+
 	 
 	void sort(long a[][]) {divide(a, 0, a[0].length - 1, true);}
     void rsort(long a[][]) {divide(a, 0, a[0].length - 1, false);}

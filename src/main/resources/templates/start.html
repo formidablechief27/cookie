@@ -317,21 +317,41 @@
             <div class = "pooja">
                 <div>
                     <h2>"Unlock Your Coding Potential"</h2>
-                    <br>
-                    <h3>Ongoing Events</h3>
+                    <div style = "display: flex;">
+                        <h3>Ongoing Events - </h3>
+                        <div>
+                            <form action="/contest-load" method="get">
+                                <input type = "hidden" name = "id" value = "16">
+                                <input type = "submit" style = "font-size: 18px; margin-top:20px;" value = "JP Morgan Questions 2023">
+                            </form>
+                        </div>
+                    </div>
                     <div>
-                        <form action="/contest-load" method="get">
-                            <input type = "hidden" name = "id" value = "16">
-                            <input type = "submit" style = "font-size: 18px;" value = "JP Morgan Questions 2023">
+                        <h3>Upcoming Contests</h3>
+                        <div>
+                            <form action = "/contest-load" method = "get">
+                                <input type = "hidden" name = "id" value = "102">
+                                <input type = "submit" style = "font-size: 18px;" value = "AlgoChief Round 2">
+                            </form>
+                            <div style = "margin-top: 10px;">
+                                17th March 2024 - 06:00 pm
+                            </div>
+                        </div>
+                    </div>
+                    <div style = "display: flex; margin-top: 20px;">
+                        <h4 style = "text-align: left;">
+                             Practice using the 
+                        </h4>
+                        <form action = "/problemset" style = "margin-top: 16px;" method = "get">
+                            <input type = "submit" style = "font-size: 16px;" value = "AlgoChief Problemset">
                         </form>
                     </div>
-                    <div style = "padding: 40px;">
-                        <form action = "/contest-load" method = "get">
-                            <input type = "hidden" name = "id" value = "102">
-                            <input type = "submit" style = "font-size: 18px;" value = "AlgoChief Round 2">
-                            <div style = "margin-top: 10px;">
-                                Taking place on 17th March 2024 - 06:00 pm onwards
-                            </div>
+                    <div style = "display: flex; margin-top: -25px;"> 
+                        <h4 style = "text-align: left;">
+                             Test using the free multiple test 
+                        </h4>
+                        <form action = "/ide" target = "_blank" style = "margin-top: 16px;" method = "get">
+                            <input type = "submit" style = "font-size: 16px;" value = "AlgoChief Online Compiler">
                         </form>
                     </div>
                 </div>
@@ -361,6 +381,8 @@
                     </tbody>
                 </table>
                 </div>
+            </div>
+            <div style = "height: 100px;">
             </div>
         </main>
 

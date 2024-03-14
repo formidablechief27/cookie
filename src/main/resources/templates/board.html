@@ -339,8 +339,8 @@
                         <input type = "hidden" name = "id" th:value = "${id}">
                     </form>
                 </div>
-            <h3>Standings</h2>
-            <table border="1" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 40px;">
+            <h3 th:text = "${text1}"></h3>
+            <table border="1" id = "t1" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 20px;">
                 <tr>
                     <th style = "width: 250px;">Who</th>
                     <th style = "width: 75px;"> = </th>
@@ -350,6 +350,34 @@
                     <th style = "width: 100px;">Δ</th>
                 </tr>
                 <tr th:each="row : ${arr}" style="text-align: center;">
+                    <td>
+                        <form action = "/user" method = "get">
+                            <input type = "hidden" name = "username" th:value="${row[0]}">
+                            <input type = "submit" style = "text-decoration: none;" th:value="${row[0]}">
+                        </form>
+                    </td>
+                    <td th:each="value : ${row}" th:if="${!#strings.startsWith(value, row[0])}" class="value-cell" style = "font-weight: 700;" th:text="${value}"></td>
+                </tr>
+            </table>
+            <script th:inline="javascript">
+                var test = /*[[${check}]]*/ 0;
+                console.log(test);
+                if(test === 0) {
+                    document.getElementById('t1').style.display = 'none';
+                }
+            </script>
+
+            <h3 th:text = "${text2}" style = "margin-top: 30px;"></h3>
+            <table border="1" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 20px;">
+                <tr>
+                    <th style = "width: 250px;">Who</th>
+                    <th style = "width: 75px;"> = </th>
+                    <th th:each="column : ${#numbers.sequence(1, numberOfColumns)}" style = "width: 60px;" >
+                        <span th:text="${column}"></span>
+                    </th>
+                    <th style = "width: 100px;"></th>
+                </tr>
+                <tr th:each="row : ${arr2}" style="text-align: center;">
                     <td>
                         <form action = "/user" method = "get">
                             <input type = "hidden" name = "username" th:value="${row[0]}">
