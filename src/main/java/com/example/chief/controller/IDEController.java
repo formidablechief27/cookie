@@ -69,11 +69,26 @@ public class IDEController {
 	    }
 	}
 	
+	public void cleanupClassFiles(String filename) {
+	    File dir = new File(".");
+	    File[] matchingFiles = dir.listFiles((dir1, name) -> name.startsWith(filename) && name.endsWith(".class"));
+	    if (matchingFiles != null) {
+	        for (File file : matchingFiles) {
+	            file.delete();
+	        }
+	    }
+	}
+	
 	public StringBuilder run(String code, String input) {
 		if(code.contains("ProcessBuilder") || code.contains("Executors") || code.contains("StreamHandler") || code.contains("CommandLine") || code.contains("Executor") || code.contains("getRuntime")) {
 			return null;
 		}
-		File sourceFile = new File(extract(code) + ".java");
+		String filename = extract(code);
+		String og_class = filename;
+		Random rand = new Random();
+		filename += rand.nextInt(1000);
+		code = code.replace(og_class, filename);
+		File sourceFile = new File(filename + ".java");
         FileWriter writer;
 		try {
 			writer = new FileWriter(sourceFile);
@@ -81,6 +96,7 @@ public class IDEController {
 	        writer.close();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
+			sourceFile.delete();
 			e1.printStackTrace();
 		}
 		StringBuilder output = new StringBuilder();
@@ -139,9 +155,13 @@ public class IDEController {
         });
         try {
             StringBuilder result = future.get(5, TimeUnit.SECONDS); // 5 seconds timeout
+            sourceFile.delete();
+            cleanupClassFiles(filename);
             return result;
         } catch (Exception e) {
         	e.printStackTrace();
+        	sourceFile.delete();
+        	cleanupClassFiles(filename);
             future.cancel(true);
             output.append("Time Limit Exceeded");
             return output;
@@ -152,9 +172,10 @@ public class IDEController {
 		if(code.contains("FILE") || code.contains("pipe") || code.contains("spawn.h") || code.contains("sys/wait.h") || code.contains("unistd.h") || code.contains("sys/types.h") || code.contains("pid_t")) {
 			return null;
 		}
-    	File sourceFile = new File("main.cpp");
-    	Random rand = new Random();
-    	int num = rand.nextInt(1000);
+		Random rand = new Random();
+		int num = rand.nextInt(1000);
+		String fname = "main" + num + ".cpp";
+    	File sourceFile = new File(fname);
         FileWriter writer;
         try {
             writer = new FileWriter(sourceFile);
@@ -183,12 +204,20 @@ public class IDEController {
             if (compileExitCode != 0) {
                 // Compilation error occurred
                 output.insert(0, "Compilation Error:\n");
+                sourceFile.delete();
+           	 	String outputFileName = "output" + num + ".exe";
+                File outputFile = new File(outputFileName);
+                if(outputFile.exists()) outputFile.delete();
                 return output;
             }
 
         } catch (IOException | InterruptedException e1) {
             e1.printStackTrace();
             output.append("Internal Error during compilation");
+            sourceFile.delete();
+       	 String outputFileName = "output" + num + ".exe";
+            File outputFile = new File(outputFileName);
+            if(outputFile.exists()) outputFile.delete();
             return output;
         }
 
@@ -241,9 +270,17 @@ public class IDEController {
 
         try {
             StringBuilder result = future.get(5, TimeUnit.SECONDS); // 5 seconds timeout
+            sourceFile.delete();
+       	 	String outputFileName = "output" + num + ".exe";
+            File outputFile = new File(outputFileName);
+            if(outputFile.exists()) outputFile.delete();
             return result;
         } catch (Exception e) {
             future.cancel(true);
+            sourceFile.delete();
+       	 	String outputFileName = "output" + num + ".exe";
+            File outputFile = new File(outputFileName);
+            if(outputFile.exists()) outputFile.delete();
             output.append("Time Limit Exceeded");
             return output;
         }
@@ -251,9 +288,13 @@ public class IDEController {
 	
 	public StringBuilder runpy(String code, String input) {
         ArrayList<Long> times = new ArrayList<>();
-        // Write the Python code to a file
-        File sourceFile = new File("main.py");
         if(code.contains("import os") || code.contains("import subprocess")) return null;
+        // Write the Python code to a file
+        Random rand = new Random();
+        int num = rand.nextInt(1000);
+        String file_name = "main" + num + ".py";
+        File sourceFile = new File(file_name);
+        
         try (FileWriter writer = new FileWriter(sourceFile)) {
             writer.write(code);
         } catch (IOException e1) {
@@ -301,8 +342,10 @@ public class IDEController {
         });
         try {
             StringBuilder result = future.get(5, TimeUnit.SECONDS); // 5 seconds timeout
+            sourceFile.delete();
             return result;
         } catch (Exception e) {
+        	sourceFile.delete();
             future.cancel(true);
             output.append("Python Limit Exceeded");
             return output;

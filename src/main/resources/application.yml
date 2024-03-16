@@ -25,7 +25,7 @@ server:
 
 #
 #datasource:
-#    url: jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:5432/postgres?user=postgres.flpzrnoogourkqxrpsnd&password=${p}
+#    url: jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:5432/postgres?user=postgres.lmrsqmfavzrbrrjwmgjz&password=${p}
 #    username: ${u}
 #    password: ${p}
 #    driverClassName: org.postgresql.Driver

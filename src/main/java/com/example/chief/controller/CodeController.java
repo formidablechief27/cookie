@@ -241,7 +241,9 @@ public class CodeController {
 	@PostMapping("/submit-code")
 	public ResponseEntity<String> execute(HttpSession session, @RequestParam("code") String code, @RequestParam("ques-id") String quesId, @RequestParam("lang") String lang, Model model, @RequestParam("id") int contest_id) {
 		System.out.println(lang);
-		
+		if(lang.equals("Java")) lang = "1";
+		else if(lang.equals("C++")) lang = "2";
+		else if(lang.equals("Python")) lang = "3";
 		int sub = (int)subs_repo.count() + 1;
 		session.setAttribute("sub-id", sub);
 		try {
@@ -285,6 +287,7 @@ public class CodeController {
 			Tests testcase = DataCache.test_map.get(i);
 			String input = testcase.getInput().trim();
 			String output = testcase.getOutput().trim();
+			String pyinp = input;
 			input = input.replace('$', ' ');
 			String code_final = code;
 			String verd = "";
@@ -293,7 +296,7 @@ public class CodeController {
 	            semaphore.acquire(); // Acquire a permit, blocks if none is available
 	            if(lang.equals("1")) p = run(code_final, input, output);
 				if(lang.equals("2")) p = run_cpp(code_final, input, output);
-				if(lang.equals("3")) p = runpy(code_final, input, output);
+				if(lang.equals("3")) p = runpy(code_final, pyinp, output);
 				verd = p.f;
 				//String ti = p.s.substring(p.s.lastIndexOf(' ') + 1, p.s.length() - 2);
 //				int ppp = Integer.parseInt(ti);
@@ -439,10 +442,10 @@ public class CodeController {
         }
 	}
 	
-	public static String injectFileRedirect(String cppCode, String filename) {
+	public String injectFileRedirect(String cppCode, String filename) {
         int mainIndex = cppCode.indexOf("main(");
         if (mainIndex == -1) {
-            return cppCode;
+        	mainIndex = cppCode.indexOf("(", cppCode.indexOf("main"));
         }
         int mainEndIndex = cppCode.indexOf("{", mainIndex);
         if (mainEndIndex == -1) {
@@ -534,14 +537,11 @@ public class CodeController {
    			    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
    			    long end = System.currentTimeMillis();
    			    System.out.println((end - start) + "ms");
-   			    if(end - start >= 5000) throw new Exception();
    			    String line;
-   			    int i = 0;
-   			    boolean flag = true;
-   			    String foutput = "";
    			    long start1 = System.currentTimeMillis();
    			    while ((line = reader.readLine()) != null) {
    			    	outputs.add(line);
+   			    	//System.out.println(line);
    			    }
    			    end = System.currentTimeMillis();
    			    System.out.println((end - start1) + "ms");
@@ -618,11 +618,18 @@ public class CodeController {
 	}
 	
 	public Pair runpy(String code, String input, String output) {
+		input = input.replace(" $", "$");
+		input = input.replace("$ ", "$");
+		input = input.replace("$", "\n");
+		//System.out.println(input);
+		Random rand = new Random();
+        int num = rand.nextInt(1000);
+		String finput = input;
+		code = "import sys\nsys.stdin = open('pooja" + num + ".txt', 'r')\n\n" + code;
+		//System.out.println(code);
         String[] expected = output.trim().split("\\$");
         ArrayList<String> outputs = new ArrayList<>();
         // Write the Python code to a file
-        Random rand = new Random();
-        int num = rand.nextInt(1000);
         String file_name = "main" + num + ".py";
         File sourceFile = new File(file_name);
         try (FileWriter writer = new FileWriter(sourceFile)) {
@@ -635,30 +642,29 @@ public class CodeController {
         ProcessBuilder processBuilder = new ProcessBuilder("python3", sourceFile.getPath());
         processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
         processBuilder.redirectOutput(ProcessBuilder.Redirect.PIPE);
+        try (BufferedWriter writer_again = new BufferedWriter(new FileWriter("pooja" + num + ".txt"))) {
+            writer_again.write(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Future<Boolean> future = executor.submit(() -> {
             try {
             	long start = System.currentTimeMillis();
                 Process process = processBuilder.start();
-
-                // Write the input to the standard input of the process
-                try (OutputStream outputStream = process.getOutputStream()) {
-                    byte[] inputBytes = input.getBytes(StandardCharsets.UTF_8);
-                    outputStream.write(inputBytes);
-                }
-
                 // Capture the output
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                long end = System.currentTimeMillis();
-                if(end - start >= 5000) throw new Exception();
                 String line;
+                int i = 0;
+			    boolean flag = true;
+			    String foutput = "";
 			    while ((line = reader.readLine()) != null) {
 			    	outputs.add(line);
 	            }
 			    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-			    while ((line = reader.readLine()) != null) {
-			    	System.out.println(line);
-			    	if(line.trim().length() > 0) return false;
-		        }
+   			    while ((line = reader.readLine()) != null) {
+   			    	System.out.println(line);
+   			    	if(line.trim().length() > 0) return false;
+   		        }
 			    return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -668,17 +674,45 @@ public class CodeController {
         try {
             boolean result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
             sourceFile.delete();
+            //System.out.println(outputs);
             if(!result) return new Pair("Runtime Error ", " ");
             int i = 0;
             for(String ele : outputs) {
-            	if(i == expected.length) return new Pair("Wrong Answer ", " ");
-            	if(!ele.trim().equals(expected[i++].trim())) return new Pair("Wrong Answer ", " ");
+            	//System.out.println(ele + " " + expected[i]);
+            	if(i == expected.length) {
+            		String fileName = "pooja" + num + ".txt";
+             	   File cookie = new File(fileName);
+             	   if (cookie.exists()) cookie.delete();
+            		return new Pair("Wrong Answer ", " ");
+            	}
+		    	if(!ele.trim().equals(expected[i++].trim())) {
+		    		String fileName = "pooja" + num + ".txt";
+		        	   File cookie = new File(fileName);
+		        	   if (cookie.exists()) cookie.delete();
+		    		return new Pair("Wrong Answer ", " ");
+		    	
+		    	}
             }
-            if(i != expected.length) return new Pair("Wrong Answer ", " ");
+            while(i < expected.length) {
+            	//System.out.println("," + expected[i]);
+         	   if(expected[i++].trim().equals("")) continue;
+         	   else {
+         		  String fileName = "pooja" + num + ".txt";
+           	   File cookie = new File(fileName);
+           	   if (cookie.exists()) cookie.delete();
+         		   return new Pair("Wrong Answer ", " ");
+         	   }
+            }
+            String fileName = "pooja" + num + ".txt";
+     	   File cookie = new File(fileName);
+     	   if (cookie.exists()) cookie.delete();
             return new Pair("Passed ", " ");
         } catch (Exception e) {
             System.out.println("Time Out occurred ");
             future.cancel(true);
+            String fileName = "pooja" + num + ".txt";
+     	   File cookie = new File(fileName);
+     	   if (cookie.exists()) cookie.delete();
             sourceFile.delete();
             //System.out.println("TLE ");
             return new Pair("Time Limit Exceeded ", " -1ms");

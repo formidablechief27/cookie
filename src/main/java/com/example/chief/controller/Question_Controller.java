@@ -45,8 +45,14 @@ public class Question_Controller {
 	
 	@GetMapping("/start")
     public String handleFormSubmission(@RequestParam("ques-id") int buttonId,@RequestParam("id") int contestid, Model model, HttpSession session) {
-		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
-		else model.addAttribute("status", "My Profile");
+		if(session.getAttribute("P") == null) {
+			model.addAttribute("status", "Login");
+			model.addAttribute("ip", 1);
+		}
+		else {
+			model.addAttribute("status", "My Profile");
+			model.addAttribute("ip", 2);
+		}
 		int ques = buttonId;
         if(DataCache.ques_map.containsKey(ques)) {
         	Questions question = DataCache.ques_map.get(ques);

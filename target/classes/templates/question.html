@@ -7,6 +7,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlgoChief</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/clike/clike.min.js"></script>
+        <style>
+            .CodeMirror {
+                height: 400px;
+                width: 500px;
+            }
+            @media screen and (max-width: 500px) {
+                .CodeMirror {
+                    width:400px;
+                    height:200px;
+                }
+                .inp-area {
+                    width: 175px;
+                    height: 100px;
+                    margin-right: 10px;
+                }
+                .out-area {
+                    width: 175px;
+                    height: 100px;
+                    margin-bottom: 10px;
+                }
+                #inp-out {
+                    display: flex;
+                }
+            }
+        </style>
     <style>
         /* Global styles */
         body {
@@ -280,6 +308,16 @@
                 background-color: #ffffff; /* Background color for even rows */
             }
 
+            .pooja {
+                display: flex;
+            }
+
+            @media screen and (max-width: 900px) {
+                .pooja {
+                    display: block;
+                }
+            }
+
             table {
                 width: 400px;
                 color: black;
@@ -293,19 +331,9 @@
             }
 
             .example-details {
-                display: inline-block;
-                width: 50%; /* Adjust the width as needed to control the table placement */
-                margin-right: 40px;
+                display: block;
             }
 
-            @media screen and (max-width: 900px) {
-                .example-details {
-                    width: 100%; /* Set the width to 100% for mobile view */
-                    margin-right: 0; /* Remove margin for better spacing */
-                    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-                    display: block;
-                }
-            }
             .example-details table {
                 border-collapse: collapse;
                 width: 100%;
@@ -352,14 +380,40 @@
             justify-content: center;
             align-items: center;
         }
-
-        .some {
-            justify-content: center;
+        .inp-area {
+            height: 180px; width: 235px; margin-right: 30px;
         }
+        .out-area {
+            height: 180px; width: 235px; margin-bottom: 20px;
+        }
+        #inp-out {
+            display: flex;
+        }
+        .one {
+            width: 55%; padding: 20px;
+        }
+        .two {
+            width: 45%;
+        }
+
+        @media screen and (max-width: 900px) {
+            .one {
+                width: 100%; padding: 20px;
+            }
+            .two {
+                width: 100%;
+            }
+        }
+
         
+
     </style>
 </head>
 <body>
+<script th:inline="javascript">
+        var c = /*[[${id}]]*/ '';
+        var ip = /*[[${ip}]]*/ 0;
+    </script>
 
     <!-- Loading screen -->
     <div class="boot-screen">
@@ -421,8 +475,11 @@
                     <input type="submit" value = "Tutorial"/> 
                 </form>
             </div>
+        </main>
 
-            <h1 style = "text-align: center; font-size: 20px; line-height: 20px; text-decoration: none solid rgb(34, 34, 34); font-family: Verdana, Geneva, Tahoma, sans-serif;"> 
+        <div class = "pooja">
+            <div class = "one">
+            <h1 style = "font-size: 20px; line-height: 20px; text-decoration: none solid rgb(34, 34, 34); font-family: Verdana, Geneva, Tahoma, sans-serif;text-align: center;"> 
                 <span th:text="${question_name}"></span>
             </h1>
             <div style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500; display: flex; justify-content: center;">
@@ -437,7 +494,7 @@
                 </p>
             </div>
 
-            <div style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500; display: flex; justify-content: center; text-align: left;">
+            <div style = "font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 500; display: flex; justify-content: center;">
                 <p style = "word-spacing: 2px;" id = "para3">
                     <span th:text="${output}"> </span>
                 </p>
@@ -547,6 +604,7 @@
                 </div>
             </div>
         </div>
+        </div>
         <script>
             function copyToClipboard(text) {
                 var textToCopy = document.getElementById(text).innerText;
@@ -628,7 +686,264 @@
                 resultElement.innerHTML = text;
             });
         </script>
-        </main>
+        <div class = "two">
+            <div style = "display: flex;justify-content: center;">
+                    <div style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 20px;">
+                    <label style = "margin-right: 20px;">
+                        <input type="radio" name="lang" value="Java"> Java
+                    </label>
+                    <label style = "margin-right: 20px;">
+                        <input type="radio" name="lang" value="C++"> C++
+                    </label>
+                    <label style = "margin-right: 20px;">
+                        <input type="radio" name="lang" value="Python"> Python
+                    </label>
+                    </div>
+                    <form id="submit-code-form" style = "margin-top: 15px;margin-left: 50px;">
+                        <input type="submit" style="display: block;bottom: 20px;right: 20px;background-color: #007bff;color: #fff;border: none;border-radius: 5px;padding: 10px 20px;cursor: pointer;transition: opacity 0.3s;text-decoration: none;"value="Execute Sample Tests">
+                    </form>
+                </div>
+                <div style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 12px; white-space: pre-wrap;display: flex;justify-content: center;margin-top: 20px;">
+                    <textarea id="view" style="white-space: pre-wrap;"></textarea>
+                </div>
+                <div id="inp-out" style = "display: flex;justify-content: center; margin-top: 20px;">
+                    <textarea id="input-text" class = "inp-area" placeholder="Enter input here. Please enter complete input before running"></textarea>
+                    <textarea id="output1" class = "out-area" placeholder="Your output will be shown here"></textarea>
+                </div>
+                <div id="fields">
+
+                </div>
+                <form style = "display: flex;justify-content: center;">
+                    <input type = "submit" id = "add-btn" style="display: block;bottom: 20px;right: 20px;background-color: #007bff;color: #fff;border: none;border-radius: 5px;padding: 10px 20px;cursor: pointer;transition: opacity 0.3s;text-decoration: none;" value = "Add Testcase">
+                </form>
+
+                <form id="submit-code-form2" style = "margin-top: 10px;display: flex;justify-content: center;">
+                    <input type="submit" class = "special"style="display: block;bottom: 20px;right: 20px;background-color: #007bff;color: #fff;border: none;border-radius: 5px;padding: 10px 20px;cursor: pointer;transition: opacity 0.3s;text-decoration: none;" value="Execute Sample Tests">
+                </form>
+
+                <form id="yourFormId" onsubmit="sendFormData(event);" style = "display: flex; justify-content: center;">
+                    <input type="hidden" name="run" value = "0">
+                    <input type="hidden" name = "ques-id" th:value = "${num}">
+                    <input type="submit" style="display: block;bottom: 20px;right: 20px;background-color: #007bff;color: #fff;border: none;border-radius: 5px;padding: 10px 20px;cursor: pointer;transition: opacity 0.3s;text-decoration: none;margin-top: 20px;" value="Submit Code">
+                </form>
+
+                <div id = "wait" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-bottom: 50px;">
+                
+                </div>
+            <script>
+            var codeTextArea = document.getElementById("view");
+            var editor = CodeMirror.fromTextArea(codeTextArea, {
+                lineNumbers: true,
+                mode: "text/x-java",
+                theme: "default",
+                indentUnit: 4,
+                onChange: function () {
+                    handle();
+                },
+                extraKeys: {
+                    
+                }
+            });
+
+            </script>
+            <script>
+                // Adding event listener to radio buttons
+                function setJavaCode() {
+            var javaCode = `import java.io.*;
+import java.util.*;
+
+public class Main {
+    
+    static class FastReader {BufferedReader br;StringTokenizer st;public FastReader(){br = new BufferedReader(new InputStreamReader(System.in));}String next(){while (st == null || !st.hasMoreElements()) {try {st = new StringTokenizer(br.readLine());}catch (IOException e) {e.printStackTrace();}}return st.nextToken();}int nextInt() { return Integer.parseInt(next()); }long nextLong() { return Long.parseLong(next()); }double nextDouble() {return Double.parseDouble(next());}}
+    FastReader sc=new FastReader();
+    PrintWriter out=new PrintWriter(System.out);
+    
+    public static void main(String args[]) {
+        Main FC27 = new Main();
+        FC27.solve();
+    }
+
+    // use sc as your scanner object for input
+    // use out.println() and out.print() for output (Faster than sopln)
+
+    public void solve() {
+        // solve the solution here
+        out.println("some text");
+        out.close(); // dont remove this line
+    }
+}`;
+            editor.setValue(javaCode);
+        }
+        function setCppCode() {
+            var cppCode = `#include<bits/stdc++.h>
+using namespace std;
+
+// use cin for input and cout for output
+void solve() {
+    // write your logic here
+}
+
+int main () {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL); 
+    solve();
+}`;
+            editor.setValue(cppCode);
+        }
+                var radioButtons = document.querySelectorAll('input[name="lang"]');
+                
+                radioButtons.forEach(function(radioButton) {
+                    radioButton.addEventListener('change', function() {
+                        // Retrieving the value of the selected radio button
+                        var lang = document.querySelector('input[name="lang"]:checked').value;
+                        console.log(editor.getValue().length);
+                        if (lang === "Java") {
+                            setJavaCode();
+                        }
+                        if(lang === "C++") {
+                            setCppCode();
+                        }
+                        if(lang === "Python") {
+                            editor.setValue("");
+                        }
+                    });
+                });
+            </script>
+            <script>
+                var addButton = document.getElementById('add-btn');
+                var count = 2;
+                addButton.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    var dynamicTextAreas = document.getElementById('fields');
+                    var row = document.createElement('div');
+                    row.className = 'row';
+                    row.innerHTML = `
+                    <div id="inp-out">
+                        <textarea id="input-text" class = "inp-area" placeholder="Enter input"></textarea>
+                        <textarea id="output${count}" class = "out-area" placeholder="Your output will be shown here"></textarea>
+                    </div>
+                    `;
+                    dynamicTextAreas.appendChild(row);
+                    count++;
+                });
+            </script>
+            <script>
+            function sendData(event) {
+                event.preventDefault();
+                var code = editor.getValue();
+                code = encodeURIComponent(code);
+                console.log(code);
+                var selectedLanguages = document.querySelectorAll('input[name="lang"]:checked');    
+                if (selectedLanguages.length !== 1) {
+                    alert('Please select exactly one programming language.');
+                    return false;
+                }
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                }); 
+                var lang = selectedLanguages[0].value;
+                console.log("lang => " + lang);
+                var num = 1;
+                var inputs = document.querySelectorAll('textarea[id="input-text"]');
+                var inputValues = Array.from(inputs).map(input => input.value);
+                for (var i = 0; i < inputValues.length; i++) {
+                    (function (index) {
+                        console.log(inputValues[index]);
+                        var inp = inputValues[index];
+                        var formData = new FormData();
+                        formData.append("code", code);
+                        formData.append("input", inp);
+                        formData.append("language", lang);
+                        console.log(lang);
+                        var area = "output" + (index + 1); // Adjust the index as needed
+                        console.log(area);
+                        var outputElement = document.getElementById(area); // Use the actual ID here
+                        if (outputElement) {
+                            outputElement.value = "Running ... ";
+                            console.log("there");
+                        }
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "/run-code", true);
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === 4) {
+                                if (xhr.status === 200) {
+                                    console.log(xhr.responseText);
+                                    var response = JSON.parse(xhr.responseText);
+                                    var foutput = response.output;
+                                    console.log(foutput);
+                                    var area = "output" + (index + 1); // Adjust the index as needed
+                                    console.log(area);
+                                    var outputElement = document.getElementById(area); // Use the actual ID here
+                                    if (outputElement) {
+                                        outputElement.value = foutput;
+                                    } else {
+                                        console.error('Textarea element not found.');
+                                    }
+                                } else {
+                                    console.error("Error:", xhr.status, xhr.statusText);
+                                }
+                            }
+                        };
+                        xhr.send(formData);
+                    })(i);
+                }
+
+            }
+            document.getElementById('submit-code-form').addEventListener('submit', function (event) {
+                sendData(event); // Pass the event parameter when calling sendData
+            });
+            document.getElementById('submit-code-form2').addEventListener('submit', function (event) {
+                sendData(event); // Pass the event parameter when calling sendData
+            });
+            </script>
+            <script>
+                function sendFormData(event) {
+                    event.preventDefault();
+                    console.log(ip);
+                    if(ip == 1) {
+                        alert('Please Login to submit (Dont forget to copy paste your code)');
+                        return false;
+                    }
+                    var code = editor.getValue();
+                    code = encodeURIComponent(code);
+                    console.log(code);
+                    var selectedLanguages = document.querySelectorAll('input[name="lang"]:checked');
+                        
+                        if (selectedLanguages.length !== 1) {
+                            alert('Please select exactly one programming language.');
+                            return false;
+                        }
+                    
+                    var formData = new FormData();
+                    formData.append("code", code);
+                    formData.append("ques-id", document.getElementsByName("ques-id")[0].value);
+                    formData.append("lang", selectedLanguages[0].value);
+                    formData.append("id", c);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "/submit-code", true);
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 200) {
+                                // Request was successful, handle the response
+                                console.log(xhr.responseText);
+                            } else {
+                                // Handle errors
+                                console.error("Request failed with status:", xhr.status);
+                            }
+                        }
+                    };
+                    xhr.send(formData);
+                    var ele = document.getElementById("wait");
+                    ele.innerHTML = "Processing Your Request ...";
+                    var link = "/subs-self?id=" + c;
+                    setTimeout(function () {window.location.href = link;}, 2500);
+                }
+        </script>
+        </div>
+        </div>
 
         <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">Top</button>
     </div>
