@@ -246,6 +246,7 @@ public class CodeController {
 		else if(lang.equals("Python")) lang = "3";
 		int sub = (int)subs_repo.count() + 1;
 		session.setAttribute("sub-id", sub);
+		System.out.println("Alloted Sub Id : " + sub);
 		try {
 			code = URLDecoder.decode(code, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -773,6 +774,7 @@ public class CodeController {
 		String dateString = date.substring(0, date.lastIndexOf('.'));
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 	    LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
+	    System.out.println(sub_id);
 		Submissions sub = new Submissions(sub_id, (Integer) session.getAttribute("P"), ques_id, code, verdict, contest_id, time, dateTime);
 		addSubmission(sub);
 	}

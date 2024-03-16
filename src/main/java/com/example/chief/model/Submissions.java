@@ -9,7 +9,7 @@ import java.util.Date;
 public class Submissions {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @Column(name = "user_id")
@@ -33,8 +33,8 @@ public class Submissions {
     @Column(name = "time_submitted")
     private LocalDateTime timeSubmitted;
     
-    public Submissions(int id, int userId, int questionId, String code, String verdict, int contestId, int timeExecution, LocalDateTime timeSubmitted) {
-		this.id = id;
+    public Submissions(int sub_id, int userId, int questionId, String code, String verdict, int contestId, int timeExecution, LocalDateTime timeSubmitted) {
+    	this.id = sub_id;
 		this.userId = userId;
 		this.questionId = questionId;
 		this.code = code;
