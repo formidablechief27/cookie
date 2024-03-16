@@ -282,7 +282,9 @@ public class CodeController {
 		int start = quest.getTestcaseStart();
 		int end = quest.getTestcaseEnd();
 		int time = 0;
+		boolean fl = true;
 		for(int i=start;i<=end;i++) {
+			if(!fl) break;
 			System.out.println("Running on Test " + (i - start + 1));
 			//System.out.println(DataCache.test_map);
 			Tests testcase = DataCache.test_map.get(i);
@@ -293,56 +295,50 @@ public class CodeController {
 			String code_final = code;
 			String verd = "";
 			Pair p = null;
-			try {
-	            semaphore.acquire(); // Acquire a permit, blocks if none is available
-	            if(lang.equals("1")) p = run(code_final, input, output);
-				if(lang.equals("2")) p = run_cpp(code_final, input, output);
-				if(lang.equals("3")) p = runpy(code_final, pyinp, output);
-				verd = p.f;
-				//String ti = p.s.substring(p.s.lastIndexOf(' ') + 1, p.s.length() - 2);
-//				int ppp = Integer.parseInt(ti);
-//				System.out.println(ppp);
-//				if(ppp > time) time = ppp;
-				//String time = verd.substring(verd.lastIndexOf(' ')+1, verd.length());
-				//time = time.substring(0, time.length()-2);
-				//String time = verd.substring(verd.lastIndexOf(' ') + 1, verd.length());
-				//verd = verd.substring(0, verd.lastIndexOf(' '));
-				int te = i - start;
-				te++;
-				String fverd = "";
-				semaphore.release();
-				if(verd.contains("Passed")) {
-					System.out.println("Test passed ");
-					fverd = "Running on Pretest " + (te + 1);
-					if(i == end) fverd = "Pretests Passed";
-					dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
-					if(i == end) {
-						Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
-						if(user.isPresent()) {
-							String text = user.get().getQuestions();
-							String[] ids = text.split(",");
-							System.out.println(ids.length);
-							boolean flag = false;
-							for(String ele : ids) if(ele.equals(quesId)) {flag = true; break;}
-							if(!flag) {
-								text += quesId + ",";
-								user.get().setQuestions(text);
-								user_repo.save(user.get());
+			while(true) {
+				try {
+		            semaphore.acquire(); // Acquire a permit, blocks if none is available
+		            if(lang.equals("1")) p = run(code_final, input, output);
+					if(lang.equals("2")) p = run_cpp(code_final, input, output);
+					if(lang.equals("3")) p = runpy(code_final, pyinp, output);
+					verd = p.f;
+					int te = i - start;
+					te++;
+					String fverd = "";
+					semaphore.release();
+					if(verd.contains("Passed")) {
+						System.out.println("Test passed ");
+						fverd = "Running on Pretest " + (te + 1);
+						if(i == end) fverd = "Pretests Passed";
+						dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
+						if(i == end) {
+							Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
+							if(user.isPresent()) {
+								String text = user.get().getQuestions();
+								String[] ids = text.split(",");
+								System.out.println(ids.length);
+								boolean flag = false;
+								for(String ele : ids) if(ele.equals(quesId)) {flag = true; break;}
+								if(!flag) {
+									text += quesId + ",";
+									user.get().setQuestions(text);
+									user_repo.save(user.get());
+								}
 							}
 						}
 					}
-				}
-				else {
-					System.out.println(verd);
-					fverd = verd + " on Pretest " + (te);
-					dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
+					else {
+						System.out.println(verd);
+						fverd = verd + " on Pretest " + (te);
+						dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
+						fl = false;
+					}
 					break;
-				}
-	            // Your operation logic here
-	        } catch (Exception e) {
-	        	semaphore.release();
-	            Thread.currentThread().interrupt();
-	        }
+		            // Your operation logic here
+		        } catch (Exception e) {
+		        	
+		        }
+			}
 		}
 		return ResponseEntity.status(HttpStatus.OK).body("Request processed successfully");
 	}

@@ -4,7 +4,7 @@ spring:
     url: jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:5432/postgres?user=postgres.lmrsqmfavzrbrrjwmgjz&password=Dhrumil 0735
     username: postgres
     password: Dhrumil 0735
-    driverClassName: org.postgresql.Driver
+    driverClassName: "org.postgresql.Driver
 
 server:
   tomcat:
