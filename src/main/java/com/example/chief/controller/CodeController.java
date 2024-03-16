@@ -676,7 +676,12 @@ public class CodeController {
             boolean result = future.get(20, TimeUnit.SECONDS); // 5 seconds timeout
             sourceFile.delete();
             //System.out.println(outputs);
-            if(!result) return new Pair("Runtime Error ", " ");
+            if(!result) {
+            	String fileName = "pooja" + num + ".txt";
+          	   File cookie = new File(fileName);
+          	   if (cookie.exists()) cookie.delete();
+            	return new Pair("Runtime Error ", " ");
+            }
             int i = 0;
             for(String ele : outputs) {
             	//System.out.println(ele + " " + expected[i]);
