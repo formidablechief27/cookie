@@ -70,15 +70,15 @@ public class MyInitializer {
             	int id = u.getId();
             	DataCache.user_map.put(id, u);
             }
-            List<Tests> list2 = getAllTestCases();
-            for (Tests t : list2) {
-                int id = t.getTestcaseNumber();
-                DataCache.test_map.put(id, t);
-            }
             List<Contests> list4 = getAll();
             for(Contests c : list4) {
             	long id = c.getId();
             	DataCache.contest_map.put((int)id, c);
+            }
+            List<Tests> list2 = getAllTestCases();
+            for (Tests t : list2) {
+                int id = t.getTestcaseNumber();
+                DataCache.test_map.put(id, t);
             }
             List<Submissions> list3 = get();
             for(Submissions s : list3) {

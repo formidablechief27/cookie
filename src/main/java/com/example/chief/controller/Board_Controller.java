@@ -358,8 +358,9 @@ public class Board_Controller {
 		 return "board.html";
 	 }
 	 
-	 int calculate(LocalDateTime start, Submissions sub, int ind, int curr) {
-		 int max_score = (ind + 1)*500;
+	 int calculate(LocalDateTime start, Submissions sub, int ind, int curr, int pts) {
+		 int max_score = pts;
+		 int dec = (pts * 2)/500;
 		 boolean done = false;
 		 if(curr >= 150) done = true;
 		 int ans = max_score;
@@ -367,7 +368,7 @@ public class Board_Controller {
          Duration duration = Duration.between(start, current);
 	     long totalMinutes = duration.toMinutes();
 	     if(totalMinutes >= 0) {
-	    	 ans -= (totalMinutes * 2 * (ind + 1));
+	    	 ans -= (totalMinutes * dec);
 	    	 if((sub.getVerdict().contains("Passed") || sub.getVerdict().contains("Accepted"))) {
 	    		 done = true;
 	    		 if(curr <= 0) curr += ans;
@@ -403,6 +404,7 @@ public class Board_Controller {
 				 map.put(user, empty); 
 			 }
 			 int ques_id = sub.getQuestionId();
+			 int pts = sub.getPts();
 			 int st = contest.getSt();
 			 int ind = ques_id - st;
 			 if(ind < 0) continue;
@@ -410,7 +412,7 @@ public class Board_Controller {
 			LocalDateTime subtime = sub.getTimeSubmitted(); // Replace with your end time
 	        Duration duration = Duration.between(subtime, time);
 	        long totalSeconds = duration.getSeconds();
-	        if(totalSeconds >= 0) map.get(user)[ind] = calculate(contest.getStart(), sub, ind, map.get(user)[ind]);
+	        if(totalSeconds >= 0) map.get(user)[ind] = calculate(contest.getStart(), sub, ind, map.get(user)[ind], pts);
 		 }
 		 List<String> arr[] = new ArrayList[map.size()];
 		 long a[][] = new long[2][map.size()];

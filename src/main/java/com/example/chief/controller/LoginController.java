@@ -1,8 +1,9 @@
 package com.example.chief.controller;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.chief.model.*;
 import com.example.chief.repository.*;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 
 @Controller
 public class LoginController {

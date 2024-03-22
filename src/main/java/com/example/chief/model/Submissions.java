@@ -33,7 +33,10 @@ public class Submissions {
     @Column(name = "time_submitted")
     private LocalDateTime timeSubmitted;
     
-    public Submissions(int sub_id, int userId, int questionId, String code, String verdict, int contestId, int timeExecution, LocalDateTime timeSubmitted) {
+    @Column(name = "pts")
+    private int pts;
+    
+    public Submissions(int sub_id, int userId, int questionId, String code, String verdict, int contestId, int timeExecution, LocalDateTime timeSubmitted, int pts) {
     	this.id = sub_id;
 		this.userId = userId;
 		this.questionId = questionId;
@@ -42,6 +45,7 @@ public class Submissions {
 		this.contestId = contestId;
 		this.timeExecution = timeExecution;
 		this.timeSubmitted = timeSubmitted;
+		this.pts = pts;
     }
 
     // Constructors
@@ -114,6 +118,14 @@ public class Submissions {
 
     public void setTimeSubmitted(LocalDateTime timeSubmitted) {
         this.timeSubmitted = timeSubmitted;
+    }
+    
+    public int getPts() {
+    	return pts;
+    }
+    
+    public void setPts(int pts) {
+    	this.pts = pts;
     }
 
     // Other methods if needed

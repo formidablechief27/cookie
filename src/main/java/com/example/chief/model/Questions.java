@@ -21,6 +21,7 @@ public class Questions {
     private int testcaseStart;
     private int testcaseEnd;
     private int minPoints;
+    private int pts;
 
     // Constructors, getters, and setters can be generated as well.
 
@@ -108,5 +109,13 @@ public class Questions {
 
     public void setMinPoints(int minPoints) {
         this.minPoints = minPoints;
+    }
+    
+    public int getPts() {
+    	return pts;
+    }
+    
+    public void setPts(int pts) {
+    	this.pts = pts;
     }
 }

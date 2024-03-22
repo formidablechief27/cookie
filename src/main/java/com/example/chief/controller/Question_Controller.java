@@ -78,6 +78,9 @@ public class Question_Controller {
 			model.addAttribute("input3", DataCache.test_map.get(st+2).getInput());
 			model.addAttribute("output3", DataCache.test_map.get(st+2).getOutput());
 			model.addAttribute("explain3", DataCache.test_map.get(st+2).getExplain());
+			model.addAttribute("inputp1", DataCache.test_map.get(st).getInput().replace("$", "\n"));
+			model.addAttribute("inputp2", DataCache.test_map.get(st + 1).getInput().replace("$", "\n"));
+			model.addAttribute("inputp3", DataCache.test_map.get(st + 2).getInput().replace("$", "\n"));
 			model.addAttribute("num", question.getId());
         }
         else {
@@ -106,6 +109,9 @@ public class Question_Controller {
     			model.addAttribute("output3", DataCache.test_map.get(st+2).getOutput());
     			model.addAttribute("explain3", DataCache.test_map.get(st+2).getExplain());
     			model.addAttribute("num", question.getId());
+    			model.addAttribute("inputp1", DataCache.test_map.get(st).getInput().replace("$", "\n"));
+    			model.addAttribute("inputp2", DataCache.test_map.get(st + 1).getInput().replace("$", "\n"));
+    			model.addAttribute("inputp3", DataCache.test_map.get(st + 2).getInput().replace("$", "\n"));
     		});
         }
         model.addAttribute("ques-id", buttonId);

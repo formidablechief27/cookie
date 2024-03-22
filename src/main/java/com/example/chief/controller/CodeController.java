@@ -257,7 +257,12 @@ public class CodeController {
         // Get the current date and time in the specified time zone
         LocalDateTime istDateTime = LocalDateTime.now(istZone);
 		LocalDateTime date = java.time.LocalDateTime.now();
-		dataentry(session, code, "Running", sub, istDateTime.toString(), Integer.parseInt(quesId), contest_id, 0);
+		int pts = 0;
+		Optional<Questions> q = ques_repo.findById(Integer.parseInt(quesId));
+		if(q.isPresent()) {
+			pts = q.get().getPts();
+		}
+		dataentry(session, code, "Running", sub, istDateTime.toString(), Integer.parseInt(quesId), contest_id, 0, pts);
 		if(!DataCache.ques_map.containsKey(Integer.parseInt(quesId))){
 			getQuestion(Integer.parseInt(quesId)).ifPresent(question -> {
             	DataCache.ques_map.put(Integer.parseInt(quesId), question);
@@ -310,7 +315,7 @@ public class CodeController {
 						System.out.println("Test passed ");
 						fverd = "Running on Pretest " + (te + 1);
 						if(i == end) fverd = "Pretests Passed";
-						dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
+						dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time, pts);
 						if(i == end) {
 							Optional<Users> user = getUser(((Integer) session.getAttribute("P")));
 							if(user.isPresent()) {
@@ -330,7 +335,7 @@ public class CodeController {
 					else {
 						System.out.println(verd);
 						fverd = verd + " on Pretest " + (te);
-						dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time);
+						dataentry(session, code, fverd, sub, date.toString(), Integer.parseInt(quesId), contest_id, time, pts);
 						fl = false;
 					}
 					break;
@@ -771,12 +776,12 @@ public class CodeController {
        return className;
 	}
 	
-	public void dataentry(HttpSession session, String code, String verdict, int sub_id, String date, int ques_id, int contest_id, int time) {
+	public void dataentry(HttpSession session, String code, String verdict, int sub_id, String date, int ques_id, int contest_id, int time, int pts) {
 		String dateString = date.substring(0, date.lastIndexOf('.'));
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 	    LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
 	    System.out.println(sub_id);
-		Submissions sub = new Submissions(sub_id, (Integer) session.getAttribute("P"), ques_id, code, verdict, contest_id, time, dateTime);
+		Submissions sub = new Submissions(sub_id, (Integer) session.getAttribute("P"), ques_id, code, verdict, contest_id, time, dateTime, pts);
 		addSubmission(sub);
 	}
 	

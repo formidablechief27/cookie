@@ -707,8 +707,16 @@
                     <textarea id="view" style="white-space: pre-wrap;"></textarea>
                 </div>
                 <div id="inp-out" style = "display: flex;justify-content: center; margin-top: 20px;">
-                    <textarea id="input-text" class = "inp-area" placeholder="Enter input here. Please enter complete input before running"></textarea>
+                    <textarea id="input-text" class = "inp-area" placeholder="Enter input here. Please enter complete input before running" th:text="${inputp1}"></textarea>
                     <textarea id="output1" class = "out-area" placeholder="Your output will be shown here"></textarea>
+                </div>
+                <div id="inp-out" style = "display: flex;justify-content: center; margin-top: 20px;">
+                    <textarea id="input-text" class = "inp-area" placeholder="Enter input here. Please enter complete input before running" th:text="${inputp2}"></textarea>
+                    <textarea id="output2" class = "out-area" placeholder="Your output will be shown here"></textarea>
+                </div>
+                <div id="inp-out" style = "display: flex;justify-content: center; margin-top: 20px;">
+                    <textarea id="input-text" class = "inp-area" placeholder="Enter input here. Please enter complete input before running" th:text="${inputp3}"></textarea>
+                    <textarea id="output3" class = "out-area" placeholder="Your output will be shown here"></textarea>
                 </div>
                 <div id="fields">
 
@@ -812,15 +820,15 @@ int main () {
             </script>
             <script>
                 var addButton = document.getElementById('add-btn');
-                var count = 2;
+                var count = 4;
                 addButton.addEventListener('click', function (event) {
                     event.preventDefault();
                     var dynamicTextAreas = document.getElementById('fields');
                     var row = document.createElement('div');
                     row.className = 'row';
                     row.innerHTML = `
-                    <div id="inp-out">
-                        <textarea id="input-text" class = "inp-area" placeholder="Enter input"></textarea>
+                    <div id="inp-out" style = "display: flex;justify-content: center; margin-top: 20px;">
+                        <textarea id="input-text" class = "inp-area" placeholder="Enter input here. Please enter complete input before running"></textarea>
                         <textarea id="output${count}" class = "out-area" placeholder="Your output will be shown here"></textarea>
                     </div>
                     `;
@@ -915,7 +923,10 @@ int main () {
                             alert('Please select exactly one programming language.');
                             return false;
                         }
-                    
+                    window.scrollTo({
+                        top: document.body.scrollHeight,
+                        behavior: 'smooth'
+                    }); 
                     var formData = new FormData();
                     formData.append("code", code);
                     formData.append("ques-id", document.getElementsByName("ques-id")[0].value);

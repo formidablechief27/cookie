@@ -204,16 +204,27 @@ public class ContestController {
 		List<Questions> list = questions.findAll();
 		List<Questions> flist = new ArrayList<>();
 		for(Questions Q : list) {
-			if(Q.getId() > 200 && Q.getId() <= 1000) {
-				if(diff == null) {
-					flist.add(Q);
-					continue;
+			if(Q.getId() > 200) {
+				int contest_id = Q.getContestId();
+				if(DataCache.contest_map.containsKey(contest_id)) {
+					Contests contest = DataCache.contest_map.get(contest_id);
+					LocalDateTime time = contest.getEd();
+					LocalDateTime endTime = LocalDateTime.now(); // Replace with your end time
+			        Duration duration = Duration.between(endTime, time);
+			        long totalSeconds = duration.getSeconds();
+			        if(totalSeconds > 0) {
+			        	continue;
+			        }
+					if(diff == null) {
+						flist.add(0, Q);
+						continue;
+					}
+					if(diff.equals("Newbie") && Q.getMinPoints() < 1200) flist.add(0, Q);
+					else if (diff.equals("Pupil") && Q.getMinPoints() >= 1200 && Q.getMinPoints() < 1400) flist.add(0, Q);
+					else if (diff.equals("Specialist") && Q.getMinPoints() >= 1400 && Q.getMinPoints() < 1600) flist.add(0, Q);
+					else if (diff.equals("Expert") && Q.getMinPoints() >= 1600 && Q.getMinPoints() < 1900) flist.add(0, Q);
+					else if (diff.equals("Candidate Master") && Q.getMinPoints() >= 1900) flist.add(0, Q);
 				}
-				if(diff.equals("Newbie") && Q.getMinPoints() < 1200) flist.add(Q);
-				else if (diff.equals("Pupil") && Q.getMinPoints() >= 1200 && Q.getMinPoints() < 1400) flist.add(Q);
-				else if (diff.equals("Specialist") && Q.getMinPoints() >= 1400 && Q.getMinPoints() < 1600) flist.add(Q);
-				else if (diff.equals("Expert") && Q.getMinPoints() >= 1600 && Q.getMinPoints() < 1900) flist.add(Q);
-				else if (diff.equals("Candidate Master") && Q.getMinPoints() >= 1900) flist.add(Q);
 			}
 		}
 		model.addAttribute("questions", flist);
