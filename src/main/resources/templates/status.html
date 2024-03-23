@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2857343152539721"
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2857343152539721"
      crossorigin="anonymous"></script>
-    <meta name="monetag" content="dbd888b27b29830f048cf7ebc3e441fd">
+     <meta name="monetag" content="dbd888b27b29830f048cf7ebc3e441fd">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlgoChief</title>
     <style>
@@ -169,12 +170,6 @@
             color: #bbb;
         }
 
-        header h3 {
-            margin: 5px 0 0;
-            font-size: 20px;
-            color: #bbb;
-        }
-
         /* Navigation bar */
         nav {
             background-color: #333;
@@ -272,11 +267,6 @@
             justify-content: center;
             align-items: center;
         }
-
-        .green-text {
-            color: rgb(5, 247, 70);  /* Text color */
-        }
-        
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
@@ -289,6 +279,11 @@
         </style>
 </head>
 <body>
+
+<script th:inline="javascript">
+    var val = /*[[${reload}]]*/ 0;
+    var table = /*[[${submissions}]]*/ []
+</script>
 
     <!-- Loading screen -->
     <div class="boot-screen">
@@ -316,8 +311,7 @@
             <a href="/profile" th:text="${status}"></a>
         </nav>
         <main>
-            <h2 th:text="${name}"></h2>
-            <div style = "margin-bottom: 5px;" class = "centered-container">
+        <div style = "margin-bottom: 5px; margin-top: 20px;" class = "centered-container">
                     <form action = "/contest-load" method = "get">
                         <input type = "submit" style = " margin-right: 20px;" value = "Problems">
                         <input type = "hidden" name = "id" th:value = "${id}">
@@ -339,75 +333,64 @@
                         <input type = "hidden" name = "id" th:value = "${id}">
                     </form>
                 </div>
-            <h3 th:text = "${text1}"></h3>
-            <table border="1" id = "t1" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 20px;">
-                <tr>
-                    <th style = "width: 250px;">Who</th>
-                    <th style = "width: 75px;"> = </th>
-                    <th th:each="column : ${#numbers.sequence(1, numberOfColumns)}" style = "width: 60px;" >
-                        <span th:text="${column}"></span>
-                    </th>
-                    <th style = "width: 100px;">Δ</th>
-                </tr>
-                <tr th:each="row : ${arr}" style="text-align: center;">
-                    <td>
-                        <form action = "/user" method = "get">
-                            <input type = "hidden" name = "username" th:value="${row[0]}">
-                            <input type = "submit" style = "text-decoration: none;" th:value="${row[0]}">
+            <h2>Your Submissions</h2>
+            <div style = "font-size: 12px;">*Refresh the page if verdict not updated after 8 - 10 seconds</div>
+            <table border="1" style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 700;">
+                <thead>
+                    <tr style="font-size: 15px;">
+                        <th style="width: 80px;"></th>
+                        <th style="width: 200px;">When</th>
+                        <th style="width: 200px;">User</th>
+                        <th style="width: 300px;">Question</th>
+                        <th style="width: 350px;">Verdict</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 11px; text-align: center;">
+                    <tr th:each="submission : ${submissions}">
+                        <form action = "/sub-view" method = "get">
+                            <input type = "hidden" name = "sub-id" th:value = "${submission.id}">
+                            <input type = "hidden" name = "id" th:value = "${id}">
+                            <td><input type = "submit" style = "padding: 0px; border: none; color: white; text-decoration: none;" value = "View"></td>
                         </form>
-                    </td>
-                    <td th:each="value : ${row}" th:if="${!#strings.startsWith(value, row[0])}" class="value-cell" style = "font-weight: 700;" th:text="${value}"></td>
-                </tr>
-            </table>
-            <script th:inline="javascript">
-                var test = /*[[${check}]]*/ 0;
-                console.log(test);
-                if(test === 0) {
-                    document.getElementById('t1').style.display = 'none';
-                }
-            </script>
-
-            <h3 th:text = "${text2}" style = "margin-top: 30px;"></h3>
-            <table border="1" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 20px;">
-                <tr>
-                    <th style = "width: 250px;">Who</th>
-                    <th style = "width: 75px;"> = </th>
-                    <th th:each="column : ${#numbers.sequence(1, numberOfColumns)}" style = "width: 60px;" >
-                        <span th:text="${column}"></span>
-                    </th>
-                    <th style = "width: 100px;"></th>
-                </tr>
-                <tr th:each="row : ${arr2}" style="text-align: center;">
-                    <td>
-                        <form action = "/user" method = "get">
-                            <input type = "hidden" name = "username" th:value="${row[0]}">
-                            <input type = "submit" style = "text-decoration: none;" th:value="${row[0]}">
-                        </form>
-                    </td>
-                    <td th:each="value : ${row}" th:if="${!#strings.startsWith(value, row[0])}" class="value-cell" style = "font-weight: 700;" th:text="${value}"></td>
-                </tr>
+                        <td th:text="${submission.timeSubmitted}" style="width: 200px;"></td>
+                        <td style = "width: 200px;">
+                            <form action = "/user" method = "get">
+                                <input type = "hidden" name = "username" th:value="${submission.user}">
+                                <input type = "submit" style = "text-decoration: none; font-weight: 700;" th:value="${submission.user}">
+                            </form>
+                        </td>
+                        <td style = "width: 300px;">
+                            <form action = "/start" method = "get">
+                                <input type = "hidden" name = "ques-id" th:value="${submission.ques}">
+                                <input type = "hidden" name = "id" th:value = "${submission.contestId}">
+                                <input type = "submit" style = "text-decoration: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-weight: 700;" th:value="${submission.question}">
+                            </form>
+                        </td>
+                        <td th:text="${submission.verdict}" style="width: 300px;" class="verdict-cell"></td>
+                    </tr>
+                </tbody>
             </table>
             <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        </main>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var cells = document.querySelectorAll('.value-cell');
 
-                cells.forEach(function(cell) {
-                    if (cell.textContent.trim().charAt(0) === '+') {
-                        cell.style.color = 'rgb(5, 247, 70)';
-                    }
-                    var value = parseInt(cell.textContent);
-                    if ((!isNaN(value) && value >= 150)) {
-                        cell.style.color = 'rgb(5, 247, 70)';
-                    }
-                    else if(!isNaN(value) && value < 0) {
-                        cell.style.color = 'rgb(247, 13, 5)';
-                    }
-                    
+            <script>
+                $(document).ready(function () {
+                    // Iterate over each .verdict-cell element
+                    $(".verdict-cell").each(function() {
+                        // Get the text content of the current td element
+                        var verdictText = $(this).text().trim();
+
+                        // Check the starting text and apply the appropriate class
+                        if (verdictText.startsWith("Pretests")) {
+                            $(this).css("color", "rgb(5, 247, 70)"); // Green
+                        } else if (verdictText.startsWith("Wrong") || verdictText.startsWith("Runtime")) {
+                            $(this).css("color", "rgb(247, 13, 5)"); // Red
+                        } else if (verdictText.startsWith("Time")) {
+                            $(this).css("color", "rgb(8, 112, 163"); // Yellow
+                        }
+                    });
                 });
-            });
-        </script>
+            </script>
+        </main>
 
         <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">Top</button>
     </div>

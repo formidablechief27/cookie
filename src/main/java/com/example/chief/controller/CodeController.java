@@ -97,18 +97,12 @@ public class CodeController {
 	
 	public List<Submissions> getAllSubmissionsByUserIdAndContestId(Integer userId, Integer contestId) {
 		List<Submissions> list = new ArrayList<>();
-//		for(int i=1;i<=subs_repo.count();i++) {
-//			if(DataCache.sub_map.containsKey(i)) {
-//				if(DataCache.sub_map.get(i).getUserId() == userId && DataCache.sub_map.get(i).getContestId() == contestId) list.add(DataCache.sub_map.get(i));
-//				continue;
-//			}
-//			Optional<Submissions> s = subs_repo.findById(i);
-//			if(s.isPresent()) {
-//				if(!s.get().getVerdict().contains("Running")) DataCache.sub_map.put(i, s.get());
-//				if(s.get().getUserId() == userId && s.get().getContestId() == contestId) list.add(s.get());
-//			}
-//		}
         return subs_repo.findByUserIdAndContestId(userId, contestId);
+    }
+	
+	public List<Submissions> getAllSubmissionsByUserIdAndContestId(Integer contestId) {
+		List<Submissions> list = new ArrayList<>();
+        return subs_repo.findByContestId(contestId);
     }
 	
 	public List<Subs> subs(int id, HttpSession session, int user) {
@@ -122,6 +116,28 @@ public class CodeController {
 		for(Submissions sub : list) {
 			int ques_id = sub.getQuestionId();
 			newlist.add(new Subs(sub.getId(), (String)session.getAttribute("user"), getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().plusHours(5).plusMinutes(30).toString().replace('T', ' '), sub.getQuestionId()) );
+		}
+		return newlist;
+	}
+	
+	public List<Subs> subs(int id) {
+		List<Submissions> list;
+		list = getAllSubmissionsByUserIdAndContestId(id);
+		list = list.stream()
+		        .sorted(Comparator.comparing(Submissions::getTimeSubmitted).reversed())
+		        .collect(Collectors.toList());
+		List<Subs> newlist = new ArrayList<>();
+		for(Submissions sub : list) {
+			int ques_id = sub.getQuestionId();
+			String name = "";
+			try {
+				if(DataCache.user_map.containsKey(sub.getUserId())) name = DataCache.user_map.get(sub.getUserId()).getUsername();
+				else name = user_repo.findById(sub.getUserId()).get().getUsername();
+			}
+			catch(Exception e) {
+				continue;
+			}
+			newlist.add(new Subs(sub.getId(), name, getQuestionNameById(sub.getQuestionId()), sub.getVerdict(), sub.getContestId(), sub.getTimeExecution(), sub.getTimeSubmitted().plusHours(5).plusMinutes(30).toString().replace('T', ' '), sub.getQuestionId()) );
 		}
 		return newlist;
 	}
@@ -746,6 +762,15 @@ public class CodeController {
 		int userId = (Integer) (session.getAttribute("P"));
 		if(DataCache.queue.containsKey(userId)) model.addAttribute("reload", 1);
 		return "submissions.html";
+	}
+	
+	@GetMapping("/status")
+	public String status(HttpSession session, @RequestParam("id") int id, Model model) {
+		if(session.getAttribute("P") == null) model.addAttribute("status", "Login");
+		else model.addAttribute("status", "My Profile");
+		model.addAttribute("submissions", subs(id));
+		model.addAttribute("id", id);
+		return "status.html";
 	}
 	
 	@GetMapping("/verdict")

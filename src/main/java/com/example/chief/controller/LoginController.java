@@ -58,7 +58,10 @@ public class LoginController {
         freeMemory /= 1024;
         usedMemory /= 1024;
         usedMemory /= 1024;
-        System.out.println(DataCache.test_map.size());
+        System.out.println("Tests :" + DataCache.test_map.size());
+        System.out.println("Questions : " + DataCache.ques_map.size());
+        System.out.println("Users : " + DataCache.user_map.size());
+        System.out.println("Contests : " + DataCache.contest_map.size());
         System.out.println("Total Memory: " + totalMemory + " mb");
         System.out.println("Free Memory: " + freeMemory + " mb");
         System.out.println("Used Memory: " + usedMemory + " mb");
