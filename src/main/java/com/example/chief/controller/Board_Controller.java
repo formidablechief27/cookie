@@ -373,7 +373,7 @@ public class Board_Controller {
 	    		 done = true;
 	    		 if(curr <= 0) curr += ans;
 	    	 }
-	    	 if((sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Time") || sub.getVerdict().contains("Runtime")) && !sub.getVerdict().trim().endsWith("1")) {
+	    	 if((sub.getVerdict().contains("Wrong") || sub.getVerdict().contains("Time") || sub.getVerdict().contains("Runtime")) && !sub.getVerdict().endsWith(" 1")) {
 	    		 curr -= 50;
 	    	 }
 		     if(done) curr = Math.max((3*max_score)/10, curr);
