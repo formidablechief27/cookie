@@ -515,24 +515,12 @@ public class CodeController {
             if (compileExitCode != 0) {
                 // Compilation error occurred
             	sourceFile.delete();
-            	 String outputFileName = "output" + num + ".exe";
-                 File outputFile = new File(outputFileName);
-                 if(outputFile.exists()) outputFile.delete();
-                 String fileName = "pooja" + num + ".txt";
-          	   File cookie = new File(fileName);
-          	   if (cookie.exists()) cookie.delete();
             	return new Pair("Compilation Error ", " ");
             }
 
         } catch (IOException | InterruptedException e1) {
             e1.printStackTrace();
             sourceFile.delete();
-            String outputFileName = "output" + num + ".exe";
-            File outputFile = new File(outputFileName);
-            if(outputFile.exists()) outputFile.delete();
-            String fileName = "pooja" + num + ".txt";
-     	   File cookie = new File(fileName);
-     	   if (cookie.exists()) cookie.delete();
             return new Pair("Compilation Error ", " ");
         }
        try {

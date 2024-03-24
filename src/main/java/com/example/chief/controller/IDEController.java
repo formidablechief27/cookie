@@ -205,9 +205,6 @@ public class IDEController {
                 // Compilation error occurred
                 output.insert(0, "Compilation Error:\n");
                 sourceFile.delete();
-           	 	String outputFileName = "output" + num + ".exe";
-                File outputFile = new File(outputFileName);
-                if(outputFile.exists()) outputFile.delete();
                 return output;
             }
 
@@ -215,9 +212,6 @@ public class IDEController {
             e1.printStackTrace();
             output.append("Internal Error during compilation");
             sourceFile.delete();
-       	 String outputFileName = "output" + num + ".exe";
-            File outputFile = new File(outputFileName);
-            if(outputFile.exists()) outputFile.delete();
             return output;
         }
 
