@@ -342,6 +342,7 @@
             <h3 th:text = "${text1}"></h3>
             <table border="1" id = "t1" style = "font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; margin-top: 20px;">
                 <tr>
+                    <th style = "width: 50px;">#</th>
                     <th style = "width: 250px;">Who</th>
                     <th style = "width: 75px;"> = </th>
                     <th th:each="column : ${#numbers.sequence(1, numberOfColumns)}" style = "width: 60px;" >
@@ -349,7 +350,8 @@
                     </th>
                     <th style = "width: 100px;">Δ</th>
                 </tr>
-                <tr th:each="row : ${arr}" style="text-align: center;">
+                <tr th:each="row, status : ${arr}" style="text-align: center;">
+                    <td style = "width: 50px; text-align: center;" th:text = "${status.index + 1}"> </td>
                     <td>
                         <form action = "/user" method = "get">
                             <input type = "hidden" name = "username" th:value="${row[0]}">
